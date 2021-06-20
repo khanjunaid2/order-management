@@ -27,10 +27,10 @@ public class Address {
     @Column(name = "zip")
     private String zip;
 
-    @Column(name = "addressLine1")
+    @Column(name = "address_line1")
     private String addressLine1;
 
-    @Column(name = "addressLine2")
+    @Column(name = "address_line2")
     private String addressLine2;
 
     public Address() {
