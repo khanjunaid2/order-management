@@ -1,0 +1,40 @@
+1. Understand the following legacy order schema:
+
+order_id
+order_status
+order_customer_id
+order_item_name
+order_item_qty
+order_subtotal
+order_tax
+order_shipping_charges
+order_total
+order_payment_method
+order_payment_date
+order_payment_confirmation_number
+order_billing_addressline1
+order_billing_addressline2
+order_billing_city
+order_billing_state
+order_billing_zip
+order_shipping_addressline1
+order_shipping_addressline2
+order_shipping_city
+order_shipping_state
+order_shipping_zip
+
+2. Design a new database schema that:
+	a. follows the concepts of Database Normalization. You remember that from your
+	DBMS class. Sorry to take you back to those haunting memories. K
+
+	b. provides an ability to have more than 1 item per order. What order schema in 2020
+	limits to 1 item per order? J
+
+	c. provides an ability to pay the order by accepting more than one payment
+	transactions. For example, pay for an order amount using two credit cards (split
+	the total). Make some assumptions about the billing address/es.
+
+	d. adds other metadata to the order: createdDate, modifiedDate. What else?
+
+	e. supports more shipping/delivery methods: In-store pickup, curbside delivery,
+	ship to home, 3rd party delivery etc.
