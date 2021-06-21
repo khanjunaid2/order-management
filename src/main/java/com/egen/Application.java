@@ -10,5 +10,7 @@ public class Application {
     {
         SpringApplication app = new SpringApplication(Application.class);
         app.run();
+
+        
     }
 }
