@@ -21,6 +21,14 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getAllOrders());
     }
 
+    @GetMapping(value = "/paging", params = {"pageNo", "pageSize", "sortBy"})
+    public ResponseEntity<List<Orders>> getAllOrdersByPagingAndSortedByTotalAmount(
+            @RequestParam(defaultValue = "0") Integer pageNo,
+            @RequestParam(defaultValue = "3") Integer pageSize,
+            @RequestParam(defaultValue = "createdAt") String sortBy){
+        return ResponseEntity.ok(orderService.getAllOrdersByPagingAndSorting(pageNo, pageSize, sortBy));
+    }
+
     @GetMapping(value = "{id}")
     public ResponseEntity<Orders> getOrderById(@PathVariable("id") String id){
         return ResponseEntity.ok(orderService.getOrderById(id));

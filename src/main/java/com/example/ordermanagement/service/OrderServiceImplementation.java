@@ -5,6 +5,10 @@ import com.example.ordermanagement.exceptions.OrderNotFoundException;
 import com.example.ordermanagement.models.Orders;
 import com.example.ordermanagement.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +28,17 @@ public class OrderServiceImplementation implements OrderService{
     public List<Orders> getAllOrders() {
         List<Orders> ordersList = (List<Orders>) orderRepository.findAll();
         return ordersList;
+    }
+
+    @Override
+    public List<Orders> getAllOrdersByPagingAndSorting(Integer pageNo, Integer pageSize, String sortBy) {
+        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by("totalAmount").ascending());
+        Page<Orders> pagedResult = orderRepository.findAll(paging);
+        if(!pagedResult.hasContent())
+            throw new OrderNotFoundException("Orders Not Found");
+        else
+            return pagedResult.toList();
+
     }
 
     @Override

@@ -5,8 +5,10 @@ import com.example.ordermanagement.models.Orders;
 import java.sql.Timestamp;
 import java.util.List;
 
+
 public interface OrderService {
     List<Orders> getAllOrders();
+    List<Orders> getAllOrdersByPagingAndSorting(Integer pageNo, Integer pageSize, String sortBy);
     Orders getOrderById(String id);
     List<Orders> getAllOrdersWithInInterval(Timestamp startTime, Timestamp endTime);
     List<Orders> top10OrdersWithHighestDollarAmountInZip(String zip);
