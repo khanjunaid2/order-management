@@ -6,7 +6,8 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public interface OrderService {
-    List<Orders> findAll();
+    //List<Orders> findAll();
+    List<Orders> findAll(int page, int size);
     Orders findOne(String id);
     List<Orders> findWithinInterval(Timestamp startTime,Timestamp endTime);
     List<Orders> findTop10OrdersWithHighestDollarAmountInZip(String zip);

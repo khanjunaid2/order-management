@@ -5,6 +5,10 @@ import com.egen.ordermanagment.model.OrderStatus;
 import com.egen.ordermanagment.model.Orders;
 import com.egen.ordermanagment.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -17,9 +21,15 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     OrderRepository orderRepository;
 
+
+//    public List<Orders> findAll() {
+//        return (List<Orders>) orderRepository.findAll();
+//    }
     @Override
-    public List<Orders> findAll() {
-        return (List<Orders>) orderRepository.findAll();
+    public List<Orders> findAll(int page, int size) {
+        Pageable paging = PageRequest.of(page, size);
+        Page<Orders> pageResult = orderRepository.findAll(paging);
+        return pageResult.toList();
     }
 
     @Override

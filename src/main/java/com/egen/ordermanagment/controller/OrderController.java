@@ -17,9 +17,17 @@ public class OrderController {
     @Autowired
     private OrderService service;
 
+//    @GetMapping
+//    public List<Orders> getAllOrders(){
+//        return service.findAll();
+//    }
+
     @GetMapping
-    public List<Orders> getAllOrders(){
-        return service.findAll();
+    public List<Orders> getAllOrders(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ){
+        return service.findAll(page, size);
     }
 
     @GetMapping("/{id}")
