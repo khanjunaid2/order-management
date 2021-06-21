@@ -83,7 +83,7 @@ public class OrdersServiceImpl implements OrdersService {
             Item item2 = itemService.getItem(item_id);
             sub_total += item2.getItemPrice() * orderDto.getItemQuantity();
         }
-        System.out.println("Updated item subtotal to"+sub_total);
+
         //default shipping charges and tax
         double tax = 1.5,shippingCharges=3.0;
 
@@ -95,7 +95,6 @@ public class OrdersServiceImpl implements OrdersService {
 
         //Check if the customer is a member
         boolean existingCustomer = customerService.findCustomer(orderDto.getCustomerId());
-        System.out.println("Customer existing?"+existingCustomer);
 
         //Creates new order, payemnt and address details based on the previoud values.
         if (existingCustomer) {
@@ -119,7 +118,6 @@ public class OrdersServiceImpl implements OrdersService {
                 paymentService.createPayment(orderDto.getPayments(), billingAddress, new_order);
             }
         }
-    System.out.println("updated address and payment");
         //Updates Order_id in item table
         Iterator<Integer> it2 = Arrays.stream(orderDto.getItems()).iterator();
         while (it2.hasNext()) {

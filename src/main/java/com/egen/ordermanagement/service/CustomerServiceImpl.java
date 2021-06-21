@@ -1,6 +1,7 @@
 package com.egen.ordermanagement.service;
 
 import com.egen.ordermanagement.dto.CustomerDto;
+import com.egen.ordermanagement.exceptions.ExistingCustomerException;
 import com.egen.ordermanagement.model.Customer;
 import com.egen.ordermanagement.repository.CustomerRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,12 @@ public class CustomerServiceImpl implements CustomerService{
 
     @Transactional
     public Customer createCustomer(CustomerDto customerDto) {
-        return customerRepo.save(new Customer(customerDto.getFirstName(), customerDto.getLastName(),customerDto.getEmail()));
+        Optional<Customer> customer = customerRepo.findByEmail(customerDto.getEmail());
+        if(customer.isPresent())
+            throw new ExistingCustomerException("The email:"+ customerDto.getEmail()
+                    +" is already registered please SignIn");
+        else
+        return customerRepo.save(new Customer(customerDto.getFirstName(),
+                customerDto.getLastName(),customerDto.getEmail()));
     }
 }

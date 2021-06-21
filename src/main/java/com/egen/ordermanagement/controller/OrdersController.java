@@ -10,7 +10,9 @@ import com.egen.ordermanagement.service.CustomerService;
 import com.egen.ordermanagement.service.ItemService;
 import com.egen.ordermanagement.service.OrdersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
@@ -32,8 +34,9 @@ public class OrdersController {
      * @return list of orders
      */
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public List<Orders> getAllOrders(){
-        return ordersService.findAll();
+    public ResponseEntity<List<Orders>> getAllOrders(){
+
+        return ResponseEntity.ok(ordersService.findAll());
     }
 
     /**
@@ -42,8 +45,8 @@ public class OrdersController {
      * @return Order object
      */
     @RequestMapping(method = RequestMethod.GET,value = "/{id}",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Orders getOrderById(@PathVariable("id")Long id){
-        return ordersService.findOne(id);
+    public ResponseEntity<Orders> getOrderById(@PathVariable("id")Long id){
+        return ResponseEntity.ok(ordersService.findOne(id));
     }
 
     /**
@@ -53,9 +56,9 @@ public class OrdersController {
      * @return List of orders
      */
     @RequestMapping(method = RequestMethod.GET,value = "/interval",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public List<Orders> getAllOrdersWithInInterval(@RequestParam(name = "startTime") Timestamp startTime,
+    public ResponseEntity<List<Orders>> getAllOrdersWithInInterval(@RequestParam(name = "startTime") Timestamp startTime,
                                                    @RequestParam(name = "endTime") Timestamp endTime){
-        return ordersService.findWithinInterval(startTime,endTime);
+        return ResponseEntity.ok(ordersService.findWithinInterval(startTime,endTime));
     }
 
     /**
@@ -64,15 +67,15 @@ public class OrdersController {
      * @return List of orders
      */
     @RequestMapping(method = RequestMethod.GET,value = "zipcode/{zip}",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public List<Orders> top10OrdersWithHighestDollarAmountInZip(@PathVariable("zip") String zip){
-        return ordersService.findTop10OrdersWithHighestDollarAmountInZip(zip);
+    public ResponseEntity<List<Orders>> top10OrdersWithHighestDollarAmountInZip(@PathVariable("zip") String zip){
+        return ResponseEntity.ok(ordersService.findTop10OrdersWithHighestDollarAmountInZip(zip));
     }
 
     @RequestMapping(method = RequestMethod.POST,value = "/placeorder",consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public void placeOrder(@RequestBody OrderDto orderDto){
-        System.out.println(orderDto.toString());
-        ordersService.createOrder(orderDto);
+    public ResponseEntity<Orders> placeOrder(@RequestBody OrderDto orderDto){
+
+       return new ResponseEntity<>(ordersService.createOrder(orderDto), HttpStatus.CREATED);
     }
 
     /**
@@ -82,8 +85,9 @@ public class OrdersController {
      */
     @RequestMapping(method = RequestMethod.PUT,value = "/cancel/{id}",
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Orders cancelOrder(@PathVariable("id")Long id){
-        return ordersService.cancelOrder(id);
+    public ResponseEntity<Orders>  cancelOrder(@PathVariable("id")Long id){
+
+        return ResponseEntity.ok(ordersService.cancelOrder(id));
     }
 
     /**
@@ -94,28 +98,11 @@ public class OrdersController {
      */
     @RequestMapping(method = RequestMethod.PUT,value = "/updateorder/{id}",consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Orders updateOrder(@RequestBody OrderDto orderDto,@PathVariable("id")Long id){
-        return ordersService.updateOrder(orderDto,id);
+    public ResponseEntity<Orders> updateOrder(@RequestBody OrderDto orderDto,@PathVariable("id")Long id){
+        return ResponseEntity.ok(ordersService.updateOrder(orderDto,id));
     }
 
-    /**
-     * This function is used to create a new user
-     * @return - created customer values are returned
-     */
-    @RequestMapping(method = RequestMethod.POST,value = "/registeruser",consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
-            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Customer createCustomer(@RequestBody CustomerDto customerDto){
-        return customerService.createCustomer(customerDto);
-    }
 
-    /**
-     * This function is used to add a new item to the db
-     * @return - created item is returned
-     */
-    @RequestMapping(method = RequestMethod.POST,value = "/additem",consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
-            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Item createItem(@RequestBody ItemDto itemDto){
-        System.out.println(itemDto.getItemName()+" ->"+itemDto.getItemPrice());
-        return itemService.createItem(itemDto);
-    }
+
+
 }

@@ -18,13 +18,11 @@ public class PaymentServiceImpl implements PaymentService{
     PaymentRepo paymentRepo;
 
     public void createPayment(List<Payment> payment, Address billingAddr, Orders orderId) {
-        System.out.println("updating payment");
         Date date = new Date();
         Timestamp payment_date = new Timestamp(date.getTime());
         for(int i=0;i<payment.size();i++){
             Payment new_payment = new Payment(payment.get(i).getAmount(),payment_date,payment.get(i).getPaymentMode(),
                     billingAddr,orderId);
-            System.out.println(new_payment.toString());
             paymentRepo.save(new_payment);
         }
     }

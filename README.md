@@ -10,9 +10,9 @@
 
 navigate to http://localhost:8080/api/orders/placeorder to create a new order
 
-navigate to http://localhost:8080/api/orders/additem to create a new item in the stock
+navigate to http://localhost:8080/api/item/additem to create a new item in the stock
 
-navigate to http://localhost:8080/api/orders/registeruser to create a new user 
+navigate to http://localhost:8080/api/customer/register to create a new user 
 
 ---
 ## GET REQUESTS
