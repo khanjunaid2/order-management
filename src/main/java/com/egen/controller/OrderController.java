@@ -3,13 +3,11 @@ package com.egen.controller;
 import com.egen.model.Order;
 import com.egen.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
-import java.time.ZonedDateTime;
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "orders")
@@ -29,7 +27,7 @@ public class OrderController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
-    public Order getOrderById(@PathVariable("id") String id){
+    public Optional<Order> getOrderById(@PathVariable("id") String id){
         //TODO
         return orderService.findOne(id);
     }
@@ -53,7 +51,7 @@ public class OrderController {
         return orderService.cancelOrder(order,id);
     }
 
-    public Order updateOrder(@PathVariable("id") String id){
-        return orderService.updateOrder(id);
+    public Order updateOrder(@RequestBody Order order){
+        return orderService.updateOrder(order);
     }
 }

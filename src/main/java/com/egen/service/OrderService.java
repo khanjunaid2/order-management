@@ -12,5 +12,6 @@ public interface OrderService {
     List<Order> findWithInterval(Timestamp start, Timestamp end);
     List<Order> findTop10OrderWithHighestDollarInZip(String zip);
     Order cancelOrder(Order order, String id);
-    Order updateOrder(String id);
+    Order placeOrder(Order order);
+    Order updateOrder(Order order);
 }

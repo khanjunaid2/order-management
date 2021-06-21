@@ -1,28 +1,25 @@
 package com.egen.service;
 
+import com.egen.exception.ResourceNotFound;
 import com.egen.model.Order;
+import com.egen.model.OrderEnum;
 import com.egen.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.sql.Timestamp;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImplementation implements OrderService{
 
     @Autowired
     OrderRepoImplementation orderRepo;
-    @Autowired
-    AddressRepo addressRepo;
-    @Autowired
-    ItemsRepo itemsRepo;
-    @Autowired
-    PaymentsRepo paymentsRepo;
-    @Autowired
-    CustomerRepo customerRepo;
+
 
 
     @Transactional
@@ -37,21 +34,54 @@ public class OrderServiceImplementation implements OrderService{
 
     @Transactional
     public List<Order> findWithInterval(Timestamp start, Timestamp end) {
-        return orderRepo.findWithinInterval(start,end);
+        List<Order> res = orderRepo.getAllOrdersWithinInterval(start,end);
+        if(res.isEmpty())
+        {
+            throw new ResourceNotFound("Order not found within" + start + " and " + end);
+        }
+        return res;
     }
 
     @Transactional
     public List<Order> findTop10OrderWithHighestDollarInZip(String zip) {
-        return orderRepo.findTop10OrdersWithHighestDollarAmountInZip(zip);
+        List<Order> res =  orderRepo.findByZip(zip);
+        if(res.isEmpty())
+        {
+            throw new ResourceNotFound("Order not found with zipcode " + zip);
+        }
+        res.stream().limit(10).sorted(Comparator.comparing(Order::getSubTotal)).collect(Collectors.toList());
+        return res;
     }
 
     @Transactional
     public Order cancelOrder(Order order, String id) {
-        return orderRepo.cancelOrder(id, order);
+        Optional<Order> res = orderRepo.findById(id);
+        if(!res.isPresent())
+        {
+            throw new ResourceNotFound("order not found");
+        }
+        res.get().setOrderStatus(OrderEnum.CANCELED);
+        return (Order) orderRepo.save(res.get());
     }
 
     @Transactional
-    public Order updateOrder(String id) {
-        return orderRepo.updateOrder(id);
+    public Order placeOrder(Order order)
+    {
+        Optional<Order> res = orderRepo.findById(order.getId());
+        if(res.isPresent())
+        {
+            throw new ResourceNotFound("Order already exist");
+        }
+        return (Order) orderRepo.save(order);
+    }
+
+    @Transactional
+    public Order updateOrder(Order order) {
+        Optional<Order> res = orderRepo.findById(order.getId());
+        if(!res.isPresent())
+        {
+            throw new ResourceNotFound("Order not exist");
+        }
+        return (Order) orderRepo.save(order);
     }
 }

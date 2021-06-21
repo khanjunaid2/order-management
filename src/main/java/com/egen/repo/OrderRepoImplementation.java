@@ -2,17 +2,23 @@ package com.egen.repo;
 
 import com.egen.model.Order;
 import com.egen.model.OrderEnum;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 public interface OrderRepoImplementation extends CrudRepository<Order, String> {
+
+    @Query("SELECT ord FROM Order ord JOIN Address add ON ord.shippingAddress.id = add.id WHERE add.zipcode = :parameterZip ORDER BY ord.subTotal DESC")
+    List<Order> findByZip(String parameterZip);
+
+    @Query("SELECT ord FROM Order ord WHERE ord.dateOrdered BETWEEN :start AND :end")
+    List<Order> getAllOrdersWithinInterval(Timestamp start, Timestamp end);
 }
 
   /*  @PersistenceContext
