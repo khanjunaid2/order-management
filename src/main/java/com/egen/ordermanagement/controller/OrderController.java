@@ -3,6 +3,7 @@ package com.egen.ordermanagement.controller;
 import com.egen.ordermanagement.dto.OrderDTO;
 import com.egen.ordermanagement.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +25,15 @@ public class OrderController {
     @GetMapping
     public ResponseEntity<List<OrderDTO>> getAllOrders() {
 
-        System.out.println("time:"+new Timestamp(System.currentTimeMillis()));
         return new ResponseEntity<>(orderService.getAllOrders(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/pagination", params = {"pageNumber", "pageSize", "sortBy"})
+    public ResponseEntity<List<OrderDTO>> getAllOrdersWithPaginationAndSorted(@RequestParam(defaultValue = "0") int pageNumber,
+                                                       @RequestParam(defaultValue = "5") int pageSize,
+                                                       @RequestParam(defaultValue = "creationDate") String sortBy) {
+
+        return new ResponseEntity<>(orderService.getAllOrdersWithPaginationAndSorted(pageNumber, pageSize, sortBy), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}")

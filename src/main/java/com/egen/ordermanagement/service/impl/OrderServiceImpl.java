@@ -9,6 +9,9 @@ import com.egen.ordermanagement.model.enums.OrderStatus;
 import com.egen.ordermanagement.repository.OrderRepository;
 import com.egen.ordermanagement.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +43,23 @@ public class OrderServiceImpl implements OrderService {
             throw new InternalServerException("Internal Server Error occurred");
         }
     }
+
+    @Override
+    public List<OrderDTO> getAllOrdersWithPaginationAndSorted(int pageNumber, int pageSize, String sortBy) {
+
+        try {
+            Page<CustomerOrder> pagedOrders = orderRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("creationDate")));
+
+            if (pagedOrders.hasContent())
+                return convertToDTOList(pagedOrders.getContent());
+            else
+                throw new OrderServiceException("No orders were placed on the given date");
+
+        } catch (OrderServiceException ose) {
+            throw new OrderServiceException("Error while retrieving all orders with pagination and sorting");
+        }
+    }
+
 
     @Override
     public OrderDTO getOrderById(String id) {
