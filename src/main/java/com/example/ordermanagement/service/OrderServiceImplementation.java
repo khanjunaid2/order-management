@@ -38,7 +38,7 @@ public class OrderServiceImplementation implements OrderService{
     @Override
     @Transactional
     public List<Orders> getAllOrdersWithInInterval(Timestamp startTime, Timestamp endTime) {
-        List<Orders> ordersList = orderRepository.findAllOrdersWithinIntervals(startTime, endTime);
+        List<Orders> ordersList = orderRepository.findOrdersByCreatedAtBetween(startTime, endTime);
 
         return ordersList;
     }

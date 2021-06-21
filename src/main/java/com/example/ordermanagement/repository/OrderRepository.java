@@ -11,11 +11,14 @@ import java.util.List;
 @Repository
 public interface OrderRepository extends CrudRepository<Orders, String> {
 
-    @Query(nativeQuery = true, value = "select ord from Orders ord where ord.createdAt between : startTime and : endTime")
-    List<Orders> findAllOrdersWithinIntervals(Timestamp startTime, Timestamp endTime);
+//    @Query(nativeQuery = true, value = "select ord from Orders ord where ord.createdAt between : startTime and : endTime")
+//    List<Orders> findAllOrdersWithinIntervals(Timestamp startTime, Timestamp endTime);
 
-    @Query(nativeQuery = true, value = "select ord from Orders ord, Address addr where ord.shipping_address_address_id = addr.address_id" +
-            "and addr.zip =: zip order by desc limit 10")
+    List<Orders> findOrdersByCreatedAtBetween(Timestamp startTime, Timestamp endTime);
+
+    @Query(nativeQuery = true, value = "select ord from Orders ord, Address addr where ord.shipping_address_id = addr.address_id" +
+            "and addr.zip =:zip order by desc limit 10")
     List<Orders> findTop10OrdersWithHighestDollarAmountInZip(String zip);
+
 
 }

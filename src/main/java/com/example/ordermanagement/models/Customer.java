@@ -1,11 +1,18 @@
 package com.example.ordermanagement.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.UUID;
 
 @Entity
+@Getter
+@Setter
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Customer {
     @Id
     private String customerId;
@@ -21,37 +28,5 @@ public class Customer {
 
     public Customer() {
         this.customerId = UUID.randomUUID().toString();
-    }
-
-    public String getId() {
-        return customerId;
-    }
-
-    public void setId(String id) {
-        this.customerId = id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 }
