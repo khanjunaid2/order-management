@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Data
@@ -16,21 +17,28 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OrderDTO implements Serializable {
 
-    private long id;
-    @JsonProperty(value = "customerId")
-    private Long customerId;
-    private int[] products;
-    @JsonProperty(value = "shippingAddress")
-    private Address shippingAddress;
-    @JsonProperty(value = "billingAddress")
-    private Address billingAddress;
-    @JsonProperty(value = "billingSameAsShippingAddress")
-    private boolean billingSameAsShippingAddress;
-    private List<Payment> payments;
+    @JsonProperty(value = "OrderId")
+    private String id;
+    @JsonProperty(value = "OrderStatus")
+    private OrderStatus status;
+    @JsonProperty(value = "CustomerId")
+    private String order_customer_id;
+    private List<Product> products;
+    @JsonProperty(value = "OrderSubTotal")
+    private double order_subtotal;
+    @JsonProperty(value = "OrderTax")
+    private double order_tax;
+    @JsonProperty(value = "OrderTotal")
+    private double order_total;
+    @JsonProperty(value = "CreatedDate")
+    private ZonedDateTime created_date;
+    @JsonProperty(value = "ModifiedDate")
+    private ZonedDateTime modified_date;
+    private List<Payment> payment;
     @JsonProperty(value = "shipping")
     private Shipping shipping;
-    @JsonProperty(value = "productQuantity")
-    private int productQuantity;
-    @JsonProperty(value="orderStatus")
-    private OrderStatus orderStatus;
+    @JsonProperty(value = "billingAddress")
+    private Address order_billing_address;
+    @JsonProperty(value = "shippingAddress")
+    private Address order_shipping_address;
 }
