@@ -1,8 +1,11 @@
 package com.egen.ordermanagment.controller;
 
+import com.egen.ordermanagment.dto.OrdersDTO;
 import com.egen.ordermanagment.model.Orders;
 import com.egen.ordermanagment.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
@@ -18,17 +21,18 @@ public class OrderController {
     private OrderService service;
 
     /**
-     * Get All Order using pagination
+     * Get all orders using pagination and sortBy created date
      * @param page
      * @param size
+     * @param sortBy
      * @return
      */
     @GetMapping
-    public List<Orders> getAllOrders(
+    public ResponseEntity<List<OrdersDTO>> getAllOrders(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ){
-        return service.findAll(page, size);
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "orderCreated") String sortBy) {
+        return new ResponseEntity<>(service.findAll(page, size, sortBy), HttpStatus.OK);
     }
 
     /**
@@ -37,8 +41,8 @@ public class OrderController {
      * @return
      */
     @GetMapping("/{id}")
-    public Orders getOrderById(@PathVariable("id") String id){
-        return service.findOne(id);
+    public ResponseEntity<OrdersDTO> getOrderById(@PathVariable("id") String id){
+        return new ResponseEntity<>(service.findOne(id), HttpStatus.OK);
     }
 
     /**
@@ -48,9 +52,10 @@ public class OrderController {
      * @return
      */
     @GetMapping("/interval")
-    public List<Orders> getAllOrdersWithInInterval(@RequestParam(name = "startTime") Timestamp startTime,
-                                                   @RequestParam(name = "endTime") Timestamp endTime){
-        return service.findWithinInterval(startTime,endTime);
+    public ResponseEntity<List<OrdersDTO>> getAllOrdersWithInInterval(
+            @RequestParam(name = "startTime") Timestamp startTime,
+            @RequestParam(name = "endTime") Timestamp endTime){
+        return new ResponseEntity<>(service.findWithinInterval(startTime,endTime), HttpStatus.OK);
     }
 
     /**
@@ -59,8 +64,8 @@ public class OrderController {
      * @return
      */
     @GetMapping("/zipcode/{zip}")
-    public List<Orders> top10OrdersWithHighestDollarAmountInZip(@PathVariable("zip") String zip){
-        return service.findTop10OrdersWithHighestDollarAmountInZip(zip);
+    public ResponseEntity<List<OrdersDTO>> top10OrdersWithHighestDollarAmountInZip(@PathVariable("zip") String zip){
+        return new ResponseEntity<>(service.findTop10OrdersWithHighestDollarAmountInZip(zip), HttpStatus.OK);
     }
 
     /**
@@ -69,9 +74,8 @@ public class OrderController {
      * @return
      */
     @PostMapping
-    public Orders placeOrder(@RequestBody Orders order){
-        service.placeOrder(order);
-        return order;
+    public ResponseEntity<OrdersDTO> placeOrder(@RequestBody OrdersDTO order) {
+        return new ResponseEntity<>(service.placeOrder(order), HttpStatus.CREATED);
     }
 
     /**
@@ -80,8 +84,8 @@ public class OrderController {
      * @return
      */
     @PutMapping("/cancel/{id}")
-    public Orders cancelOrder(@PathVariable("id") String id){
-        return service.cancelOrder(id);
+    public ResponseEntity<OrdersDTO> cancelOrder(@PathVariable("id") String id){
+        return new ResponseEntity<>(service.cancelOrder(id), HttpStatus.OK);
     }
 
     /**
@@ -91,8 +95,8 @@ public class OrderController {
      * @return
      */
     @PutMapping("/update/{id}")
-    public Orders updateOrder(@PathVariable("id") String id, @RequestBody Orders order){
-        return service.updateOrder(id, order);
+    public ResponseEntity<OrdersDTO> updateOrder(@PathVariable("id") String id, @RequestBody OrdersDTO order){
+        return new ResponseEntity<>(service.updateOrder(id, order), HttpStatus.OK);
     }
 
 }
