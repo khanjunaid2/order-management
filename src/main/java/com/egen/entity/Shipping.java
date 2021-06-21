@@ -1,5 +1,7 @@
 package com.egen.entity;
 
+import com.egen.enums.ShippingMethod;
+
 import javax.persistence.*;
 
 @Entity

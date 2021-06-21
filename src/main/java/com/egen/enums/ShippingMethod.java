@@ -1,4 +1,4 @@
-package com.egen.entity;
+package com.egen.enums;
 
 public enum ShippingMethod {
     IN_STORE_PICKUP,

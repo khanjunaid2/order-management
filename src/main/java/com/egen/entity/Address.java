@@ -1,5 +1,7 @@
 package com.egen.entity;
 
+import com.egen.enums.AddressType;
+
 import javax.persistence.*;
 
 @Entity

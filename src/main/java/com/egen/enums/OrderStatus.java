@@ -1,4 +1,4 @@
-package com.egen.entity;
+package com.egen.enums;
 
 public enum OrderStatus {
     SUBMITTED,

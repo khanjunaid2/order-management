@@ -1,5 +1,7 @@
 package com.egen.entity;
 
+import com.egen.enums.OrderStatus;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;

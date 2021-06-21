@@ -1,7 +1,7 @@
 package com.egen.service;
 
 import com.egen.entity.Order;
-import com.egen.entity.OrderStatus;
+import com.egen.enums.OrderStatus;
 import com.egen.exception.OrderNotFoundException;
 import com.egen.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
