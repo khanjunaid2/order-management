@@ -17,11 +17,12 @@ public class OrderController {
     @Autowired
     private OrderService service;
 
-//    @GetMapping
-//    public List<Orders> getAllOrders(){
-//        return service.findAll();
-//    }
-
+    /**
+     * Get All Order using pagination
+     * @param page
+     * @param size
+     * @return
+     */
     @GetMapping
     public List<Orders> getAllOrders(
             @RequestParam(defaultValue = "0") int page,
@@ -30,33 +31,65 @@ public class OrderController {
         return service.findAll(page, size);
     }
 
+    /**
+     * Get order by Id
+     * @param id
+     * @return
+     */
     @GetMapping("/{id}")
     public Orders getOrderById(@PathVariable("id") String id){
         return service.findOne(id);
     }
 
+    /**
+     * Get All Orders Within Date interval
+     * @param startTime
+     * @param endTime
+     * @return
+     */
     @GetMapping("/interval")
     public List<Orders> getAllOrdersWithInInterval(@RequestParam(name = "startTime") Timestamp startTime,
                                                    @RequestParam(name = "endTime") Timestamp endTime){
         return service.findWithinInterval(startTime,endTime);
     }
 
+    /**
+     * Get Top 10 orders with highest total amount
+     * @param zip
+     * @return
+     */
     @GetMapping("/zipcode/{zip}")
-    public List<Orders> getAllOrdersWithInInterval(@PathVariable("zip") String zip){
+    public List<Orders> top10OrdersWithHighestDollarAmountInZip(@PathVariable("zip") String zip){
         return service.findTop10OrdersWithHighestDollarAmountInZip(zip);
     }
 
+    /**
+     * Create Order
+     * @param order
+     * @return
+     */
     @PostMapping
     public Orders placeOrder(@RequestBody Orders order){
         service.placeOrder(order);
         return order;
     }
 
+    /**
+     * Cancel Order. Update OrderStatus as "CANCELLED"
+     * @param id
+     * @return
+     */
     @PutMapping("/cancel/{id}")
     public Orders cancelOrder(@PathVariable("id") String id){
         return service.cancelOrder(id);
     }
 
+    /**
+     * Update Order
+     * @param id
+     * @param order
+     * @return
+     */
     @PutMapping("/update/{id}")
     public Orders updateOrder(@PathVariable("id") String id, @RequestBody Orders order){
         return service.updateOrder(id, order);
