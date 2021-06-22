@@ -1,74 +1,64 @@
-
-package com.egen.model;
+package com.egen.dto;
 
 import com.egen.enums.DeliveryType;
 import com.egen.enums.OrderStatus;
+import com.egen.model.Address;
+import com.egen.model.Customer;
+import com.egen.model.Item;
+import com.egen.model.Payment;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Set;
 
-@Entity
 @Getter
 @Setter
-@AllArgsConstructor
-@Table(name = "customer_order")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Order  implements Serializable {
-    @Id
-    @GeneratedValue(generator="system-uuid")
-    @GenericGenerator(name="system-uuid", strategy = "uuid")
+public class OrderDTO implements Serializable {
+
+
     private String id;
 
-    @Enumerated(EnumType.STRING)
+    @JsonProperty(value = "orderStatus")
     private OrderStatus orderStatus;
 
-    @Column(name = "sub_total")
+    @JsonProperty(value = "sub_total")
     private double subtotal;
 
-    @Column(name = "total_amount")
+    @JsonProperty(value = "total_amount")
     private double totalAmount;
 
-    @Column(name = "tax")
+    @JsonProperty(value = "tax")
     private double tax;
 
-    @OneToOne(cascade = {CascadeType.ALL})
+    @JsonProperty(value = "shippingAddress")
     private Address shippingAddress;
 
-    @Column(name = "is_billing_address_same")
+    @JsonProperty(value = "is_billing_address_same")
     private boolean isBillingAddressSame = false;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name="delivery_type")
+
+    @JsonProperty(value="delivery_type")
     private DeliveryType deliveryType;
 
-    @OneToMany(cascade = {CascadeType.ALL})
+
     private Set<Item> items;
 
-    @OneToMany(cascade = {CascadeType.ALL})
+
     private Set<Payment> paymentDetails;
 
-    @OneToOne(cascade = {CascadeType.ALL},orphanRemoval = true)
-    private Customer customer;
 
+    private Customer customer;
+    @JsonProperty(value="createdAt")
     private Timestamp createdAt;
 
-    public Order() {
+    public OrderDTO() {
     }
 
     public String getId() {
@@ -151,19 +141,19 @@ public class Order  implements Serializable {
         this.paymentDetails = paymentDetails;
     }
 
-    public Timestamp getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public Customer getCustomer() {
         return customer;
     }
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
     }
 }

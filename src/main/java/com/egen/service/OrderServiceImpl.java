@@ -4,7 +4,7 @@ import com.egen.model.Address;
 import com.egen.model.Customer;
 import com.egen.model.Item;
 import com.egen.model.Order;
-import com.egen.model.OrderStatus;
+import com.egen.enums.OrderStatus;
 import com.egen.model.Payment;
 import com.egen.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,6 @@ import uk.co.jemos.podam.api.PodamUtils;
 import uk.co.jemos.podam.typeManufacturers.IntTypeManufacturerImpl;
 import uk.co.jemos.podam.typeManufacturers.TypeManufacturer;
 
-import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,7 +42,7 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public List<Order> getAllOrdersWithInInterval(Timestamp startTime, Timestamp endTime) {
-        return orderRepo.getAllOrdersWithInInterval(startTime,endTime);
+        return orderRepo.getAllByCreatedAtBetween(startTime,endTime);
     }
 
     @Override
