@@ -3,12 +3,14 @@ package com.egen.ordermanagement.model.entity;
 import com.egen.ordermanagement.model.enums.ShipmentType;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "SHIPPING")
+@Accessors(chain = true)
 @Getter
 @Setter
 public class Shipping {

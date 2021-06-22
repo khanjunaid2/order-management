@@ -1,13 +1,14 @@
 package com.egen.ordermanagement.service.impl;
 
 import com.egen.ordermanagement.dto.OrderDTO;
-import com.egen.ordermanagement.exception.InternalServerException;
+import com.egen.ordermanagement.exception.OrderRequestProcessException;
 import com.egen.ordermanagement.exception.OrderServiceException;
 import com.egen.ordermanagement.mapper.OrderMapper;
 import com.egen.ordermanagement.model.entity.CustomerOrder;
 import com.egen.ordermanagement.model.enums.OrderStatus;
 import com.egen.ordermanagement.repository.OrderRepository;
 import com.egen.ordermanagement.service.OrderService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@Slf4j
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
@@ -37,10 +39,10 @@ public class OrderServiceImpl implements OrderService {
         try {
             return convertToDTOList(orderRepository.findAll());
 
-           } catch (InternalServerException ise) {
+           } catch (Exception e) {
 
-            System.out.println("Failed while fetching all orders");
-            throw new InternalServerException("Internal Server Error occurred");
+            log.error("Error while fetching all orders");
+            throw new OrderServiceException("Failed to fetch all orders", e);
         }
     }
 
@@ -53,26 +55,29 @@ public class OrderServiceImpl implements OrderService {
             if (pagedOrders.hasContent())
                 return convertToDTOList(pagedOrders.getContent());
             else
-                throw new OrderServiceException("No orders were placed on the given date");
+                throw new OrderRequestProcessException("No orders were placed on the given date");
 
-        } catch (OrderServiceException ose) {
-            throw new OrderServiceException("Error while retrieving all orders with pagination and sorting");
+        } catch (Exception e) {
+
+            log.error("Error while retrieving all orders with pagination and sorting");
+            throw new OrderServiceException("Failed to retrieve all orders with pagination and sorting", e);
         }
     }
-
 
     @Override
     public OrderDTO getOrderById(String id) {
 
         try {
             Optional<CustomerOrder> order = orderRepository.findById(id);
+
             if(order.isEmpty())
-                throw new OrderServiceException("Order you're looking for couldn't be found");
+                throw new OrderRequestProcessException("Order" + id + " you're looking for couldn't be found");
+
             return new OrderMapper().convertToOrderDTO(order.get());
 
-        } catch (InternalServerException ise) {
-            System.out.println("Failed while fetching specific order");
-            throw new InternalServerException("Internal Server Error occurred");
+        } catch (Exception e) {
+           log.error("Error while fetching specific order");
+            throw new OrderServiceException("Failed to fetch specific order", e);
         }
     }
 
@@ -82,9 +87,9 @@ public class OrderServiceImpl implements OrderService {
         try {
             return convertToDTOList(orderRepository.findAllOrdersWithInInterval(startTime, endTime));
 
-        } catch (InternalServerException ise) {
-            System.out.println("Failed while fetching all orders within the given interval");
-            throw new InternalServerException("Internal Server Error occurred");
+        } catch (Exception e) {
+            log.error("Error while fetching all orders within the given interval");
+            throw new OrderServiceException("Failed to fetch all orders within the given interval", e);
         }
     }
 
@@ -95,17 +100,16 @@ public class OrderServiceImpl implements OrderService {
             List<CustomerOrder> allOrders = orderRepository.findAll();
 
             if(allOrders.size() == 0)
-                throw new OrderServiceException("No orders have been placed yet at a given location.");
+                throw new OrderRequestProcessException("No orders have been placed yet at a given location.");
 
             return convertToDTOList(allOrders.stream()
                                               .filter(order -> order.getShipping().getZip().equals(zip))
                                               .sorted((o1, o2) -> Double.compare(o2.getTotal(), o1.getTotal()))
                                               .limit(10)
                                               .collect(Collectors.toList()));
-        }
-        catch (InternalServerException ise) {
-            System.out.println("Failed while fetching top 10 orders in a given location");
-            throw new InternalServerException("Internal Server Error occurred");
+        } catch (Exception e) {
+            log.error("Error while fetching top 10 orders in a given location");
+            throw new OrderServiceException("Failed to fetch top 10 orders", e);
         }
     }
 
@@ -114,12 +118,11 @@ public class OrderServiceImpl implements OrderService {
 
         try {
             CustomerOrder order = new OrderMapper().convertToOrderEntity(orderDTO);
-            orderRepository.save(order);
-            return new OrderMapper().convertToOrderDTO(order);
+            return new OrderMapper().convertToOrderDTO(orderRepository.save(order));
 
-        } catch (OrderServiceException ose) {
-            System.out.println("Failed while order creation");
-            throw new OrderServiceException("Failed while order creation");
+        } catch (Exception e) {
+            log.error("Error while order creation");
+            throw new OrderServiceException("Failed order creation", e);
         }
     }
 
@@ -130,16 +133,20 @@ public class OrderServiceImpl implements OrderService {
              Optional<CustomerOrder> order = orderRepository.findById(orderId);
 
              if(order.isEmpty())
-                 throw new OrderServiceException("Order could not be found");
+                 throw new OrderRequestProcessException("Order doesn't exist");
+
+             else if(order.get().getStatus().equals(OrderStatus.SHIPPED))
+                 throw new OrderRequestProcessException("shipped orders can't be cancelled");
+
              else {
                  order.get().setStatus(OrderStatus.CANCELLED);
                  orderRepository.save(order.get());
                  return new OrderMapper().convertToOrderDTO(order.get());
              }
 
-        } catch (OrderServiceException ose) {
-            System.out.println("Failed while order cancellation");
-            throw new OrderServiceException("Failed while order cancellation");
+        } catch (Exception e) {
+            log.error("Error while order creation");
+            throw new OrderServiceException("Failed order cancellation", e);
         }
     }
 
@@ -153,14 +160,15 @@ public class OrderServiceImpl implements OrderService {
             if(existingOrder.isEmpty())
                 throw new OrderServiceException("Order doesn't exist");
 
-            else if (existingOrder.get().getStatus().equals(OrderStatus.SHIPPED))   //check if order is already dispatched
-                throw new OrderServiceException("The order has been shipped");
+            else if (existingOrder.get().getStatus().equals(OrderStatus.SHIPPED))
+                throw new OrderServiceException("Shipped orders can't be modified");
+
             else
                 return new OrderMapper().convertToOrderDTO(orderRepository.save(order));
 
-        } catch (OrderServiceException ose) {
-            System.out.println("Failed while order modification");
-            throw new OrderServiceException("Failed while order modification");
+        } catch (Exception e) {
+            log.error("Error while order modification");
+            throw new OrderServiceException("Failed order modification", e);
         }
     }
 

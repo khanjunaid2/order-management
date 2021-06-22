@@ -8,11 +8,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+@Accessors(chain = true)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -27,7 +29,7 @@ public class OrderDTO {
     private Double subtotal;
     private Double tax;
     private OrderStatus status;
-    private List<Item> items = new ArrayList<>();
-    private List<Payment> payments = new ArrayList<>();
-    private Shipping shipping;
+    private List<ItemDTO> items = new ArrayList<>();
+    private List<PaymentDTO> payments = new ArrayList<>();
+    private ShippingDTO shipping;
 }

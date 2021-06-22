@@ -3,6 +3,7 @@ package com.egen.ordermanagement.model.entity;
 import com.egen.ordermanagement.model.enums.OrderStatus;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "CUSTOMER_ORDER")
+@Accessors(chain = true)
 @Getter
 @Setter
 public class CustomerOrder {

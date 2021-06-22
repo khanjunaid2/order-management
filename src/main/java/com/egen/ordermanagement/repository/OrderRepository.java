@@ -15,4 +15,5 @@ public interface OrderRepository extends JpaRepository<CustomerOrder, String> {
     List<CustomerOrder> findAllOrdersWithInInterval(Timestamp startTime, Timestamp endTime);
 
     Page<CustomerOrder> findAll(Pageable pageable);
+    List<CustomerOrder> findAll();
 }

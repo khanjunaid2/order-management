@@ -2,12 +2,14 @@ package com.egen.ordermanagement.model.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "BILLING")
+@Accessors(chain = true)
 @Getter
 @Setter
 public class Billing {

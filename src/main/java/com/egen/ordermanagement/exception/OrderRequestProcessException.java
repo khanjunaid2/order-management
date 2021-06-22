@@ -5,13 +5,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class OrderServiceException extends  RuntimeException {
+public class OrderRequestProcessException extends RuntimeException {
 
-    public OrderServiceException(String message, Throwable cause) {
+    public OrderRequestProcessException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public OrderServiceException(String message) {
+    public OrderRequestProcessException(String message) {
         super(message);
     }
 }
