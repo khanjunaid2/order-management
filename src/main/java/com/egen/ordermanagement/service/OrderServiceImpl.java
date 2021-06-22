@@ -1,16 +1,13 @@
 package com.egen.ordermanagement.service;
 
-import com.egen.ordermanagement.exception.OrderNotFoundException;
 import com.egen.ordermanagement.entity.Order;
 import com.egen.ordermanagement.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.awt.print.Pageable;
 import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
@@ -40,10 +37,7 @@ public class OrderServiceImpl implements OrderService{
     @Transactional(readOnly = true)
     public Order getOrderById(String id) {
         Optional<Order> order = repository.findById(id);
-        if(!order.isPresent())
-            throw new OrderNotFoundException("Order with id: "+id+" NOT FOUND");
-        else
-            return order.get();
+        return order.get();
     }
 
     @Transactional
@@ -70,19 +64,13 @@ public class OrderServiceImpl implements OrderService{
     @Override
     public void delete(String id) {
         Optional<Order> order = repository.findById(id);
-        if(!order.isPresent())
-            throw new OrderNotFoundException("Order with id: "+id+" doesn't exist");
-        else
-            repository.delete(order.get());
+        repository.delete(order.get());
     }
 
     @Transactional
     @Override
     public Order update(String id, Order order) {
         Optional<Order> orderObj = repository.findById(id);
-        if(!orderObj.isPresent())
-            throw new OrderNotFoundException("Order with id: "+id+" doesn't exist");
-        else
-            return repository.save(order);
+        return repository.save(order);
     }
 }

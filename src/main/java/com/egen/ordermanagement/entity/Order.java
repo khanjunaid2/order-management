@@ -56,7 +56,7 @@ public class Order {
         this.id = UUID.randomUUID().toString();
     }
 
-    public OrderStatus getOrderStatus() {
+    public OrderStatus getOrderStatus(OrderStatus ordered) {
         return orderStatus;
     }
 
