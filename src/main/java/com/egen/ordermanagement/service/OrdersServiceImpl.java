@@ -2,11 +2,14 @@ package com.egen.ordermanagement.service;
 
 import com.egen.ordermanagement.dto.OrderDto;
 import com.egen.ordermanagement.enums.OrderStatus;
+import com.egen.ordermanagement.enums.ShipmentMethod;
 import com.egen.ordermanagement.exceptions.OrderServiceException;
 import com.egen.ordermanagement.model.Address;
 import com.egen.ordermanagement.model.Item;
 import com.egen.ordermanagement.model.Orders;
+import com.egen.ordermanagement.model.Payment;
 import com.egen.ordermanagement.repository.OrdersRepo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -101,24 +104,36 @@ public class OrdersServiceImpl implements OrdersService {
 
         //Creates new order, payemnt and address details based on the previoud values.
         if (existingCustomer) {
-            cust_id = orderDto.getCustomerId();
-            new_order = new Orders(cust_id, date_ordered, delivery_date, orderDto.getItemQuantity(), sub_total, tax,
-                    shippingCharges, total, OrderStatus.PLACED, orderDto.getShipmentMethod(), orderDto.getShippingAddress());
+            List<Payment> payments = new ArrayList<>();
+            Address shippingAddress = new Address();
+            Address billingAddress = new Address();
+            int itemQuantity=0;
+
+            for(int i=0;i<orderDto.getPayments().size();i++)
+            BeanUtils.copyProperties(orderDto.getPayments().get(i),payments.add(orderDto.getPayments().get(i)));
+
+            BeanUtils.copyProperties(orderDto.getCustomerId(),cust_id);
+            BeanUtils.copyProperties(orderDto.getShippingAddress(),shippingAddress);
+            BeanUtils.copyProperties(orderDto.getBillingAddress(),billingAddress);
+            BeanUtils.copyProperties(orderDto.getItemQuantity(),itemQuantity);
+
+
+            new_order = new Orders(cust_id, date_ordered, delivery_date, itemQuantity, sub_total, tax,
+                    shippingCharges, total, OrderStatus.PLACED, orderDto.getShipmentMethod(), shippingAddress);
             ordersRepo.save(new_order);
 
             //If billing address is same as shipping then avoid duplicate address
             //Creating payment based on the result of isBillingSameAsShippingAddress()
             if (orderDto.isBillingSameAsShippingAddress()) {
-                Address address = addressService.createAddress(orderDto.getShippingAddress());
-                paymentService.createPayment(orderDto.getPayments(), address, new_order);
+                Address address = addressService.createAddress(shippingAddress);
+                paymentService.createPayment(payments, address, new_order);
             } else {
-                new_order = new Orders(cust_id, date_ordered, delivery_date, orderDto.getItemQuantity(), sub_total, tax,
+                new_order = new Orders(cust_id, date_ordered, delivery_date, itemQuantity, sub_total, tax,
                         shippingCharges, total, OrderStatus.PLACED, orderDto.getShipmentMethod(),
-                        orderDto.getShippingAddress());
-
-                addressService.createAddress(orderDto.getShippingAddress());
-                Address billingAddress = addressService.createAddress(orderDto.getBillingAddress());
-                paymentService.createPayment(orderDto.getPayments(), billingAddress, new_order);
+                        shippingAddress);
+                addressService.createAddress(shippingAddress);
+                Address billing = addressService.createAddress(billingAddress);
+                paymentService.createPayment(payments, billing, new_order);
             }
         }
         //Updates Order_id in item table

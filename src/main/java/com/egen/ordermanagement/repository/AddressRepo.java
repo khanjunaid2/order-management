@@ -9,5 +9,4 @@ import java.util.Optional;
 
 @Repository
 public interface AddressRepo extends JpaRepository<Address,Long> {
-    boolean findByAddressLine1(String addressLine1);
 }
