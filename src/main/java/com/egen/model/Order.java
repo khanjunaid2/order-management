@@ -2,7 +2,9 @@ package com.egen.model;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "orders")
@@ -19,12 +21,12 @@ public class Order {
     @Column(name = "orders_status")
     private OrderStatus status;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "customer_id",referencedColumnName = "customer_id")
     public Customer customer;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "orders")
-    public List<Items> items;
+    @OneToMany(cascade = {CascadeType.ALL},fetch = FetchType.EAGER, mappedBy = "orders")
+    public Set<Items> items = new HashSet<>();
 
     @Column(name = "orders_subtotal")
     private double subtotal;
@@ -44,18 +46,18 @@ public class Order {
     @Column(name = "orders_modified_date")
     private Timestamp modifiedDate;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "orders")
-    public List<Payment> payment;
+    @OneToMany(cascade = {CascadeType.ALL},fetch = FetchType.EAGER, mappedBy = "orders")
+    public Set<Payment> payment = new HashSet<>();;
 
     @Column(name = "orders_shipping_method")
     private ShippingMethod shippingMethod;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(cascade = {CascadeType.ALL},fetch = FetchType.EAGER)
     public Address shippingAddress;
 
     public Order(){}
 
-    public Order(OrderStatus status, List<Items> items, double tax, double shippingCharges, Timestamp createdDate, Timestamp modifiedDate, List<Payment> payment, ShippingMethod shippingMethod, Address shippingAddress) {
+    public Order(OrderStatus status, Set<Items> items, double tax, double shippingCharges, Timestamp createdDate, Timestamp modifiedDate, Set<Payment> payment, ShippingMethod shippingMethod, Address shippingAddress) {
         this.status = status;
         this.items = items;
         this.tax = tax;
@@ -83,17 +85,25 @@ public class Order {
         this.status = status;
     }
 
-    public List<Items> getItems() {
+    public Set<Items> getItems() {
         return items;
     }
 
-    public void setItems(List<Items> items) {
+    public void setItems(Set<Items> items) {
         this.items = items;
+    }
+
+    public void setSubtotal(double subtotal) {
+        this.subtotal = getSubtotal();
+    }
+
+    public void setTotal(double total) {
+        this.total = getTotal();
     }
 
     public double getSubtotal() {
         double subtotal=0.0d;
-        List<Items> items=getItems();
+        Set<Items> items=getItems();
         for(Items item: items) {
             subtotal=subtotal + ((item.getCost())* (item.getQuantity()));
         }
@@ -136,11 +146,11 @@ public class Order {
         this.modifiedDate = modifiedDate;
     }
 
-    public List<Payment> getPayment() {
+    public Set<Payment> getPayment() {
         return payment;
     }
 
-    public void setPayment(List<Payment> payment) {
+    public void setPayment(Set<Payment> payment) {
         this.payment = payment;
     }
 

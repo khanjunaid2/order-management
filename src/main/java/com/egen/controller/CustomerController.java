@@ -1,7 +1,11 @@
 package com.egen.controller;
 
+import com.egen.dto.CustomerDTO;
 import com.egen.model.Customer;
 import com.egen.model.Order;
+import com.egen.response.Response;
+import com.egen.response.ResponseMetadata;
+import com.egen.response.StatusMessage;
 import com.egen.service.CustomerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -21,35 +25,72 @@ public class CustomerController {
 
     @GetMapping("customer")
     @ApiOperation(value = "Find all customer",notes = "Returns list of all customer")
-    public ResponseEntity<List<Customer>> getAllCustomers(){
-        return ResponseEntity.ok(customerService.findAll());
+    public Response<List<Customer>> getAllCustomers(){
+
+        List<Customer> customerList= customerService.findAll();
+
+        return customerList.isEmpty() == Boolean.FALSE ?
+                Response.<List<Customer>>builder()
+                        .meta(ResponseMetadata.builder()
+                                .statusCode(200)
+                                .statusMessage(StatusMessage.SUCCESS.name()).build())
+                        .data(customerList)
+                        .build()
+                :
+                Response.<List<Customer>>builder()
+                        .meta(ResponseMetadata.builder()
+                                .statusCode(200)
+                                .statusMessage(StatusMessage.UNKNOWN_INTERNAL_ERROR.name()).build())
+                        .data(null)
+                        .build();
     }
+
 
     @GetMapping("customer/{id}")
     @ApiOperation(value = "Find customer by id",notes = "Returns customer using customer id")
-    public ResponseEntity<Customer> getCustomerById(@PathVariable("id") long id){
+    public Response<Customer> getCustomerById(@PathVariable("id") long id){
         Customer cust = customerService.getById(id);
-        return ResponseEntity.ok(cust);
+        return Response.<Customer>builder()
+                .meta(ResponseMetadata.builder()
+                        .statusCode(200)
+                        .statusMessage(StatusMessage.SUCCESS.name()).build())
+                .data(cust)
+                .build();
     }
 
     @PostMapping("customer")
     @ApiOperation(value = "Create customer",notes = "Insert new customer data")
-    public ResponseEntity<Customer> create(@RequestBody Customer cust){
+    public Response<Customer> create(@RequestBody Customer cust){
         Customer obj = customerService.create(cust);
-        return ResponseEntity.ok(obj);
+        return  Response.<Customer>builder()
+                .meta(ResponseMetadata.builder()
+                        .statusCode(200)
+                        .statusMessage(StatusMessage.SUCCESS.name()).build())
+                .data(obj)
+                .build();
     }
 
 
     @DeleteMapping("customer/{id}")
     @ApiOperation(value = "Delete customer",notes = "Remove customer data")
-    public ResponseEntity delete(@PathVariable("id") long id){
+    public Response<String> delete(@PathVariable("id") long id){
         customerService.delete(id);
-        return (ResponseEntity) ResponseEntity.ok();
+        return Response.<String>builder()
+                .meta(ResponseMetadata.builder()
+                        .statusCode(200)
+                        .statusMessage(StatusMessage.UNKNOWN_INTERNAL_ERROR.name()).build())
+                .data("Customer deleted")
+                .build();
     }
 
     @PutMapping("customer/{id}")
     @ApiOperation(value = "Update customer",notes = "Update customer data")
-    public ResponseEntity<Customer> update(@PathVariable("id") long id,  @RequestBody Customer cust){
-        return  ResponseEntity.ok(customerService.update(cust));
+    public Response<Customer> update(@PathVariable("id") long id,  @RequestBody Customer cust){
+        return   Response.<Customer>builder()
+                .meta(ResponseMetadata.builder()
+                        .statusCode(200)
+                        .statusMessage(StatusMessage.SUCCESS.name()).build())
+                .data(customerService.update(cust))
+                .build();
     }
 }

@@ -12,16 +12,11 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 @SpringBootApplication
-public class AppConfig extends WebMvcConfigurationSupport {
+public class AppConfig {
 
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(AppConfig.class);
         app.run();
-    }
-	//TODO: override addCorsMappings Method to allow cross origin request to API
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedOrigins("*");
     }
 
 }

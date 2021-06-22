@@ -25,8 +25,8 @@ public class Items {
     @Column(name = "items_cost")
     private double cost;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "orders_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "orders_id", nullable = false, updatable = true, insertable = true)
     public Order orders;
 
     public Items(String name, double quantity, double cost) {
@@ -69,11 +69,8 @@ public class Items {
         this.quantity = quantity;
     }
 
-    public Order getOrders() {
-        return orders;
-    }
-
     public void setOrders(Order orders) {
         this.orders = orders;
     }
+
 }

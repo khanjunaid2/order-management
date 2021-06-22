@@ -37,10 +37,10 @@ public class AddressService {
     }
 
     public Address create(Address add) {
-        Optional<Address> existing = repo.findById(add.getId());
+       /* Optional<Address> existing = repo.findById(add.getId());
         if(!existing.isPresent()) {
             throw new BadRequestException("Address with id " + add.getId() + "already exists");
-        }
+        }*/
         return repo.save(add);
     }
 

@@ -2,17 +2,22 @@ package com.egen.service;
 
 import com.egen.exception.BadRequestException;
 import com.egen.exception.ResourceNotFoundException;
+import com.egen.model.Address;
 import com.egen.model.Items;
 import com.egen.model.Order;
 import com.egen.model.Payment;
 import com.egen.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class OrderService {
@@ -65,19 +70,16 @@ public class OrderService {
     public Order placeOrder(Order order){
 
         //create items
-        List<Items> item=order.getItems();
+       Set<Items> item=order.getItems();
         for(Items it : item) {
-            itemsService.create(it);
+            Items items = new Items();
         }
 
         //create payment method
-        List<Payment> paymentsList = order.getPayment();
+        Set<Payment> paymentsList = order.getPayment();
         for(Payment paymnt : paymentsList) {
-            paymentService.create(paymnt);
+            paymnt.setOrders(order);
         }
-
-        //create address
-        addressService.create(order.getShippingAddress());
 
         Order existing = orderRepositoryImpl.save(order);
         if(existing == null) {
@@ -98,25 +100,22 @@ public class OrderService {
     @Transactional
     public Order updateOrder(Order order){
 
-        //create items
-        List<Items> item=order.getItems();
-        for(Items it : item) {
-            itemsService.update(it);
-        }
-
-        //create payment method
-        List<Payment> paymentsList = order.getPayment();
-        for(Payment paymnt : paymentsList) {
-            paymentService.update(paymnt);
-        }
-
-        //create address
-        addressService.update(order.getShippingAddress());
-
         Order existing = orderRepositoryImpl.save(order);
         if(existing == null) {
             throw new ResourceNotFoundException("Order with id " + order.getId() + "does not exist");
         }
         return order;
+    }
+
+    @Transactional
+    public List<Order> getAllOrdersByPaginationAndSorting(int pageNum, int pageSize, String sortBy) {
+
+        Page<Order> pagedOrders = (Page<Order>) orderRepositoryImpl.findAll(PageRequest.of(pageNum, pageSize, Sort.by(sortBy)));
+
+        if (!pagedOrders.hasContent()) {
+            throw new ResourceNotFoundException("Order does not exist");
+        }
+
+         return pagedOrders.getContent();
     }
 }

@@ -36,16 +36,16 @@ public class ItemsService {
     @Transactional
     public Items create(Items item){
         Optional<Items> existing = itemRepositoryImpl.findById(item.getId());
-        if(!existing.isPresent()) {
+       /* if(!existing.isPresent()) {
             throw new BadRequestException("Items with id " + item.getId() + "already exists");
-        }
+        }*/
         return itemRepositoryImpl.save(item);
     }
 
     @Transactional
     public Items update(Items item){
         Optional<Items> existing = itemRepositoryImpl.findById(item.getId());
-        if(!existing.isPresent()) {
+       if(!existing.isPresent()) {
             throw new BadRequestException("Items with id " + item.getId() + "does not exists");
         }
         return itemRepositoryImpl.save(item);

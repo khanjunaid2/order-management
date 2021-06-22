@@ -35,10 +35,10 @@ public class PaymentService {
 
     @Transactional
     public Payment create(Payment payment){
-        Optional<Payment> existing = paymentRepositoryImpl.findById(payment.getId());
+        /*Optional<Payment> existing = paymentRepositoryImpl.findById(payment.getId());
         if(!existing.isPresent()) {
             throw new BadRequestException("Payment with id " + payment.getId() + "already exists");
-        }
+        }*/
         return paymentRepositoryImpl.save(payment);
     }
 

@@ -3,7 +3,9 @@ package com.egen.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "customer", indexes = {
@@ -33,14 +35,14 @@ public class Customer {
     private String phoneNumber;
 
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
+    @OneToMany(cascade = {CascadeType.ALL},fetch = FetchType.EAGER, mappedBy = "customer")
     @JsonIgnore
-    public List<Order> orders;
+    public Set<Order> orders = new HashSet<>();
 
     public Customer() {
     }
 
-    public Customer(String firstName, String lastName, String email, String phoneNumber, List<Order> orders) {
+    public Customer(String firstName, String lastName, String email, String phoneNumber, Set<Order> orders) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -88,11 +90,11 @@ public class Customer {
         this.phoneNumber = phoneNumber;
     }
 
-    public List<Order> getOrders() {
+    public Set<Order> getOrders() {
         return orders;
     }
 
-    public void setOrders(List<Order> orders) {
+    public void setOrders(Set<Order> orders) {
         this.orders = orders;
     }
 }

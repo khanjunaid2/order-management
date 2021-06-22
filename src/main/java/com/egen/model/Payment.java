@@ -27,9 +27,13 @@ public class Payment {
     @OneToOne(cascade = {CascadeType.ALL})
     public Address billingAddress;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "orders_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "orders_id", nullable = false, updatable = true, insertable = true)
     public Order orders;
+
+    public void setOrders(Order orders) {
+        this.orders = orders;
+    }
 
     public Payment(PaymentMethod paymentMethod, long cardNumber, long paymentConfirmationNumber, Address billingAddress) {
         this.paymentConfirmationNumber = paymentConfirmationNumber;

@@ -1,6 +1,9 @@
 package com.egen.repository;
 
 import com.egen.model.Order;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -18,4 +21,5 @@ public interface OrderRepository extends CrudRepository<Order,Long> {
     public List<Order> findTop10OrdersWithHighestDollarAmountInZip(@Param("paramZip") String paramZip);
     @Query("SELECT ord FROM Order ord  WHERE ord.createdDate BETWEEN :ordStartTime AND :ordEndTime")
     public List<Order> getAllOrdersWithInInterval(@Param("ordStartTime") Timestamp ordStartTime, @Param("ordEndTime") Timestamp ordEndTime);
+    Page<Order> findAll(Pageable pageable);
 }
