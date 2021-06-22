@@ -83,6 +83,8 @@ public class OrderServiceImplementation implements OrderService{
     public List<OrdersDto> getAllOrdersWithInInterval(Timestamp startTime, Timestamp endTime) {
         List<Orders> ordersList = orderRepository.findOrdersByCreatedAtBetween(startTime, endTime);
 
+        if(ordersList.isEmpty())
+            throw new OrderNotFoundException("Orders Not Present");
         List<OrdersDto> ordersDtoList = new ArrayList<>();
         ordersList.forEach(orders -> {
             ordersDtoList.add(ordersMappers.mapToDto(orders));
@@ -94,7 +96,8 @@ public class OrderServiceImplementation implements OrderService{
     @Transactional
     public List<OrdersDto> top10OrdersWithHighestDollarAmountInZip(String zip) {
         List<Orders> ordersList = orderRepository.findTop10OrdersWithHighestDollarAmountInZip(zip);
-
+        if(ordersList.isEmpty())
+            throw new OrderNotFoundException("Orders Not Present");
         List<OrdersDto> ordersDtoList = new ArrayList<>();
         ordersList.forEach(orders -> {
             ordersDtoList.add(ordersMappers.mapToDto(orders));
