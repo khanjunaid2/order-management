@@ -14,9 +14,19 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
+    //Get all orders without Pagination
     @RequestMapping(method= RequestMethod.GET)
-    public List<Order> getAllOrders(){
+    public List<Order> getAllOrders()
+    {
         return orderService.getAllOrders();
+    }
+
+    //Get all orders with Pagination
+    @RequestMapping(method= RequestMethod.GET,value="/all/{pageNo}/{pageSize}")
+    public List<Order> getPaginatedCountries(@PathVariable int pageNo,
+                                               @PathVariable int pageSize) {
+
+        return orderService.getAllOrders(pageNo, pageSize);
     }
 
     @RequestMapping(method = RequestMethod.GET, value="/id/{id}")

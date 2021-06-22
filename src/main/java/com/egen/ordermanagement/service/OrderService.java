@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface OrderService {
     List<Order> getAllOrders();
+    List<Order> getAllOrders(int pageNo, int pageSize);
     Order getOrderById(String id);
     List<Order> getAllOrdersWithinInterval(String startTime, String endTime);
     List<Order> getTop10OrdersWithHighestDollarAmountInZip(String zip);

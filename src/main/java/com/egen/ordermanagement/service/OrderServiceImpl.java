@@ -4,9 +4,13 @@ import com.egen.ordermanagement.exception.OrderNotFoundException;
 import com.egen.ordermanagement.entity.Order;
 import com.egen.ordermanagement.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.awt.print.Pageable;
 import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +25,15 @@ public class OrderServiceImpl implements OrderService{
     @Transactional(readOnly = true)
     public List<Order> getAllOrders() {
         return (List<Order>) repository.findAll();
+    }
+
+    @Override
+    public List<Order> getAllOrders(int pageNo, int pageSize) {
+
+        PageRequest paging = PageRequest.of(pageNo, pageSize);
+        Page<Order> pagedResult = repository.findAll(paging);
+
+        return pagedResult.toList();
     }
 
     @Override
