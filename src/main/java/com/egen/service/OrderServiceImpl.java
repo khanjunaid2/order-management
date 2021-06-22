@@ -10,6 +10,7 @@ import com.egen.model.Payment;
 import com.egen.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import uk.co.jemos.podam.api.AttributeMetadata;
 import uk.co.jemos.podam.api.DefaultClassInfoStrategy;
 import uk.co.jemos.podam.api.PodamFactory;
@@ -26,17 +27,20 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Service
+
 public class OrderServiceImpl implements OrderService{
 
     @Autowired
     private OrderRepository orderRepo;
 
     @Override
+    @Transactional(readOnly = true)
     public List<Order> getAllOrders() {
         return orderRepo.getAllOrders();
     }
 
     @Override
+    @Transactional
     public Order getOrderById(String orderId) {
         try{
             return orderRepo.getOrderById(orderId);
@@ -47,11 +51,13 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
+    @Transactional
     public List<Order> getAllOrdersWithInInterval(Timestamp startTime, Timestamp endTime) {
         return orderRepo.getAllByCreatedAtBetween(startTime,endTime);
     }
 
     @Override
+    @Transactional
     public List<Order> top10OrdersWithHighestDollarAmountInZip(String zip) {
         List<Order> orders = orderRepo.getAllOrders();
         List<Order> groceryOrdersInZip = new LinkedList<>();
@@ -72,11 +78,13 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
+    @Transactional
     public Order saveOrder(Order order) {
         return orderRepo.save(order);
     }
 
     @Override
+    @Transactional
     public Order cancelOrder(Order order) {
         Order order1 = orderRepo.getOrderById(order.getId());
         order1.setOrderStatus(OrderStatus.CANCEL);
@@ -84,11 +92,13 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
+    @Transactional
     public Order updateOrder(Order order) {
         return orderRepo.save(order);
     }
 
     @Override
+    @Transactional
     public String createRandomOrders(int num){
         PodamFactory factory = new PodamFactoryImpl();
         TypeManufacturer<Integer> manufacturer = new IntTypeManufacturerImpl() {
