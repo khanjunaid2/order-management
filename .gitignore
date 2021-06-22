@@ -5,5 +5,4 @@ mvnw
 mvnw.cmd
 *.iml
 target/
-src/test
 pom.xml
