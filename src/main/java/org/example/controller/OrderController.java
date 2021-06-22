@@ -55,4 +55,9 @@ public class OrderController {
     public ResponseEntity<CustomerOrder> updateOrder(@RequestBody CustomerOrder order){
         return new ResponseEntity<>(service.updateOrder(order), HttpStatus.OK);
     }
+
+    @GetMapping(value = "/pagination", params = {"pageNumber", "pageSize", "sortBy"})
+    public ResponseEntity<List<CustomerOrder>> getAllOrdersWithPaginationAndSorted(@RequestParam(defaultValue = "0") int pageNumber, @RequestParam(defaultValue = "5") int pageSize, @RequestParam(defaultValue = "orderCreated") String sortBy){
+        return new ResponseEntity<>(service.getAllOrdersWithPaginationAndSorted(pageNumber, pageSize, sortBy), HttpStatus.OK);
+    }
 }

@@ -5,8 +5,13 @@ import org.example.enums.OrderStatus;
 import org.example.exception.InternalServerException;
 import org.example.exception.OrderServiceException;
 import org.example.repository.OrderRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -14,6 +19,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class OrderServiceImpl implements OrderService {
 
     private OrderRepository orderRepository;
@@ -21,6 +27,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderServiceImpl(OrderRepository orderRepository){
         this.orderRepository = orderRepository;
     }
+
 
     @Override
     public List<CustomerOrder> getAllOrders() {
@@ -128,4 +135,24 @@ public class OrderServiceImpl implements OrderService {
             throw new OrderServiceException("Order Service Exception Occurred while deleting the order");
         }
     }
+
+    @Override
+    public List<CustomerOrder> getAllOrdersWithPaginationAndSorted(int pageNumber, int pageSize, String sortBy) {
+        try{
+            Page<CustomerOrder> page = orderRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("orderCreated")));
+
+            if(page.hasContent()){
+                return page.getContent();
+            }
+            else{
+                throw new OrderServiceException("No Orders found for the given date");
+            }
+        }
+        catch (OrderServiceException orderServiceException){
+            System.out.println("Failed to get the Order's");
+            throw new OrderServiceException("Order Service Exception Occurred");
+        }
+    }
+
+
 }

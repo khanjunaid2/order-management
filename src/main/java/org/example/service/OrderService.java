@@ -22,4 +22,5 @@ public interface OrderService {
 
     public CustomerOrder cancelOrder(String id);
 
+    public List<CustomerOrder> getAllOrdersWithPaginationAndSorted(int pageNumber, int pageSize, String sortBy);
 }
