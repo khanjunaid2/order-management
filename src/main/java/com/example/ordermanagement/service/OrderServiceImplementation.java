@@ -1,9 +1,13 @@
 package com.example.ordermanagement.service;
 
+import com.example.ordermanagement.DTO.OrdersDto;
+import com.example.ordermanagement.enums.DeliveryMethod;
 import com.example.ordermanagement.enums.OrderStatus;
 import com.example.ordermanagement.exceptions.OrderNotFoundException;
+import com.example.ordermanagement.mappers.OrdersMappers;
 import com.example.ordermanagement.models.Orders;
 import com.example.ordermanagement.repository.OrderRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,71 +28,112 @@ public class OrderServiceImplementation implements OrderService{
     @Autowired
     OrderRepository orderRepository;
 
+    @Autowired
+    ModelMapper modelMapper;
+
+    @Autowired
+    OrdersMappers ordersMappers;
+
     @Override
     @Transactional
-    public List<Orders> getAllOrders() {
+    public List<OrdersDto> getAllOrders() {
         List<Orders> ordersList = (List<Orders>) orderRepository.findAll();
-        return ordersList;
+        List<OrdersDto> ordersDtoList = new ArrayList<>();
+        ordersList.forEach(orders -> {
+            ordersDtoList.add(ordersMappers.mapToDto(orders));
+        });
+//        for(Orders order : ordersList){
+//            OrdersDto ordersResponse = ordersMappers.mapToDto(order);
+//            ordersDtoList.add(ordersResponse);
+//        }
+
+        return ordersDtoList;
     }
 
     @Override
-    public List<Orders> getAllOrdersByPagingAndSorting(Integer pageNo, Integer pageSize, String sortBy) {
+    public List<OrdersDto> getAllOrdersByPagingAndSorting(Integer pageNo, Integer pageSize, String sortBy) {
         Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by("totalAmount").ascending());
         Page<Orders> pagedResult = orderRepository.findAll(paging);
         if(!pagedResult.hasContent())
             throw new OrderNotFoundException("Orders Not Found");
-        else
-            return pagedResult.toList();
+        else{
+            List<Orders> ordersList = pagedResult.toList();
+            List<OrdersDto> ordersDtoList = new ArrayList<>();
+            ordersList.forEach(orders -> {
+                ordersDtoList.add(ordersMappers.mapToDto(orders));
+            });
+
+            return ordersDtoList;
+        }
+           // return pagedResult.toList();
 
     }
 
     @Override
     @Transactional
-    public Orders getOrderById(String id) {
+    public OrdersDto getOrderById(String id) {
         Optional<Orders> order = orderRepository.findById(id);
         if(!order.isPresent())
             throw new OrderNotFoundException("Order with " + id + "Not Found");
-        return order.get();
+        return ordersMappers.mapToDto(order.get());
     }
 
     @Override
     @Transactional
-    public List<Orders> getAllOrdersWithInInterval(Timestamp startTime, Timestamp endTime) {
+    public List<OrdersDto> getAllOrdersWithInInterval(Timestamp startTime, Timestamp endTime) {
         List<Orders> ordersList = orderRepository.findOrdersByCreatedAtBetween(startTime, endTime);
 
-        return ordersList;
+        List<OrdersDto> ordersDtoList = new ArrayList<>();
+        ordersList.forEach(orders -> {
+            ordersDtoList.add(ordersMappers.mapToDto(orders));
+        });
+        return ordersDtoList;
     }
 
     @Override
     @Transactional
-    public List<Orders> top10OrdersWithHighestDollarAmountInZip(String zip) {
+    public List<OrdersDto> top10OrdersWithHighestDollarAmountInZip(String zip) {
         List<Orders> ordersList = orderRepository.findTop10OrdersWithHighestDollarAmountInZip(zip);
-        return ordersList;
+
+        List<OrdersDto> ordersDtoList = new ArrayList<>();
+        ordersList.forEach(orders -> {
+            ordersDtoList.add(ordersMappers.mapToDto(orders));
+        });
+        return ordersDtoList;
     }
 
     @Override
     @Transactional
-    public Orders placeOrder(Orders orders) {
-        return orderRepository.save(orders);
+    public OrdersDto placeOrder(OrdersDto ordersDto) {
+
+        //Convert DTO to entity
+        Orders orders = ordersMappers.mapToEntity(ordersDto);
+        Orders newOrders = orderRepository.save(orders);
+
+        //convert entity to dto
+        OrdersDto ordersResponse = ordersMappers.mapToDto(newOrders);
+        return ordersResponse;
     }
 
     @Override
     @Transactional
-    public Orders cancelOrder(String id) {
+    public OrdersDto cancelOrder(String id) {
         Optional<Orders> order = orderRepository.findById(id);
         if(!order.isPresent())
             throw new OrderNotFoundException("Order with " + id + "Not Found");
         order.get().setOrderStatus(OrderStatus.CANCELED);
-        return orderRepository.save(order.get());
+        return ordersMappers.mapToDto(orderRepository.save(order.get()));
     }
 
     @Override
     @Transactional
-    public Orders updateOrder(Orders orders, String id) {
+    public OrdersDto updateOrder(Orders orders, String id) {
         Optional<Orders> order = orderRepository.findById(id);
         if(!order.isPresent())
             throw new OrderNotFoundException("Order with " + id + "Not Found");
-        order.get().setOrderStatus(OrderStatus.CANCELED);
-        return orderRepository.save(order.get());
+        order.get().setOrderStatus(OrderStatus.UPDATED);
+        order.get().setDeliveryMethod(DeliveryMethod.IN_STORE_PICKUP);
+        return ordersMappers.mapToDto(orderRepository.save(order.get()));
     }
+
 }
