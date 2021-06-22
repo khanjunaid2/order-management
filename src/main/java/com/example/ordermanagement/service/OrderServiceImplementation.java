@@ -7,6 +7,7 @@ import com.example.ordermanagement.exceptions.OrderNotFoundException;
 import com.example.ordermanagement.mappers.OrdersMappers;
 import com.example.ordermanagement.models.Orders;
 import com.example.ordermanagement.repository.OrderRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
+@Slf4j
 @Service
 public class OrderServiceImplementation implements OrderService{
 
@@ -37,17 +38,25 @@ public class OrderServiceImplementation implements OrderService{
     @Override
     @Transactional
     public List<OrdersDto> getAllOrders() {
-        List<Orders> ordersList = (List<Orders>) orderRepository.findAll();
-        List<OrdersDto> ordersDtoList = new ArrayList<>();
-        ordersList.forEach(orders -> {
-            ordersDtoList.add(ordersMappers.mapToDto(orders));
-        });
+        try{
+            List<Orders> ordersList = orderRepository.findAll();
+            if(ordersList.isEmpty())
+                throw new OrderNotFoundException("Orders Not Present");
+            List<OrdersDto> ordersDtoList = new ArrayList<>();
+            ordersList.forEach(orders -> {
+                ordersDtoList.add(ordersMappers.mapToDto(orders));
+            });
 //        for(Orders order : ordersList){
 //            OrdersDto ordersResponse = ordersMappers.mapToDto(order);
 //            ordersDtoList.add(ordersResponse);
 //        }
 
-        return ordersDtoList;
+            return ordersDtoList;
+        } catch (Exception e){
+            log.error("Error finding all orders");
+            throw new OrderNotFoundException("Failed to fetch all orders");
+        }
+
     }
 
     @Override
