@@ -1,7 +1,9 @@
 package com.egen.ordermanagment.controller;
 
 import com.egen.ordermanagment.dto.OrdersDTO;
-import com.egen.ordermanagment.model.Orders;
+import com.egen.ordermanagment.response.Response;
+import com.egen.ordermanagment.response.ResponseMetadata;
+import com.egen.ordermanagment.response.StatusMessage;
 import com.egen.ordermanagment.services.OrderService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,11 +38,17 @@ public class OrderController {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 404, message = "No orders found"),
             @ApiResponse(code = 500, message = "Error while retrieving all orders") })
-    public ResponseEntity<List<OrdersDTO>> getAllOrders(
+    public Response<List<OrdersDTO>> getAllOrders(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(defaultValue = "orderCreated") String sortBy) {
-        return new ResponseEntity<>(service.findAll(page, size, sortBy), HttpStatus.OK);
+//        return new ResponseEntity<>(service.findAll(page, size, sortBy), HttpStatus.OK);
+        return Response.<List<OrdersDTO>>builder()
+                .meta(ResponseMetadata.builder()
+                        .statusCode(200)
+                        .statusMessage(StatusMessage.SUCCESS.name()).build())
+                .data(service.findAll(page, size, sortBy))
+                .build();
     }
 
     /**
@@ -55,9 +63,15 @@ public class OrderController {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 404, message = "No orders found"),
             @ApiResponse(code = 500, message = "Error while retrieving order with provided Id") })
-    public ResponseEntity<OrdersDTO> getOrderById(
+    public Response<OrdersDTO> getOrderById(
             @ApiParam(value = "Order Id", required = true) @PathVariable("id") String id){
-        return new ResponseEntity<>(service.findOne(id), HttpStatus.OK);
+//        return new ResponseEntity<>(service.findOne(id), HttpStatus.OK);
+        return Response.<OrdersDTO>builder()
+                .meta(ResponseMetadata.builder()
+                        .statusCode(200)
+                        .statusMessage(StatusMessage.SUCCESS.name()).build())
+                .data(service.findOne(id))
+                .build();
     }
 
     /**
@@ -73,10 +87,16 @@ public class OrderController {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 404, message = "No orders found"),
             @ApiResponse(code = 500, message = "Error while retrieving orders") })
-    public ResponseEntity<List<OrdersDTO>> getAllOrdersWithInInterval(
+    public Response<List<OrdersDTO>> getAllOrdersWithInInterval(
             @ApiParam(value = "Order created date from", required = true) @RequestParam(name = "startTime") Timestamp startTime,
             @ApiParam(value = "order created date to", required = true) @RequestParam(name = "endTime") Timestamp endTime){
-        return new ResponseEntity<>(service.findWithinInterval(startTime,endTime), HttpStatus.OK);
+//        return new ResponseEntity<>(service.findWithinInterval(startTime,endTime), HttpStatus.OK);
+        return Response.<List<OrdersDTO>>builder()
+                .meta(ResponseMetadata.builder()
+                        .statusCode(200)
+                        .statusMessage(StatusMessage.SUCCESS.name()).build())
+                .data(service.findWithinInterval(startTime,endTime))
+                .build();
     }
 
     /**
@@ -91,9 +111,15 @@ public class OrderController {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 404, message = "No orders found"),
             @ApiResponse(code = 500, message = "Error while retrieving orders") })
-    public ResponseEntity<List<OrdersDTO>> top10OrdersWithHighestDollarAmountInZip(
+    public Response<List<OrdersDTO>> top10OrdersWithHighestDollarAmountInZip(
             @ApiParam(value = "zipcode of customer who created order", required = true) @PathVariable("zip") String zip){
-        return new ResponseEntity<>(service.findTop10OrdersWithHighestDollarAmountInZip(zip), HttpStatus.OK);
+//        return new ResponseEntity<>(service.findTop10OrdersWithHighestDollarAmountInZip(zip), HttpStatus.OK);
+        return Response.<List<OrdersDTO>>builder()
+                .meta(ResponseMetadata.builder()
+                        .statusCode(200)
+                        .statusMessage(StatusMessage.SUCCESS.name()).build())
+                .data(service.findTop10OrdersWithHighestDollarAmountInZip(zip))
+                .build();
     }
 
     /**
@@ -107,8 +133,14 @@ public class OrderController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "created"),
             @ApiResponse(code = 500, message = "Error while retrieving orders") })
-    public ResponseEntity<OrdersDTO> placeOrder(@RequestBody OrdersDTO order) {
-        return new ResponseEntity<>(service.placeOrder(order), HttpStatus.CREATED);
+    public Response<OrdersDTO> placeOrder(@RequestBody OrdersDTO order) {
+//        return new ResponseEntity<>(service.placeOrder(order), HttpStatus.CREATED);
+        return Response.<OrdersDTO>builder()
+                .meta(ResponseMetadata.builder()
+                        .statusCode(200)
+                        .statusMessage(StatusMessage.SUCCESS.name()).build())
+                .data(service.placeOrder(order))
+                .build();
     }
 
     /**
@@ -123,8 +155,14 @@ public class OrderController {
             @ApiResponse(code = 200, message = "Ok"),
             @ApiResponse(code = 404, message = "No order found"),
             @ApiResponse(code = 500, message = "Error while retrieving order") })
-    public ResponseEntity<OrdersDTO> cancelOrder(@PathVariable("id") String id){
-        return new ResponseEntity<>(service.cancelOrder(id), HttpStatus.OK);
+    public Response<OrdersDTO> cancelOrder(@PathVariable("id") String id){
+        //        return new ResponseEntity<>(service.cancelOrder(id), HttpStatus.OK);
+        return Response.<OrdersDTO>builder()
+                .meta(ResponseMetadata.builder()
+                        .statusCode(200)
+                        .statusMessage(StatusMessage.SUCCESS.name()).build())
+                .data(service.cancelOrder(id))
+                .build();
     }
 
     /**
@@ -134,9 +172,21 @@ public class OrderController {
      * @return
      */
     @PutMapping("/update/{id}")
-    public ResponseEntity<OrdersDTO> updateOrder(@PathVariable("id") String id, @RequestBody OrdersDTO order){
-        return new ResponseEntity<>(service.updateOrder(id, order), HttpStatus.OK);
+    @ApiOperation(value = "",
+            notes = "Updates Order")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Order updated"),
+            @ApiResponse(code = 500, message = "Error while updating order") })
+    public Response<OrdersDTO> updateOrder(@PathVariable("id") String id, @RequestBody OrdersDTO order){
+//        return new ResponseEntity<>(service.updateOrder(id, order), HttpStatus.OK);
+        return Response.<OrdersDTO>builder()
+                .meta(ResponseMetadata.builder()
+                        .statusCode(200)
+                        .statusMessage(StatusMessage.SUCCESS.name()).build())
+                .data(service.updateOrder(id, order))
+                .build();
     }
+
 
 }
 

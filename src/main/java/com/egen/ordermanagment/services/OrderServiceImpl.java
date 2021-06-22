@@ -3,9 +3,9 @@ package com.egen.ordermanagment.services;
 import com.egen.ordermanagment.dto.OrdersDTO;
 import com.egen.ordermanagment.dtoModelMapper.OrderDTOMapper;
 import com.egen.ordermanagment.exception.OrderServiceException;
-import com.egen.ordermanagment.model.OrderStatus;
-import com.egen.ordermanagment.model.Orders;
+import com.egen.ordermanagment.model.*;
 import com.egen.ordermanagment.repository.OrderRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
