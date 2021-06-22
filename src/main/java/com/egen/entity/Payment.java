@@ -1,5 +1,7 @@
 package com.egen.entity;
 
+import com.egen.enums.PaymentMethod;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 
@@ -10,13 +12,14 @@ public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private String id;
+    private Long id;
 
     @Column(name = "comfirmation_number")
     private String confirmationNumber;
 
     @Column(name = "payment_method")
-    private String paymentMethod;
+    @Enumerated(value = EnumType.STRING)
+    private PaymentMethod paymentMethod;
 
     @Column(name = "payment_date")
     private Timestamp paymentDate;
@@ -29,11 +32,11 @@ public class Payment {
     @JoinColumn(name = "order_id", referencedColumnName = "id")
     private Order order;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -45,11 +48,11 @@ public class Payment {
         this.confirmationNumber = confirmationNumber;
     }
 
-    public String getPaymentMethod() {
+    public PaymentMethod getPaymentMethod() {
         return paymentMethod;
     }
 
-    public void setPaymentMethod(String paymentMethod) {
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
 
@@ -69,14 +72,23 @@ public class Payment {
         this.billingAddress = billingAddress;
     }
 
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
     @Override
     public String toString() {
         return "Payment{" +
-                "id='" + id + '\'' +
+                "id=" + id +
                 ", confirmationNumber='" + confirmationNumber + '\'' +
-                ", paymentMethod='" + paymentMethod + '\'' +
+                ", paymentMethod=" + paymentMethod +
                 ", paymentDate=" + paymentDate +
                 ", billingAddress=" + billingAddress +
+                ", order=" + order +
                 '}';
     }
 }

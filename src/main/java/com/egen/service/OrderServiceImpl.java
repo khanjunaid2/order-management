@@ -1,8 +1,10 @@
 package com.egen.service;
 
 import com.egen.entity.Order;
+import com.egen.entity.OrderItem;
 import com.egen.enums.OrderStatus;
 import com.egen.exception.OrderNotFoundException;
+import com.egen.repository.OrderItemRepository;
 import com.egen.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -27,7 +30,7 @@ public class OrderServiceImpl implements OrderService {
     public Order getOrderById(String orderId) {
         Optional<Order> order = orderRepository.findById(orderId);
         if (!order.isPresent()) {
-            throw new OrderNotFoundException(" Order with id: " + orderId + "NOT FOUND");
+            throw new OrderNotFoundException(" Order with id: " + orderId + " NOT FOUND");
         }
         return order.get();
     }
@@ -52,7 +55,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     public Order placeOrder(Order order) {
-        return orderRepository.save(order);
+        Order placed = orderRepository.save(order);
+        return placed;
     }
 
     @Transactional

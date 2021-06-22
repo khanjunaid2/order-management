@@ -11,9 +11,10 @@ public class Shipping {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private String id;
+    private Long id;
 
     @Column(name = "shipping_method")
+    @Enumerated(value = EnumType.STRING)
     private ShippingMethod shippingMethod;
 
     @Column(name = "shipping_charges")
@@ -23,11 +24,14 @@ public class Shipping {
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address shippingAddress;
 
-    public String getId() {
+    @OneToOne(mappedBy = "shipping")
+    private Order order;
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -55,13 +59,22 @@ public class Shipping {
         this.shippingAddress = shippingAddress;
     }
 
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
     @Override
     public String toString() {
         return "Shipping{" +
-                "id='" + id + '\'' +
+                "id=" + id +
                 ", shippingMethod=" + shippingMethod +
                 ", shippingCharges=" + shippingCharges +
                 ", shippingAddress=" + shippingAddress +
+                ", order=" + order +
                 '}';
     }
 }

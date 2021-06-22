@@ -1,42 +1,51 @@
 package com.egen.entity;
 
 import com.egen.enums.OrderStatus;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "order_table")
 public class Order {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name="system-uuid", strategy = "uuid")
     @Column(name = "id")
     private String id;
 
     @Column(name = "status")
+    @Enumerated(value = EnumType.STRING)
     private OrderStatus status;
 
     @Column(name = "customer_id")
     private String customerId;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
-    private List<OrderItem> orderItems;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = CascadeType.ALL)
+    private Set<OrderItem> orderItems;
 
     @Column(name = "total")
     private double total;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
-    private List<Payment> payments;
+    private Set<Payment> payments;
 
-    @Column(name = "shipping_id")
-    private String shippingId;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "shipping_id", referencedColumnName = "id")
+    private Shipping shipping;
 
     @Column(name = "data_created")
+    @CreationTimestamp
     private Timestamp dateCreated;
 
     @Column(name = "date_modified")
+    @UpdateTimestamp
     private Timestamp dateModified;
 
     public String getId() {
@@ -71,28 +80,20 @@ public class Order {
         this.total = total;
     }
 
-    public List<OrderItem> getOrderItems() {
+    public Set<OrderItem> getOrderItems() {
         return orderItems;
     }
 
-    public void setOrderItems(List<OrderItem> orderItems) {
+    public void setOrderItems(Set<OrderItem> orderItems) {
         this.orderItems = orderItems;
     }
 
-    public List<Payment> getPayments() {
-        return payments;
+    public Shipping getShipping() {
+        return shipping;
     }
 
-    public void setPayments(List<Payment> payments) {
-        this.payments = payments;
-    }
-
-    public String getShippingId() {
-        return shippingId;
-    }
-
-    public void setShippingId(String shippingId) {
-        this.shippingId = shippingId;
+    public void setShipping(Shipping shipping) {
+        this.shipping = shipping;
     }
 
     public Timestamp getDateCreated() {
@@ -120,7 +121,7 @@ public class Order {
                 ", orderItems=" + orderItems +
                 ", total=" + total +
                 ", payments=" + payments +
-                ", shippingId='" + shippingId + '\'' +
+                ", shipping=" + shipping +
                 ", dateCreated=" + dateCreated +
                 ", dateModified=" + dateModified +
                 '}';

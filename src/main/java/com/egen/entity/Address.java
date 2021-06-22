@@ -1,7 +1,5 @@
 package com.egen.entity;
 
-import com.egen.enums.AddressType;
-
 import javax.persistence.*;
 
 @Entity
@@ -11,9 +9,6 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private String id;
-
-    @Column(name = "address_type")
-    private AddressType addressType;
 
     @Column(name = "address_line_1")
     private String addressLine1;
@@ -36,14 +31,6 @@ public class Address {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public AddressType getAddressType() {
-        return addressType;
-    }
-
-    public void setAddressType(AddressType addressType) {
-        this.addressType = addressType;
     }
 
     public String getAddressLine1() {
@@ -90,7 +77,6 @@ public class Address {
     public String toString() {
         return "Address{" +
                 "id='" + id + '\'' +
-                ", addressType='" + addressType + '\'' +
                 ", addressLine1='" + addressLine1 + '\'' +
                 ", addressLine2='" + addressLine2 + '\'' +
                 ", city='" + city + '\'' +
