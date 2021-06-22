@@ -47,7 +47,6 @@ public class AddressServiceImplTest {
     }
     @Test(expected = AddressServiceException.class)
     public void createAddressFailed() {
-        Address new_address = addressService.createAddress(address);
-        Assert.assertEquals("Failed to create address",null,new_address);
+        Address new_address = addressService.createAddress(null);
     }
 }

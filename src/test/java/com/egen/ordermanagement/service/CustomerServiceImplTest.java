@@ -62,7 +62,7 @@ public class CustomerServiceImplTest {
 
     @Test(expected = CustomerServiceException.class)
     public void customerNotFound() {
-        boolean isExisting = customerService.findCustomer(customer.getId());
+        boolean isExisting = customerService.findCustomer(88L);
     }
 
     @Test
@@ -73,6 +73,5 @@ public class CustomerServiceImplTest {
     @Test(expected = CustomerServiceException.class)
     public void createCustomerFailed() {
         boolean new_customer = customerService.createCustomer(customerDto);
-        Assert.assertEquals("Failed to create customer",false,new_customer);
     }
 }

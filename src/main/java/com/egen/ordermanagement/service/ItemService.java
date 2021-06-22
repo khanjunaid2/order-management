@@ -8,5 +8,5 @@ public interface ItemService {
     boolean createItem(ItemDto itemDto);
     Item getItem(Long id);
     void updateItem(long id,int quantity);
-    void updateOrderIdInItem(long id, Orders order);
+    Item updateOrderIdInItem(long id, Orders order);
 }

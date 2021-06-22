@@ -2,6 +2,7 @@ package com.egen.ordermanagement.service;
 
 import com.egen.ordermanagement.dto.ItemDto;
 import com.egen.ordermanagement.enums.OrderStatus;
+import com.egen.ordermanagement.exceptions.ItemServiceException;
 import com.egen.ordermanagement.model.Address;
 import com.egen.ordermanagement.model.Item;
 import com.egen.ordermanagement.model.Orders;
@@ -37,6 +38,7 @@ public class ItemServiceImplTest {
     ItemRepo itemRepo;
 
     Item item;
+    Orders orders;
     ItemDto itemDto;
     @Before
     public void setUp(){
@@ -46,7 +48,9 @@ public class ItemServiceImplTest {
         //Setting DTO values to entity to
         item.setId(itemDto.getId()).setItemPrice(itemDto.getItemPrice())
                 .setItemName(itemDto.getItemName()).setQuantityInStock(itemDto.getQuantityInStock());
-
+        orders = new Orders();
+        orders.setId(8L);
+        item.setOrders(orders);
         Mockito.when(itemRepo.save(item)).thenReturn(item);
         Mockito.when(itemRepo.findById(item.getId())).thenReturn(Optional.of(item));
     }
@@ -65,6 +69,12 @@ public class ItemServiceImplTest {
         Assert.assertEquals("No items found",item,findItem);
     }
 
+    //Provide Id which doesnt exist
+    @Test(expected = ItemServiceException.class)
+    public void noItemPresent() {
+        Item findItem = itemService.getItem(13L);
+    }
+
     @Test
     public void updateItem() {
         int currentStock = item.getQuantityInStock();
@@ -72,8 +82,21 @@ public class ItemServiceImplTest {
         Assert.assertEquals("Failed to update order",currentStock-3,item.getQuantityInStock());
     }
 
+    //Provide Id which doesnt exist
+    @Test(expected = ItemServiceException.class)
+    public void updateItemFailed() {
+        int currentStock = item.getQuantityInStock();
+        itemService.updateItem(13L,currentStock-3 );
+    }
     @Test
     public void updateOrderIdInItem() {
-        //TODO
+    Item new_item = itemService.updateOrderIdInItem(item.getId(),orders);
+    Assert.assertEquals("Failed to update Order id",item,new_item);
+    }
+
+    //Provide Id which doesnt exist
+    @Test(expected = ItemServiceException.class)
+    public void updateOrderIdInItemFailed() {
+        Item new_item = itemService.updateOrderIdInItem(88L,orders);
     }
 }

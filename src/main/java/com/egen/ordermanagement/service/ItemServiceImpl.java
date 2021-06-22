@@ -57,12 +57,12 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Transactional
-    public void updateOrderIdInItem(long id, Orders order) {
+    public Item updateOrderIdInItem(long id, Orders order) {
         try {
             Optional<Item> updatedItem = itemRepo.findById(id);
             if(updatedItem.isPresent()){
                 updatedItem.get().setOrders(order);
-                itemRepo.save(updatedItem.get());
+              return itemRepo.save(updatedItem.get());
             }else
                 throw new Exception();
         }catch (Exception ex){

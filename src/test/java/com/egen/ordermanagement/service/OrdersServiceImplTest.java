@@ -163,8 +163,9 @@ public class OrdersServiceImplTest {
 
     @Test(expected = OrderServiceException.class)
     public void findWithinIntervalNotFound() {
-        List<Orders> ordersWithinTime = ordersService.findWithinInterval(orders.get(0).getDateOrdered(),
-                orders.get(0).getDateOrdered());
+        Orders new_order= new Orders();
+        List<Orders> ordersWithinTime = ordersService.findWithinInterval(new_order.getDateOrdered(),
+                new_order.getDateOrdered());
     }
 
     @Test
@@ -176,7 +177,7 @@ public class OrdersServiceImplTest {
 
     @Test(expected = OrderServiceException.class)
     public void findAllByShippingAddressZipcodeAndSubTotalNotFound() {
-        List<Orders> max_total = ordersService.findAllByShippingAddressZipcodeAndSubTotal("8888");
+        List<Orders> max_total = ordersService.findAllByShippingAddressZipcodeAndSubTotal("128");
     }
 
     @Test
@@ -212,6 +213,6 @@ public class OrdersServiceImplTest {
     @Transactional
     public void updateOrderFailed() {
         Orders deliver = ordersService.updateOrder(orders.get(0).setOrderStatus(OrderStatus.CANCELLED),
-                orders.get(0).getId());
+                888L);
     }
 }

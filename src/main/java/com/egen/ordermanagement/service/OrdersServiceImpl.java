@@ -41,14 +41,6 @@ public class OrdersServiceImpl implements OrdersService {
 
     return Optional.ofNullable(ordersRepo.findAll())
             .orElseThrow(() -> new OrderServiceException("No orders are present currently"));
-//        try {
-//            List<Orders> orders = ordersRepo.findAll();
-//            if(orders.isEmpty())
-//                throw new Exception();
-//            return orders;
-//        }catch (Exception ex){
-//            throw new OrderServiceException("No orders are present currently",ex);
-//        }
     }
 
     @Transactional(readOnly = true)
@@ -56,7 +48,6 @@ public class OrdersServiceImpl implements OrdersService {
         return ordersRepo.findById(id)
                 .orElseThrow(() ->
                         new OrderServiceException("No orders with id: "+id+" were present in the inventory"));
-
     }
 
     @Transactional(readOnly = true)
@@ -65,28 +56,12 @@ public class OrdersServiceImpl implements OrdersService {
         return  Optional.ofNullable(ordersRepo.findAllByDateOrderedBetween(startTime,endTime))
                 .orElseThrow(() ->
                         new OrderServiceException("Orders between the specific time range now found" ));
-//        try {
-//            List<Orders> orders = ordersRepo.findAllByDateOrderedBetween(startTime,endTime);
-//            if(orders.isEmpty())
-//                throw new Exception();
-//            return orders;
-//        }catch (Exception ex){
-//            throw new OrderServiceException("Orders between the specific time range now found",ex);
-//        }
     }
 
     @Transactional(readOnly = true)
     public List<Orders> findAllByShippingAddressZipcodeAndSubTotal(String zip) {
         return Optional.ofNullable(ordersRepo.findAllByShippingAddressZipcodeAndSubTotal(zip))
                 .orElseThrow(() -> new OrderServiceException("No orders were found in the zip code: "+zip));
-//        try {
-//           List<Orders> maxAmountOrders = ordersRepo.findAllByShippingAddressZipcodeAndSubTotal(zip);
-//            if(maxAmountOrders.isEmpty())
-//                throw new Exception();
-//            return maxAmountOrders;
-//        }catch (Exception ex){
-//            throw new OrderServiceException("No orders were found in the zip code: "+zip,ex);
-//        }
     }
 
     @Transactional
@@ -163,10 +138,10 @@ public class OrdersServiceImpl implements OrdersService {
         try {
             Optional<Orders> orders = ordersRepo.findById(id);
             if(!orders.isPresent())
-                throw new NoSuchElementException();
+                throw new OrderServiceException();
             orders.get().setOrderStatus(OrderStatus.CANCELLED);
             return ordersRepo.save(orders.get());
-        }catch (Exception ex){
+        }catch (OrderServiceException ex){
             throw new OrderServiceException("The order id: "+id +"your want to cancel is not found in our records",ex);
         }
     }
@@ -176,10 +151,10 @@ public class OrdersServiceImpl implements OrdersService {
         try {
             Optional<Orders> orders = ordersRepo.findById(id);
             if(!orders.isPresent())
-                throw new NoSuchElementException();
+                throw new OrderServiceException();
             orders.get().setOrderStatus(order.getOrderStatus());
             return ordersRepo.save(orders.get());
-        }catch (Exception ex){
+        }catch (OrderServiceException ex){
             throw new OrderServiceException("The order id: "+id +" you want to modify is not found in our records",ex);
         }
     }

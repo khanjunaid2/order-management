@@ -32,7 +32,7 @@ public class CustomerServiceImpl implements CustomerService{
         try {
             Optional<Customer> customer = customerRepo.findByEmail(customerDto.getEmail());
             if(customer.isPresent())
-                throw new Exception();
+                throw new CustomerServiceException("Already present");
 
              customerRepo.save(new Customer(customerDto.getFirstName(),
                     customerDto.getLastName(),customerDto.getEmail()));
