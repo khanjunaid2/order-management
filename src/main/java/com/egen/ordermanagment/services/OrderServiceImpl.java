@@ -17,6 +17,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -59,6 +60,9 @@ public class OrderServiceImpl implements OrderService {
     public List<OrdersDTO> findWithinInterval(Timestamp startTime, Timestamp endTime) {
         try {
             List<Orders> orders = orderRepository.findAllByOrderCreatedBetween(startTime,endTime);
+            if(orders.isEmpty()){
+                throw new OrderServiceException("No order found");
+            }
             return new OrderDTOMapper().entityToDTO(orders);
 
         } catch (OrderServiceException e) {
@@ -70,18 +74,26 @@ public class OrderServiceImpl implements OrderService {
     public List<OrdersDTO> findTop10OrdersWithHighestDollarAmountInZip(String zip) {
         try {
             List<Orders> ordersWithMaxAmount = orderRepository.findTop10OrdersWithHighestDollarAmountInZip(zip);
+            if(ordersWithMaxAmount.isEmpty()){
+                throw new OrderServiceException("No order found");
+            }
             return new OrderDTOMapper().entityToDTO(ordersWithMaxAmount);
         }
-        catch (OrderServiceException e) {
+        catch(OrderServiceException e){
             throw new OrderServiceException("Error while retrieving orders");
         }
     }
 
     @Override
     public OrdersDTO placeOrder(OrdersDTO ordersDTO) {
-        Orders orders = new OrderDTOMapper().DTOToEntity(ordersDTO);
-        orderRepository.save(orders);
-        return new OrderDTOMapper().entityToDTO(orders);
+        try {
+            Orders orders = new OrderDTOMapper().DTOToEntity(ordersDTO);
+            orderRepository.save(orders);
+            return new OrderDTOMapper().entityToDTO(orders);
+        }
+        catch (OrderServiceException e){
+            throw new OrderServiceException("Error while creating orders");
+        }
     }
 
     @Override
