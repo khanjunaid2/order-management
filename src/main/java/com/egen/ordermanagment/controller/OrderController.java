@@ -1,12 +1,14 @@
 package com.egen.ordermanagment.controller;
 
 import com.egen.ordermanagment.dto.OrdersDTO;
+import com.egen.ordermanagment.model.Orders;
 import com.egen.ordermanagment.response.Response;
 import com.egen.ordermanagment.response.ResponseMetadata;
 import com.egen.ordermanagment.response.StatusMessage;
 import com.egen.ordermanagment.services.OrderService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +23,14 @@ public class OrderController {
     /**
      * implement the following endpoints
      */
+    @Qualifier("orderServiceImpl")
     @Autowired
     private OrderService service;
+
+    @GetMapping
+    public List<Orders> getAllOrders(){
+        return service.getAllOrders();
+    }
 
     /**
      * Get all orders using pagination and sortBy created date
@@ -31,7 +39,7 @@ public class OrderController {
      * @param sortBy
      * @return
      */
-    @GetMapping
+    @GetMapping("/paging")
     @ApiOperation(value = "Fetch All orders",
             notes = "Returns a list of all the orders in the database using pagination and sorting")
     @ApiResponses(value = {
@@ -47,7 +55,7 @@ public class OrderController {
                 .meta(ResponseMetadata.builder()
                         .statusCode(200)
                         .statusMessage(StatusMessage.SUCCESS.name()).build())
-                .data(service.findAll(page, size, sortBy))
+                .data(service.findAllPaginationSorting(page, size, sortBy))
                 .build();
     }
 
@@ -87,11 +95,11 @@ public class OrderController {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 404, message = "No orders found"),
             @ApiResponse(code = 500, message = "Error while retrieving orders") })
-    public Response<List<OrdersDTO>> getAllOrdersWithInInterval(
+    public Response<List<Orders>> getAllOrdersWithInInterval(
             @ApiParam(value = "Order created date from", required = true) @RequestParam(name = "startTime") Timestamp startTime,
             @ApiParam(value = "order created date to", required = true) @RequestParam(name = "endTime") Timestamp endTime){
 //        return new ResponseEntity<>(service.findWithinInterval(startTime,endTime), HttpStatus.OK);
-        return Response.<List<OrdersDTO>>builder()
+        return Response.<List<Orders>>builder()
                 .meta(ResponseMetadata.builder()
                         .statusCode(200)
                         .statusMessage(StatusMessage.SUCCESS.name()).build())

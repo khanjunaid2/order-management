@@ -8,9 +8,10 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public interface OrderService {
-    List<OrdersDTO> findAll(int page, int size, String sortBy);
+    List<Orders> getAllOrders();
+    List<OrdersDTO> findAllPaginationSorting(int page, int size, String sortBy);
     OrdersDTO findOne(String id);
-    List<OrdersDTO> findWithinInterval(Timestamp startTime,Timestamp endTime);
+    List<Orders> findWithinInterval(Timestamp startTime,Timestamp endTime);
     List<OrdersDTO> findTop10OrdersWithHighestDollarAmountInZip(String zip);
     OrdersDTO placeOrder(OrdersDTO order);
     OrdersDTO updateOrder(String id, OrdersDTO order);

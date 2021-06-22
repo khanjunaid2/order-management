@@ -25,9 +25,14 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     OrderRepository orderRepository;
 
+    @Override
+    public  List<Orders> getAllOrders(){
+        return (List<Orders>) orderRepository.findAll();
+    }
+
 
     @Override
-    public List<OrdersDTO> findAll(int page, int size, String sortBy) {
+    public List<OrdersDTO> findAllPaginationSorting(int page, int size, String sortBy) {
         try {
             Pageable paging = PageRequest.of(page, size, Sort.by(sortBy));
             Page<Orders> pageResult = orderRepository.findAll(paging);
@@ -57,13 +62,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrdersDTO> findWithinInterval(Timestamp startTime, Timestamp endTime) {
+    public List<Orders> findWithinInterval(Timestamp startTime, Timestamp endTime) {
         try {
             List<Orders> orders = orderRepository.findAllByOrderCreatedBetween(startTime,endTime);
             if(orders.isEmpty()){
                 throw new OrderServiceException("No order found");
             }
-            return new OrderDTOMapper().entityToDTO(orders);
+            return orders;
+//            return new OrderDTOMapper().entityToDTO(orders);
 
         } catch (OrderServiceException e) {
             throw new OrderServiceException("Error while retrieving orders");
