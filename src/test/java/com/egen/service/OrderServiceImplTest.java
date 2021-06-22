@@ -16,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.sql.Timestamp;
 import java.util.*;
 
 @RunWith(SpringRunner.class)
@@ -37,12 +38,18 @@ public class OrderServiceImplTest {
 
     private List<Order> orders;
 
+    private Timestamp startTime;
+    private Timestamp endTime;
+
     @Before
     public void setup() {
         Order order = new Order();
         order.setId(UUID.randomUUID().toString());
         order.setStatus(OrderStatus.SUBMITTED);
         order.setTotal(100.39);
+
+        endTime = new Timestamp(new Date().getTime());
+        startTime = new Timestamp(new Date(System.currentTimeMillis() - 7L * 24 * 3600 * 1000).getTime());
 
         orders = Collections.singletonList(order);
 
@@ -51,6 +58,9 @@ public class OrderServiceImplTest {
 
         Mockito.when(orderRepository.findById(order.getId()))
                 .thenReturn(Optional.of(order));
+
+        Mockito.when(orderRepository.findAllByDateCreatedBetween(startTime, endTime))
+                .thenReturn(orders);
     }
 
     @After
@@ -78,6 +88,8 @@ public class OrderServiceImplTest {
 
     @Test
     public void getAllOrdersWithinInterval() {
+        List<Order> result = orderService.getAllOrdersWithinInterval(startTime, endTime);
+        Assert.assertEquals("Order list should be match", orders, result);
     }
 
     @Test
