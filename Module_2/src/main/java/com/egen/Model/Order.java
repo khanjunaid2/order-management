@@ -1,24 +1,49 @@
 package com.egen.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import javax.persistence.*;
+import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Set;
 
-public class Order {
+@Entity
+@Table(name = "Order")
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Order implements Serializable {
 
-    private String id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long Id;
+    @Column(name = "orderId")
+    private String orderId;
+    @Column(name = "status")
     private OrderStatus status;
+    @Column(name = "orderCustomerId")
     private String order_customer_id;
+    @OneToMany(mappedBy = "order" , cascade = {CascadeType.ALL})
     private List<Product> products;
+    @Column(name = "orderSubtotal")
     private double order_subtotal;
+    @Column(name = "orderTax")
     private double order_tax;
+    @Column(name = "orderTotal")
     private double order_total;
+    @Column(name = "createdDate")
     private ZonedDateTime created_date;
+    @Column(name = "modifiedDate")
     private ZonedDateTime modified_date;
+    @OneToMany(cascade = {CascadeType.ALL})
     private List<Payment> payment;
+    @OneToMany( mappedBy = "order", cascade = CascadeType.ALL)
     private Shipping shipping;
+    @OneToOne( mappedBy = "order", cascade = CascadeType.ALL)
     private Address order_billing_address;
+    @OneToOne( mappedBy = "order", cascade = CascadeType.ALL)
     private Address order_shipping_address;
 
+    public Order(){}
     public Order(OrderStatus status, String order_customer_id, List<Product> products, List<Payment> payment, Shipping shipping,
                  ZonedDateTime created_date, ZonedDateTime modified_date, Address order_billing_address, Address order_shipping_address) {
         this.status = status;
@@ -34,16 +59,13 @@ public class Order {
         this.order_billing_address = order_billing_address;
         this.order_shipping_address = order_shipping_address;
     }
-    public Order(String id){
-        this.id = id;
-    }
 
-    public String getId() {
-        return id;
+    public String getOrderId() {
+        return orderId;
     }
 
     public void setId(String id) {
-        this.id = id;
+        this.orderId = orderId;
     }
 
     public OrderStatus getOrderStatus() {

@@ -1,9 +1,22 @@
 package com.egen.Model;
 
+import lombok.Data;
+
+import javax.persistence.*;
+
+@Entity
+@Table(name = "Shipping")
+@Data
 public class Shipping {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long Id;
+    @Column(name = "shippingId")
     private String shippingId;
+    @Column(name = "shippingMode")
     private String shippingMode;
+    @Column(name = "shippingCharge")
     private double shippingCharge;
 
     public Shipping() {}

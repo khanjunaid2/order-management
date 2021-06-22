@@ -1,14 +1,34 @@
 package com.egen.Model;
 
-public class Address {
+import javax.persistence.*;
+import java.io.Serializable;
 
+@Entity
+@Table(name = "Address")
+public class Address implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long Id;
+    @Column(name = "addressId")
     private String addressId;
+    @Column(name = "addressLine1")
     private String address_Line1;
+    @Column(name = "addressLine2")
     private String address_Line2;
+    @Column(name = "city")
     private String city;
+    @Column(name = "state")
     private String state;
+    @Column(name = "zipCode")
     private long zipCode;
 
+    public long getId(){
+        return Id;
+    }
+    public void setId(long Id){
+        this.Id = Id;
+    }
     public String getAddressId() {
         return addressId;
     }
@@ -42,14 +62,15 @@ public class Address {
     public long getZipCode() {
         return zipCode;
     }
-    public void setZip(long zipCode) {
+    public void setZipCode(long zipCode) {
         this.zipCode = zipCode;
     }
 
     public Address() {super();}
 
-    public Address(String addressId, String address_Line1, String address_Line2, String city, String state, long zipCode) {
+    public Address(long Id, String addressId, String address_Line1, String address_Line2, String city, String state, long zipCode) {
         super();
+        this.Id = Id;
         this.addressId = addressId;
         this.address_Line1 = address_Line1;
         this.address_Line2 = address_Line2;

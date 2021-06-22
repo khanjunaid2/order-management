@@ -1,13 +1,27 @@
 package com.egen.Model;
 
+import lombok.Data;
+
+import javax.persistence.*;
 import java.time.ZonedDateTime;
 
+@Entity
+@Table(name = "payment")
+@Data
 public class Payment {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long Id;
+    @Column(name = "PaymentId")
     private String paymentId;
+    @Column(name = "PaymentMode")
     private String paymentMode;
+    @OneToOne( mappedBy = "order", cascade = CascadeType.ALL)
     private Address billingAddress;
+    @Column(name = "PaymentDate")
     private ZonedDateTime paymentDate;
+    @Column(name = "orderNumber")
     private String orderNumber;
 
     public Payment() {}

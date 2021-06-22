@@ -1,14 +1,33 @@
 package com.egen.Model;
 
-public class Product {
+import lombok.Data;
 
+import javax.persistence.*;
+import java.io.Serializable;
+
+@Entity
+@Table(name = "product")
+@Data
+public class Product implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long Id;
+    @Column(name = "productId")
     private String productId;
+    @Column(name = "productName")
     private String productName;
+    @Column(name = "quantity")
     private int quantity;
+    @Column(name ="tax")
     private double tax;
+    @Column(name = "price")
     private double price;
+    @Column(name = "subTotalWithoutTax")
     private double subTotalWithoutTax;
+    @Column(name = "subTotalTax")
     private double subTotalTax;
+    @Column(name = "subTotal")
     private double subTotal;
 
     public Product() {}
