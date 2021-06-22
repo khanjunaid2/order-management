@@ -31,6 +31,12 @@ dependencies {
 	implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.25'
 	// https://mvnrepository.com/artifact/javax.xml.ws/jaxws-api
 	implementation group: 'javax.xml.ws', name: 'jaxws-api', version: '2.3.1'
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test
+	testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.5.1'
+	// https://mvnrepository.com/artifact/org.junit.vintage/junit-vintage-engine
+	testImplementation group: 'org.junit.vintage', name: 'junit-vintage-engine', version: '5.8.0-M1'
+
+
 }
 
 test {

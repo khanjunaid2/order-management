@@ -1,5 +1,6 @@
 package com.egen.service;
 
+import com.egen.exception.OrderServiceException;
 import com.egen.model.Address;
 import com.egen.model.Customer;
 import com.egen.model.Item;
@@ -37,7 +38,12 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public Order getOrderById(String orderId) {
-        return orderRepo.getOrderById(orderId);
+        try{
+            return orderRepo.getOrderById(orderId);
+        }catch (Exception e ){
+            throw new OrderServiceException("No order by Id ",e);
+        }
+
     }
 
     @Override

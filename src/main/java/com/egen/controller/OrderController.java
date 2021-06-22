@@ -1,6 +1,9 @@
 package com.egen.controller;
 
 import com.egen.model.Order;
+import com.egen.response.Response;
+import com.egen.response.ResponseMetadata;
+import com.egen.response.StatusMessage;
 import com.egen.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,9 +30,14 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getAllOrders());
     }
 
-    @GetMapping("order/{id}")
-    public ResponseEntity<Order> getOrderById(@PathVariable String id){
-        return ResponseEntity.ok(orderService.getOrderById(id));
+    @GetMapping(value = "order/{id}",consumes = "application/json",produces = "application/json")
+    public Response<Order> getOrderById(@RequestBody String id){
+            return Response.<Order>builder()
+                .meta(ResponseMetadata.builder()
+                        .statusCode(200)
+                        .statusMessage(StatusMessage.SUCCESS.name()).build())
+                .data((orderService.getOrderById(id)))
+                .build();
     }
 
     @GetMapping("ordersInInterval/{startTime}/{endTime}")
