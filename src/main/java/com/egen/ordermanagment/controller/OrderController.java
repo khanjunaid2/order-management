@@ -3,6 +3,7 @@ package com.egen.ordermanagment.controller;
 import com.egen.ordermanagment.dto.OrdersDTO;
 import com.egen.ordermanagment.model.Orders;
 import com.egen.ordermanagment.services.OrderService;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "orders")
+@Api(value = "orders management endpoints")
 public class OrderController {
     /**
      * implement the following endpoints
@@ -28,6 +30,12 @@ public class OrderController {
      * @return
      */
     @GetMapping
+    @ApiOperation(value = "Fetch All orders",
+            notes = "Returns a list of all the orders in the database using pagination and sorting")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 404, message = "No orders found"),
+            @ApiResponse(code = 500, message = "Error while retrieving all orders") })
     public ResponseEntity<List<OrdersDTO>> getAllOrders(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
@@ -41,7 +49,14 @@ public class OrderController {
      * @return
      */
     @GetMapping("/{id}")
-    public ResponseEntity<OrdersDTO> getOrderById(@PathVariable("id") String id){
+    @ApiOperation(value = "Fetch orders by Id",
+            notes = "Returns a single order or throws Exception")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 404, message = "No orders found"),
+            @ApiResponse(code = 500, message = "Error while retrieving order with provided Id") })
+    public ResponseEntity<OrdersDTO> getOrderById(
+            @ApiParam(value = "Order Id", required = true) @PathVariable("id") String id){
         return new ResponseEntity<>(service.findOne(id), HttpStatus.OK);
     }
 
@@ -52,9 +67,15 @@ public class OrderController {
      * @return
      */
     @GetMapping("/interval")
+    @ApiOperation(value = "Fetch orders within given interval of start time and end time",
+            notes = "Returns orders matching filters or throws Exception")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 404, message = "No orders found"),
+            @ApiResponse(code = 500, message = "Error while retrieving orders") })
     public ResponseEntity<List<OrdersDTO>> getAllOrdersWithInInterval(
-            @RequestParam(name = "startTime") Timestamp startTime,
-            @RequestParam(name = "endTime") Timestamp endTime){
+            @ApiParam(value = "Order created date from", required = true) @RequestParam(name = "startTime") Timestamp startTime,
+            @ApiParam(value = "order created date to", required = true) @RequestParam(name = "endTime") Timestamp endTime){
         return new ResponseEntity<>(service.findWithinInterval(startTime,endTime), HttpStatus.OK);
     }
 
@@ -64,7 +85,14 @@ public class OrderController {
      * @return
      */
     @GetMapping("/zipcode/{zip}")
-    public ResponseEntity<List<OrdersDTO>> top10OrdersWithHighestDollarAmountInZip(@PathVariable("zip") String zip){
+    @ApiOperation(value = "Fetch top 10 orders with highest order amount sorted by zipcode",
+            notes = "Returns top 10 orders matching filters or throws Exception")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 404, message = "No orders found"),
+            @ApiResponse(code = 500, message = "Error while retrieving orders") })
+    public ResponseEntity<List<OrdersDTO>> top10OrdersWithHighestDollarAmountInZip(
+            @ApiParam(value = "zipcode of customer who created order", required = true) @PathVariable("zip") String zip){
         return new ResponseEntity<>(service.findTop10OrdersWithHighestDollarAmountInZip(zip), HttpStatus.OK);
     }
 
@@ -74,6 +102,11 @@ public class OrderController {
      * @return
      */
     @PostMapping
+    @ApiOperation(value = "",
+            notes = "Creates Order using raw json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "created"),
+            @ApiResponse(code = 500, message = "Error while retrieving orders") })
     public ResponseEntity<OrdersDTO> placeOrder(@RequestBody OrdersDTO order) {
         return new ResponseEntity<>(service.placeOrder(order), HttpStatus.CREATED);
     }
@@ -84,6 +117,12 @@ public class OrderController {
      * @return
      */
     @PutMapping("/cancel/{id}")
+    @ApiOperation(value = "",
+            notes = "Updates Order status to Cancel using Id")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Ok"),
+            @ApiResponse(code = 404, message = "No order found"),
+            @ApiResponse(code = 500, message = "Error while retrieving order") })
     public ResponseEntity<OrdersDTO> cancelOrder(@PathVariable("id") String id){
         return new ResponseEntity<>(service.cancelOrder(id), HttpStatus.OK);
     }

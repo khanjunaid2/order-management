@@ -45,7 +45,7 @@ public class OrderServiceImpl implements OrderService {
         try {
             Optional<Orders> existing = orderRepository.findById(id);
             if(!existing.isPresent()){
-                throw new OrderServiceException("Order with id"+ id + "not found");
+                throw new OrderServiceException("No order found");
             }
             return new OrderDTOMapper().entityToDTO(existing.get());
         }
@@ -61,7 +61,7 @@ public class OrderServiceImpl implements OrderService {
             return new OrderDTOMapper().entityToDTO(orders);
 
         } catch (OrderServiceException e) {
-            throw new OrderServiceException("Error while retrieving all orders");
+            throw new OrderServiceException("Error while retrieving orders");
         }
     }
 
@@ -72,7 +72,7 @@ public class OrderServiceImpl implements OrderService {
             return new OrderDTOMapper().entityToDTO(ordersWithMaxAmount);
         }
         catch (OrderServiceException e) {
-            throw new OrderServiceException("Error while retrieving all orders");
+            throw new OrderServiceException("Error while retrieving orders");
         }
     }
 
@@ -89,12 +89,12 @@ public class OrderServiceImpl implements OrderService {
             Orders orders = new OrderDTOMapper().DTOToEntity(ordersDTO);
             Optional<Orders> existing = orderRepository.findById(id);
             if(!existing.isPresent()){
-                throw new OrderServiceException("Order with id"+ id + "not found to update");
+                throw new OrderServiceException("No order found");
             }
             return new OrderDTOMapper().entityToDTO(orderRepository.save(orders));
 
         } catch (OrderServiceException ose) {
-            throw new OrderServiceException("Error while updating order status");
+            throw new OrderServiceException("Error while updating order");
         }
 
     }
@@ -105,7 +105,7 @@ public class OrderServiceImpl implements OrderService {
             Optional<Orders> existing = orderRepository.findById(id);
             if(!existing.isPresent()){
                 // ResourceNotFoundException
-                throw new OrderServiceException("Order with id"+ id + "not found to update");
+                throw new OrderServiceException("No order found");
             }
             existing.get().setOrderStatus(OrderStatus.CANCELLED);
             orderRepository.save(existing.get());
