@@ -1,9 +1,8 @@
 package com.egen.service;
+import com.egen.dto.OrderItemDTO;
 import com.egen.model.OrderItem;
-import org.hibernate.criterion.Order;
 
 import java.sql.Timestamp;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,11 +15,12 @@ public interface OrderService {
        List<OrderItem> getAllOrdersWithInInterval(Timestamp startTime, Timestamp endTime);
 
        List<OrderItem> top10OrdersWithHighestDollarAmountInZip(String zip);
-       OrderItem placeOrder(OrderItem orderItem);
+       OrderItemDTO placeOrder(OrderItemDTO orderItem);
 
-       OrderItem cancelOrder(OrderItem order);
-
-       OrderItem updateOrder(OrderItem order);
+       List<OrderItem> pageFindAll(Integer page, Integer size);
+//       OrderItem cancelOrder(OrderItem order);
+//
+//       OrderItem updateOrder(OrderItem order);
        String createRandomOrders(int num);
 
 }
