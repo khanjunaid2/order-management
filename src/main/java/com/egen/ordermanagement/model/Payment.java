@@ -27,7 +27,7 @@ public class Payment {
     @OneToOne(cascade = {CascadeType.ALL})
     private Address billingAddress;
 
-    @ManyToOne()
+    @ManyToOne(cascade = CascadeType.ALL)
     private Orders orders;
 
     public Payment(double amount, Timestamp paymentDate, PaymentMethod paymentMode,
@@ -43,43 +43,49 @@ public class Payment {
         return id;
     }
 
-    public void setId(Long id) {
+    public Payment setId(Long id) {
         this.id = id;
+        return this;
     }
 
     public double getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public Payment setAmount(double amount) {
         this.amount = amount;
+        return this;
     }
 
     public Timestamp getPaymentDate() {
         return paymentDate;
     }
 
-    public void setPaymentDate(Timestamp paymentDate) {
+    public Payment setPaymentDate(Timestamp paymentDate) {
         this.paymentDate = paymentDate;
+        return this;
     }
 
     public PaymentMethod getPaymentMode() {
         return paymentMode;
     }
 
-    public void setPaymentMode(PaymentMethod paymentMode) {
+    public Payment setPaymentMode(PaymentMethod paymentMode) {
         this.paymentMode = paymentMode;
+        return this;
     }
 
     public Address getBillingAddress() {
         return billingAddress;
     }
 
-    public void setBillingAddress(Address billingAddress) {
+    public Payment setBillingAddress(Address billingAddress) {
         this.billingAddress = billingAddress;
+        return this;
     }
 
-    public void setOrders(Orders orders) {
+    public Payment setOrders(Orders orders) {
         this.orders = orders;
+        return this;
     }
 }

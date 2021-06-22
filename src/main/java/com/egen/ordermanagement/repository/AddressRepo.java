@@ -1,10 +1,13 @@
 package com.egen.ordermanagement.repository;
 
 import com.egen.ordermanagement.model.Address;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface AddressRepo extends CrudRepository<Address,Long> {
+import java.util.Optional;
 
+@Repository
+public interface AddressRepo extends JpaRepository<Address,Long> {
+    boolean findByAddressLine1(String addressLine1);
 }

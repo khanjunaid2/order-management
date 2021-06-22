@@ -36,4 +36,54 @@ public class OrderDto implements Serializable {
     private int itemQuantity;
     @JsonProperty(value="orderStatus")
     private OrderStatus orderStatus;
+
+    public OrderDto setId(long id) {
+        this.id = id;
+        return this;
+    }
+
+    public OrderDto setCustomerId(Long customerId) {
+        this.customerId = customerId;
+        return this;
+    }
+
+    public OrderDto setItems(int[] items) {
+        this.items = items;
+        return this;
+    }
+
+    public OrderDto setShippingAddress(Address shippingAddress) {
+        this.shippingAddress = shippingAddress;
+        return this;
+    }
+
+    public OrderDto setBillingAddress(Address billingAddress) {
+        this.billingAddress = billingAddress;
+        return this;
+    }
+
+    public OrderDto setBillingSameAsShippingAddress(boolean billingSameAsShippingAddress) {
+        this.billingSameAsShippingAddress = billingSameAsShippingAddress;
+        return this;
+    }
+
+    public OrderDto setPayments(List<Payment> payments) {
+        this.payments = payments;
+        return this;
+    }
+
+    public OrderDto setShipmentMethod(ShipmentMethod shipmentMethod) {
+        this.shipmentMethod = shipmentMethod;
+        return this;
+    }
+
+    public OrderDto setItemQuantity(int itemQuantity) {
+        this.itemQuantity = itemQuantity;
+        return this;
+    }
+
+    public OrderDto setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+        return this;
+    }
 }

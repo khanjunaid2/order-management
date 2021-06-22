@@ -24,4 +24,26 @@ public class CustomerDto implements Serializable {
 
     @JsonProperty(value = "lastName")
     private String lastName;
+
+    public CustomerDto setId(Long id) {
+        this.id = id;
+        return this;
+    }
+
+    public CustomerDto setEmail(String email) {
+        this.email = email;
+        return this;
+
+    }
+
+    public CustomerDto setFirstName(String firstName) {
+        this.firstName = firstName;
+        return this;
+
+    }
+
+    public CustomerDto setLastName(String lastName) {
+        this.lastName = lastName;
+        return this;
+    }
 }

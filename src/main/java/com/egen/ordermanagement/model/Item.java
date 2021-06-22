@@ -25,7 +25,7 @@ public class Item {
     @Column(name = "quantity_in_stock")
     private int quantityInStock;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="order_id")
     private Orders orders;
 
@@ -39,35 +39,40 @@ public class Item {
         return id;
     }
 
-    public void setId(Long id) {
+    public Item setId(Long id) {
         this.id = id;
+        return this;
     }
 
     public String getItemName() {
         return itemName;
     }
 
-    public void setItemName(String itemName) {
+    public Item setItemName(String itemName) {
         this.itemName = itemName;
+        return this;
     }
 
     public double getItemPrice() {
         return itemPrice;
     }
 
-    public void setItemPrice(double itemPrice) {
+    public Item setItemPrice(double itemPrice) {
         this.itemPrice = itemPrice;
+        return this;
     }
 
     public int getQuantityInStock() {
         return quantityInStock;
     }
 
-    public void setQuantityInStock(int quantityInStock) {
+    public Item setQuantityInStock(int quantityInStock) {
         this.quantityInStock = quantityInStock;
+        return this;
     }
 
-    public void setOrders(Orders orders) {
+    public Item setOrders(Orders orders) {
         this.orders = orders;
+        return this;
     }
 }

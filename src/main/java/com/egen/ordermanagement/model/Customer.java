@@ -28,4 +28,24 @@ public class Customer {
         this.lastName = lastName;
         this.email = email;
     }
+
+    public Customer setId(Long id) {
+        this.id = id;
+        return this;
+    }
+
+    public Customer setFirstName(String firstName) {
+        this.firstName = firstName;
+        return this;
+    }
+
+    public Customer setLastName(String lastName) {
+        this.lastName = lastName;
+        return this;
+    }
+
+    public Customer setEmail(String email) {
+        this.email = email;
+        return this;
+    }
 }

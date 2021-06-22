@@ -1,16 +1,12 @@
 package com.egen.ordermanagement.controller;
 
 import com.egen.ordermanagement.dto.CustomerDto;
-import com.egen.ordermanagement.model.Customer;
+import com.egen.ordermanagement.response.Response;
+import com.egen.ordermanagement.response.ResponseMetadata;
+import com.egen.ordermanagement.response.StatusMessage;
 import com.egen.ordermanagement.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/customer")
@@ -22,9 +18,15 @@ public class CustomerController {
      * This function is used to create a new user
      * @return - returns HTTP status as created and details of the new customer
      */
-    @RequestMapping(method = RequestMethod.POST,value = "/register",consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
-            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<Customer> createCustomer(@RequestBody CustomerDto customerDto){
-        return new ResponseEntity<>(customerService.createCustomer(customerDto), HttpStatus.CREATED);
+    @PostMapping(value="/register",consumes = "application/json",produces = "application/json")
+    public Response<Boolean> createCustomer(@RequestBody CustomerDto customerDto){
+        return customerService.createCustomer(customerDto) == Boolean.TRUE ?
+                Response.<Boolean>builder().meta(ResponseMetadata.builder().statusCode(201)
+                        .statusMessage(StatusMessage.CREATED.name())
+                        .build()).data(true).build()
+                :
+                Response.<Boolean>builder().meta(ResponseMetadata.builder().statusCode(409)
+                        .statusMessage(StatusMessage.CONFLICT.name())
+                        .build()).data(false).build();
     }
 }

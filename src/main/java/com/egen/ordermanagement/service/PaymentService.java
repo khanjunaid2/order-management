@@ -7,5 +7,5 @@ import com.egen.ordermanagement.model.Payment;
 import java.util.List;
 
 public interface PaymentService {
-    void createPayment(List<Payment> payment, Address addr, Orders ord);
+    List<Payment> createPayment(List<Payment> payment, Address addr, Orders ord);
 }

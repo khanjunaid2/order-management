@@ -68,4 +68,74 @@ public class Orders {
         this.shipmentMethod = shipmentMethod;
         this.shippingAddress = shippingAddress;
     }
+
+    public Orders setId(Long id) {
+        this.id = id;
+        return this;
+    }
+
+    public Orders setCustomerId(Long customerId) {
+        this.customerId = customerId;
+        return this;
+    }
+
+    public Orders setDateOrdered(Timestamp dateOrdered) {
+        this.dateOrdered = dateOrdered;
+        return this;
+    }
+
+    public Orders setExpectedDelivery(Timestamp expectedDelivery) {
+        this.expectedDelivery = expectedDelivery;
+        return this;
+    }
+
+    public Orders setItemQuantity(int itemQuantity) {
+        this.itemQuantity = itemQuantity;
+        return this;
+    }
+
+    public Orders setSubTotal(double subTotal) {
+        this.subTotal = subTotal;
+        return this;
+    }
+
+    public Orders setTax(double tax) {
+        this.tax = tax;
+        return this;
+    }
+
+    public Orders setShippingCharges(double shippingCharges) {
+        this.shippingCharges = shippingCharges;
+        return this;
+    }
+
+    public Orders setTotal(double total) {
+        this.total = total;
+        return this;
+    }
+
+    public Orders setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+        return this;
+    }
+
+    public Orders setShipmentMethod(ShipmentMethod shipmentMethod) {
+        this.shipmentMethod = shipmentMethod;
+        return this;
+    }
+
+    public Orders setShippingAddress(Address shippingAddress) {
+        this.shippingAddress = shippingAddress;
+        return this;
+    }
+
+    public Orders setItems(Set<Item> items) {
+        this.items = items;
+        return this;
+    }
+
+    public Orders setPaymentDetails(Set<Payment> paymentDetails) {
+        this.paymentDetails = paymentDetails;
+        return this;
+    }
 }
