@@ -18,11 +18,12 @@ public interface OrderRepo extends CrudRepository<Order, Long> {
     @Query ("SELECT ord FROM Order ord" + "JOIN fetch ord.paymentDetails JOIN FETCH ord.items" +
             "WHERE ord.orderId = :orderId ")
     Order getOrderById(@Param("orderId") String orderId);
+
     @Query("SELECT ord FROM Order ord" + "JOIN fetch ord.paymentDetails JOIN FETCH ord.items" +
             "WHERE ord.createdAt > :startTime AND ord.createdAt < :endTime")
     List<Order> getOrdersWithTimeInterval(@Param("startTime") ZonedDateTime startTime, @Param("endTime") ZonedDateTime endTime);
 
-    @Query("SELECT ord FROM Order ord, Address adr WHERE ord.shippingAddress.id = adr.id AND adr.zipCode = :zip_code ORDER BY ord.total desc")
+    @Query("SELECT ord FROM Order ord, Address adr WHERE ord.shipping.shippingId = adr.addressId AND adr.zipCode = :zip_code ORDER BY ord.order_total desc")
     List<Order> top10OrdersWithHighestDollarAmountInZip(@Param("zip") String zip);
 
 //    public Order addOrder(Order orders) {

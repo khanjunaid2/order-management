@@ -9,7 +9,6 @@ public class Address implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long Id;
     @Column(name = "addressId")
     private String addressId;
     @Column(name = "addressLine1")
@@ -23,12 +22,6 @@ public class Address implements Serializable {
     @Column(name = "zipCode")
     private long zipCode;
 
-    public long getId(){
-        return Id;
-    }
-    public void setId(long Id){
-        this.Id = Id;
-    }
     public String getAddressId() {
         return addressId;
     }
@@ -68,9 +61,8 @@ public class Address implements Serializable {
 
     public Address() {super();}
 
-    public Address(long Id, String addressId, String address_Line1, String address_Line2, String city, String state, long zipCode) {
+    public Address(String addressId, String address_Line1, String address_Line2, String city, String state, long zipCode) {
         super();
-        this.Id = Id;
         this.addressId = addressId;
         this.address_Line1 = address_Line1;
         this.address_Line2 = address_Line2;

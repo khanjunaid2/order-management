@@ -16,7 +16,6 @@ import java.io.Serializable;
 
 public class ShippingDTO implements Serializable{
 
-    @Id
     private long Id;
     @JsonProperty(value = "ShippingId")
     private String shippingId;

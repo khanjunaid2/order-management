@@ -11,7 +11,6 @@ public class Shipping {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long Id;
     @Column(name = "shippingId")
     private String shippingId;
     @Column(name = "shippingMode")

@@ -6,7 +6,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "Order")
@@ -15,7 +14,6 @@ public class Order implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long Id;
     @Column(name = "orderId")
     private String orderId;
     @Column(name = "status")
@@ -36,7 +34,7 @@ public class Order implements Serializable {
     private ZonedDateTime modified_date;
     @OneToMany(cascade = {CascadeType.ALL})
     private List<Payment> payment;
-    @OneToMany( mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToOne( mappedBy = "order", cascade = CascadeType.ALL)
     private Shipping shipping;
     @OneToOne( mappedBy = "order", cascade = CascadeType.ALL)
     private Address order_billing_address;
