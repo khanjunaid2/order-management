@@ -3,8 +3,7 @@ package com.example.ordermanagement.models;
 import com.example.ordermanagement.enums.DeliveryMethod;
 import com.example.ordermanagement.enums.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -12,8 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Getter
-@Setter
+@Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Orders {
     @Id

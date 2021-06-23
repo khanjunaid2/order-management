@@ -4,16 +4,17 @@ import com.example.ordermanagement.DTO.OrdersDto;
 import com.example.ordermanagement.enums.DeliveryMethod;
 import com.example.ordermanagement.enums.OrderStatus;
 import com.example.ordermanagement.enums.PaymentMethod;
+import com.example.ordermanagement.mappers.OrdersMappers;
 import com.example.ordermanagement.models.*;
 import com.example.ordermanagement.repository.OrderRepository;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mockito;
-import org.springframework.beans.BeanUtils;
-import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -24,33 +25,37 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+@SpringBootTest
 @RunWith(SpringRunner.class)
 class OrderServiceImplementationTest {
 
     @MockBean
     private OrderRepository orderRepository;
 
-    @InjectMocks
+    @Autowired
     OrderService orderService;
 
 
+    @Autowired
+    OrdersMappers ordersMappers;
 
-    @TestConfiguration
-    static class OrderServiceImplementationTestConfig{
+//    @TestConfiguration
+//    static class OrderServiceImplementationTestConfig{
 
         @Bean
         public OrderService getOrderService(){
             return new OrderServiceImplementation();
         }
-    }
+    //}
 
 
 
     Orders orders = new Orders();
     OrdersDto ordersDto = new OrdersDto();
 
-    @Before
-    public void mockData(){
+    @BeforeEach
+    public void setUp(){
+        //System.out.println("Hello");
         Address address = new Address();
         address.setAddressId("addr1");
         address.setAddressLine1("660 S Laflin St");
@@ -73,7 +78,7 @@ class OrderServiceImplementationTest {
         Payment payment = new Payment();
         payment.setPaymentId("pay1");
         payment.setAmount(500.25);
-        payment.setOrder_payment_date(Timestamp.valueOf("2021-06-22T05:42:37.214+00:00"));
+        payment.setOrder_payment_date(Timestamp.valueOf("2021-06-22 05:42:37"));
         payment.setPaymentMethod(PaymentMethod.CREDIT_CARD);
         payment.setBillingAddress(address);
 
@@ -95,11 +100,12 @@ class OrderServiceImplementationTest {
         orders.setDeliveryMethod(DeliveryMethod.HOME_SHIPPING);
         orders.setItems(itemsList);
         orders.setPaymentDetails(paymentList);
-        orders.setCreatedAt(Timestamp.valueOf("2021-06-22T05:42:37.214+00:00"));
-        orders.setOrderModified(Timestamp.valueOf("2021-06-22T05:42:37.214+00:00"));
+        orders.setCreatedAt(Timestamp.valueOf("2021-06-22 05:42:37"));
+        orders.setOrderModified(Timestamp.valueOf("2021-06-22 05:42:37"));
         orders.setCustomer(customer);
 
-        BeanUtils.copyProperties(orders, ordersDto);
+        ordersDto = ordersMappers.mapToDto(orders);
+        //BeanUtils.copyProperties(orders, ordersDto);
 
         Mockito.when(orderRepository.findAll())
                 .thenReturn(Collections.singletonList(orders));
@@ -110,43 +116,54 @@ class OrderServiceImplementationTest {
 
     }
 
-    @After
+    @AfterEach
     public void cleanup(){ }
 
     @Test
     void getAllOrders() {
-//        List<OrdersDto> result = orderService.getAllOrders();
-//        Assertions.assertEquals(Collections.singletonList(ordersDto), result, "Order list matches");
+        List<OrdersDto> result = orderService.getAllOrders();
+        Assertions.assertEquals(result, Collections.singletonList(ordersDto), "Order list matches");
     }
 
     @Test
     void getAllOrdersByPagingAndSorting() {
+
     }
 
     @Test
     void getOrderById() {
+        OrdersDto dto = orderService.getOrderById(orders.getOrderId());
+        Assertions.assertEquals(dto,ordersDto);
     }
 
-    @Test
-    void getAllOrdersWithInInterval() {
-    }
-
-    @Test
-    void top10OrdersWithHighestDollarAmountInZip() {
-    }
+//    @Test
+//    void getAllOrdersWithInInterval() {
+//    }
+//
+//    @Test
+//    void top10OrdersWithHighestDollarAmountInZip() {
+//    }
 
     @Test
     void placeOrder() {
-//        OrdersDto orderDto = orderService.placeOrder(ordersDto);
-//        Assertions.assertEquals(ordersDto, orderDto, "Order created");
-
+        OrdersDto dto = orderService.placeOrder(ordersDto);
+        //System.out.println(dto);
+        Assertions.assertEquals(dto,ordersDto);
     }
 
     @Test
     void cancelOrder() {
+        OrdersDto dto = orderService.cancelOrder(orders.getOrderId());
+
+        //Check whether both are unequal because dto orderStatus will be CANCELED whereas ordersDto will be PENDING
+        Assertions.assertNotEquals(dto.getOrderStatus(), ordersDto.getOrderStatus());
+        //Assertions.assertEquals(dto, ordersDto);
     }
 
     @Test
     void updateOrder() {
+        OrdersDto dto = orderService.updateOrder(orders, orders.getOrderId());
+
+        Assertions.assertNotEquals(dto.getOrderStatus(), ordersDto.getOrderStatus());
     }
 }

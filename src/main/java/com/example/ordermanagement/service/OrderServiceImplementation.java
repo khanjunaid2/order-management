@@ -45,6 +45,7 @@ public class OrderServiceImplementation implements OrderService{
             List<OrdersDto> ordersDtoList = new ArrayList<>();
             ordersList.forEach(orders -> {
                 ordersDtoList.add(ordersMappers.mapToDto(orders));
+                //System.out.println(ordersMappers.mapToDto(orders));
             });
 //        for(Orders order : ordersList){
 //            OrdersDto ordersResponse = ordersMappers.mapToDto(order);
@@ -119,10 +120,17 @@ public class OrderServiceImplementation implements OrderService{
     public OrdersDto placeOrder(OrdersDto ordersDto) {
 
         //Convert DTO to entity
+        //System.out.println("DTo: " + ordersDto);
+        log.info("DTO :" + ordersDto);
         Orders orders = ordersMappers.mapToEntity(ordersDto);
+        //System.out.println("Orders: " + orders);
+        log.info("Orders: " + orders);
+        //Orders orders = modelMapper.map(ordersDto, Orders.class);
         Orders newOrders = orderRepository.save(orders);
-
+        //System.out.println("New Orders: " + newOrders);
+        log.info("New Orders: " + newOrders);
         //convert entity to dto
+        //OrdersDto ordersResponse = modelMapper.map(newOrders, OrdersDto.class);
         OrdersDto ordersResponse = ordersMappers.mapToDto(newOrders);
         return ordersResponse;
     }
