@@ -10,7 +10,9 @@ import com.egen.ordermanagement.repository.OrderRepository;
 import com.egen.ordermanagement.service.OrderService;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -46,12 +48,12 @@ class OrderServiceImplTest {
     CustomerOrder customerOrder = new CustomerOrder();
     OrderDTO orderDTO = new OrderDTO();
 
-    @Before
+    @BeforeEach
     public void mockData() {
 
         customerOrder.setOrderId("testOrder1")
-                     .setCreationDate(Timestamp.valueOf("2021-06-22T23:53:38.2682"))
-                     .setModificationDate(Timestamp.valueOf("2021-06-22T23:53:38.2682"))
+                     .setCreationDate(Timestamp.valueOf("2021-06-22 23:53:38"))
+                     .setModificationDate(Timestamp.valueOf("2021-06-22 23:53:38"))
                      .setCustomerId("customer1")
                      .setTotal(250.50)
                      .setSubtotal(235.20)
@@ -69,17 +71,18 @@ class OrderServiceImplTest {
 
         Mockito.when(orderRepository.findById(customerOrder.getOrderId())).thenReturn(Optional.of(customerOrder));
 
-        Mockito.when(orderRepository.findAllOrdersWithInInterval(Timestamp.valueOf("2021-06-22T23:53:38.2682"),
-                Timestamp.valueOf("2021-06-24T23:53:38.2682"))).thenReturn(Collections.singletonList(customerOrder));
+        Mockito.when(orderRepository.findAllOrdersWithInInterval(Timestamp.valueOf("2021-06-22 23:53:38"),
+                Timestamp.valueOf("2021-06-24 23:53:38"))).thenReturn(Collections.singletonList(customerOrder));
 
         Mockito.when(orderRepository.save(customerOrder)).thenReturn(customerOrder);
     }
 
-    @After
+    @AfterEach
     public void cleanUp() {}
 
     @Test
     void getAllOrders() {
+        System.out.println(orderDTO);
         List<OrderDTO> result = orderService.getAllOrders();
         Assertions.assertEquals(Collections.singletonList(orderDTO), result, "Order list should match");
     }
