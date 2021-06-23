@@ -1,5 +1,6 @@
 package com.egen.passport.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -24,6 +25,7 @@ public class Item {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(columnDefinition = "order_id")
+    @JsonBackReference
     public CustomerOrder order;
 
     public Item() {

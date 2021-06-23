@@ -10,4 +10,6 @@ public interface OrderService {
     CustomerOrder getOrderById(Long id);
     public Boolean createOrders(List<OrderDTO> orderDto);
     public List<CustomerOrder> getAllOrders();
+    public List<CustomerOrder> getAllOrders(int from , int to);
+    public List<CustomerOrder> getAllOrdersSortBy(int from , int to, String sortBy);
 }

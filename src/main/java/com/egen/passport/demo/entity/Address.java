@@ -2,6 +2,9 @@ package com.egen.passport.demo.entity;
 
 import com.egen.passport.demo.enums.AddressType;
 import com.egen.passport.demo.enums.OrderStatus;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -10,6 +13,8 @@ import java.io.Serializable;
 @Entity
 @Table(name = "address")
 @Data
+@Builder
+@AllArgsConstructor
 public class Address implements Serializable {
 
     @Id
@@ -35,11 +40,13 @@ public class Address implements Serializable {
     @Column(name = "addressLine2")
     private String addressLine2;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(columnDefinition = "order_id")
+    @JsonBackReference
     public CustomerOrder order;
 
     public Address() {
+
     }
 
     public Long getId() {
@@ -78,8 +85,9 @@ public class Address implements Serializable {
         this.city = city;
     }
 
-    public void setState(String state) {
+    public Address setState(String state) {
         this.state = state;
+        return this;
     }
 
     public void setZip(Integer zip) {
