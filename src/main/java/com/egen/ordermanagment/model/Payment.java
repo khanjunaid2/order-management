@@ -2,6 +2,7 @@ package com.egen.ordermanagment.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import java.sql.Timestamp;
 @Table(name = "payment")
 @Getter
 @Setter
+@Accessors(chain = true)
 public class Payment {
 
     @Id

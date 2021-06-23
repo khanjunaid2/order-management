@@ -11,7 +11,7 @@ public interface OrderService {
     List<Orders> getAllOrders();
     List<OrdersDTO> findAllPaginationSorting(int page, int size, String sortBy);
     OrdersDTO findOne(String id);
-    List<Orders> findWithinInterval(Timestamp startTime,Timestamp endTime);
+    List<OrdersDTO> findWithinInterval(Timestamp startTime,Timestamp endTime);
     List<OrdersDTO> findTop10OrdersWithHighestDollarAmountInZip(String zip);
     OrdersDTO placeOrder(OrdersDTO order);
     OrdersDTO updateOrder(String id, OrdersDTO order);

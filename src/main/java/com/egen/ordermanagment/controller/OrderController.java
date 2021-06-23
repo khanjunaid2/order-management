@@ -9,8 +9,6 @@ import com.egen.ordermanagment.services.OrderService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
@@ -95,11 +93,11 @@ public class OrderController {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 404, message = "No orders found"),
             @ApiResponse(code = 500, message = "Error while retrieving orders") })
-    public Response<List<Orders>> getAllOrdersWithInInterval(
+    public Response<List<OrdersDTO>> getAllOrdersWithInInterval(
             @ApiParam(value = "Order created date from", required = true) @RequestParam(name = "startTime") Timestamp startTime,
             @ApiParam(value = "order created date to", required = true) @RequestParam(name = "endTime") Timestamp endTime){
 //        return new ResponseEntity<>(service.findWithinInterval(startTime,endTime), HttpStatus.OK);
-        return Response.<List<Orders>>builder()
+        return Response.<List<OrdersDTO>>builder()
                 .meta(ResponseMetadata.builder()
                         .statusCode(200)
                         .statusMessage(StatusMessage.SUCCESS.name()).build())

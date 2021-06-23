@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService {
 
     @Autowired
-    OrderRepository orderRepository;
+    private OrderRepository orderRepository;
 
     @Override
     public  List<Orders> getAllOrders(){
@@ -62,14 +62,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Orders> findWithinInterval(Timestamp startTime, Timestamp endTime) {
+    public List<OrdersDTO> findWithinInterval(Timestamp startTime, Timestamp endTime) {
         try {
             List<Orders> orders = orderRepository.findAllByOrderCreatedBetween(startTime,endTime);
             if(orders.isEmpty()){
                 throw new OrderServiceException("No order found");
             }
-            return orders;
-//            return new OrderDTOMapper().entityToDTO(orders);
+            return new OrderDTOMapper().entityToDTO(orders);
 
         } catch (OrderServiceException e) {
             throw new OrderServiceException("Error while retrieving orders");
@@ -94,8 +93,7 @@ public class OrderServiceImpl implements OrderService {
     public OrdersDTO placeOrder(OrdersDTO ordersDTO) {
         try {
             Orders orders = new OrderDTOMapper().DTOToEntity(ordersDTO);
-            orderRepository.save(orders);
-            return new OrderDTOMapper().entityToDTO(orders);
+            return new OrderDTOMapper().entityToDTO(orderRepository.save(orders));
         }
         catch (OrderServiceException e){
             throw new OrderServiceException("Error while creating orders");
@@ -134,5 +132,6 @@ public class OrderServiceImpl implements OrderService {
             throw new OrderServiceException("Error while updating order status as cancelled");
         }
     }
+
 }
 
