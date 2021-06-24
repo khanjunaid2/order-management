@@ -8,11 +8,14 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +24,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.sql.Timestamp;
 import java.util.*;
 
+@SpringBootTest
 @RunWith(SpringRunner.class)
 public class OrderServiceImplTest {
     @MockBean
@@ -38,19 +42,15 @@ public class OrderServiceImplTest {
         }
     }
 
-    private List<Orders> orders;
-    private List<OrdersDTO> ordersDTOS;
 
-    OrdersDTO orderDto;
-    Orders ord;
+    OrdersDTO orderDto = new OrdersDTO();
+    Orders ord = new Orders();
 
     @Before
     public void setup(){
-        orderDto = new OrdersDTO();
         OrderItems orderItems = new OrderItems();
         Payment payment = new Payment();
         Address address = new Address();
-        ord = new Orders();
         ord.setId("order1").setOrderStatus(OrderStatus.PLACED)
                 .setCustomerId("Customer1")
                 .setOrderCreated(Timestamp.valueOf("2021-06-22 12:00:09"))
@@ -82,20 +82,17 @@ public class OrderServiceImplTest {
                         .setState("NV")
                         .setZip("89119"));
 
-        orders = Collections.singletonList(ord);
+        BeanUtils.copyProperties(ord, orderDto);
 
-        BeanUtils.copyProperties(orders, orderDto);
-
-        Mockito.when(repository.findAll()).thenReturn(orders);
+        Mockito.when(repository.findAll()).thenReturn(Collections.singletonList(ord));
 
         Mockito.when(repository.findById(ord.getId()))
                 .thenReturn(Optional.of(ord));
 
-        Mockito.when(repository.findAllByOrderCreatedBetween(orders.get(0).getOrderCreated(),
-                orders.get(0).getOrderCreated())).thenReturn(orders);
+        Mockito.when(repository.findAllByOrderCreatedBetween(ord.getOrderCreated(),
+                ord.getOrderCreated())).thenReturn(Collections.singletonList(ord));
 
-        Mockito.when(repository.findTop10OrdersWithHighestDollarAmountInZip(orders.get(0)
-        .getShippingAddress().getZip())).thenReturn(orders);
+        Mockito.when(repository.findTop10OrdersWithHighestDollarAmountInZip(ord.getShippingAddress().getZip())).thenReturn(Collections.singletonList(ord));
 
         Mockito.when(repository.save(ord)).thenReturn(ord);
 
@@ -109,7 +106,7 @@ public class OrderServiceImplTest {
     @Test
     public void getAllOrders() throws Exception{
         List<Orders> result = service.getAllOrders();
-        Assert.assertEquals("orders should match", result, result);
+        Assert.assertEquals("orders should match", ord, result);
     }
 
     @Test
@@ -120,8 +117,7 @@ public class OrderServiceImplTest {
 
     @Test
     public void findOne() throws Exception{
-        OrdersDTO result = service.findOne(orders.get(0).getId());
-        System.out.println(result);
+        OrdersDTO result = service.findOne(ord.getId());
         Assert.assertEquals("order id should match", orderDto ,result);
     }
 
@@ -133,41 +129,39 @@ public class OrderServiceImplTest {
 
     @Test
     public void findWithinInterval() throws Exception{
-        List<OrdersDTO> ordersWithinTime = service.findWithinInterval(orders.get(0).getOrderCreated(),
-                orders.get(0).getOrderCreated());
-        System.out.println(ordersWithinTime);
-        Assert.assertEquals("orders should match",ordersWithinTime,Collections.singletonList(orderDto));
+        List<OrdersDTO> ordersWithinTime = service.findWithinInterval(ord.getOrderCreated(),
+                ord.getOrderCreated());
+        Assert.assertEquals("orders should match",Collections.singletonList(orderDto), ordersWithinTime);
     }
 
     @Test(expected = OrderServiceException.class)
     public void findWithinIntervalNotFound() {
-        List<OrdersDTO> ordersWithinTime = service.findWithinInterval(orders.get(0).getOrderCreated(),
+        List<OrdersDTO> ordersWithinTime = service.findWithinInterval(ord.getOrderCreated(),
                 ord.getOrderCreated());
-        Assert.assertEquals("orders not matched",ordersWithinTime,Collections.singletonList(orderDto));
+        Assert.assertEquals("orders not matched",Collections.singletonList(orderDto), ordersWithinTime);
     }
 
     @Test
     public void findTop10OrdersWithHighestDollarAmountInZip() throws Exception{
         List<OrdersDTO> top10orders = service.findTop10OrdersWithHighestDollarAmountInZip("89119");
-        Assert.assertEquals("Orders should matched",top10orders, Collections.singletonList(orderDto));
+        Assert.assertEquals("Orders should matched", Collections.singletonList(orderDto), top10orders);
     }
 
     @Test(expected = OrderServiceException.class)
     public void findTop10OrdersWithHighestDollarAmountInZipNotFound(){
-        List<OrdersDTO> top10orders = service.findTop10OrdersWithHighestDollarAmountInZip(orders.get(0)
-                .getShippingAddress().getZip());
-        Assert.assertEquals("Orders not matched",top10orders, Collections.singletonList(orderDto));
+        List<OrdersDTO> top10orders = service.findTop10OrdersWithHighestDollarAmountInZip(ord.getShippingAddress().getZip());
+        Assert.assertEquals("Orders not matched", Collections.singletonList(orderDto), top10orders);
     }
 
     @Test
     public void placeOrder() throws Exception{
         OrdersDTO order = service.placeOrder(orderDto);
-        Assert.assertEquals("Error while creating order",order,order);
+        Assert.assertEquals("Error while creating order",orderDto,order);
     }
 
     @Test
     public void cancelOrder() throws Exception{
-        OrdersDTO cancel = service.cancelOrder(orders.get(0).getId());
+        OrdersDTO cancel = service.cancelOrder(ord.getId());
         Assert.assertEquals("Error while updating order as cancelled","CANCELLED",cancel.getOrderStatus().toString());
     }
 }
