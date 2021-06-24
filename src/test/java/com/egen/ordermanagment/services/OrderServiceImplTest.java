@@ -30,17 +30,16 @@ public class OrderServiceImplTest {
     @MockBean
     private OrderRepository repository;
 
-    @Qualifier("getService")
     @Autowired
     OrderService service;
 
-    @TestConfiguration
-    static class OrderServiceImplTestConfiguration {
+//    @TestConfiguration
+//    static class OrderServiceImplTestConfiguration {
         @Bean
         public OrderService getService(){
             return new OrderServiceImpl();
         }
-    }
+//    }
 
 
     OrdersDTO orderDto = new OrdersDTO();

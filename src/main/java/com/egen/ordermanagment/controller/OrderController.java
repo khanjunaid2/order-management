@@ -21,7 +21,6 @@ public class OrderController {
     /**
      * implement the following endpoints
      */
-    @Qualifier("orderServiceImpl")
     @Autowired
     private OrderService service;
 
