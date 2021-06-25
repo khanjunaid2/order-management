@@ -5,6 +5,7 @@ import com.egen.response.Response;
 import com.egen.response.ResponseMetadata;
 import com.egen.response.StatusMessage;
 import com.egen.service.OrderService;
+import com.egen.service.kafka.OrderProducerServiceImpl;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -18,9 +19,11 @@ import java.util.List;
 public class OrderController {
 
     private final OrderService orderService;
+    private final OrderProducerServiceImpl orderProducerService;
 
-    public OrderController(OrderService orderService) {
+    public OrderController(OrderService orderService, OrderProducerServiceImpl orderProducerService) {
         this.orderService = orderService;
+        this.orderProducerService = orderProducerService;
     }
 
     @ApiOperation(value = "Gets Orders", nickname = "getOrders", notes = "Get all the orders")
@@ -45,12 +48,18 @@ public class OrderController {
             @ApiResponse(code = 200, message = "Successful retrieval")})
     @PostMapping
     public Response<String> placeOrder(@RequestBody OrderDTO orderDTO) {
-        return Response.<String>builder()
+        return orderProducerService.sendOrder(orderDTO) ? Response.<String>builder()
                 .meta(ResponseMetadata.builder()
                         .statusCode(200)
                         .statusMessage(StatusMessage.SUCCESS.name()).build())
-                .data("Order Created")
-                .build();
+                .data("Order got processed in Kafka")
+                .build()
+                :Response.<String>builder()
+                        .meta(ResponseMetadata.builder()
+                                .statusCode(400)
+                                .statusMessage(StatusMessage.UNKNOWN_INTERNAL_ERROR.name()).build())
+                        .data("Order failed to load")
+                        .build();
     }
 
     @ApiOperation(value = "Order pages", nickname = "getOrdersPages", notes = "Gets the Orders in pages")
