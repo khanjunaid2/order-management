@@ -26,7 +26,7 @@ public class Items {
     private double cost;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "orders_id", nullable = false, updatable = true, insertable = true)
+    @JoinColumn(name = "orders_id", updatable = true, insertable = true)
     public Order orders;
 
     public Items(String name, double quantity, double cost) {

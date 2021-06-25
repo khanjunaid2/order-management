@@ -1,8 +1,9 @@
 package com.egen.service;
 
+import com.egen.dto.OrderDTO;
 import com.egen.exception.BadRequestException;
 import com.egen.exception.ResourceNotFoundException;
-import com.egen.model.Address;
+import com.egen.mapper.OrderMapper;
 import com.egen.model.Items;
 import com.egen.model.Order;
 import com.egen.model.Payment;
@@ -67,12 +68,12 @@ public class OrderService {
     }
 
     @Transactional
-    public Order placeOrder(Order order){
+    public OrderDTO placeOrder(Order order){
 
         //create items
        Set<Items> item=order.getItems();
         for(Items it : item) {
-            Items items = new Items();
+            it.setOrders(order);
         }
 
         //create payment method
@@ -85,7 +86,8 @@ public class OrderService {
         if(existing == null) {
             throw new BadRequestException("Order with id " + order.getId() + "already exists");
         }
-        return existing;
+        OrderMapper map=new OrderMapper();
+        return map.setOrderDtoObject(existing);
     }
 
     @Transactional

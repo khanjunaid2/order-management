@@ -1,7 +1,11 @@
 package com.egen.mapper;
 
 import com.egen.dto.OrderDTO;
+import com.egen.model.Items;
 import com.egen.model.Order;
+
+import java.util.List;
+import java.util.Set;
 
 public class OrderMapper {
 
@@ -9,7 +13,8 @@ public class OrderMapper {
         OrderDTO obj = new OrderDTO();
         obj.setCustomer(ord.getCustomer());
         obj.setId(ord.getId());
-        obj.setItems(ord.getItems());
+        Set<Items> item= (Set<Items>) ord.getItems();
+        obj.setItems(item);
         obj.setCreatedDate(ord.getCreatedDate());
         obj.setPayment(ord.getPayment());
         obj.setModifiedDate(ord.getModifiedDate());
