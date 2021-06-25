@@ -1,1 +1,5 @@
----------- Order Management Using Spring Boot ------------
+## Order Management
+<hr>
+Spring boot, Kafka, JPA, DTO, Pagination
+
+
