@@ -42,21 +42,28 @@ public class ConsumerConfiguration {
 
     /**
      *
-     * kafkaListenerContainerFactory for json
+     * Setting Consumer properties
+     * Build Container
      *
      * */
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, OrderDTO> jsonKafkaListenerContainerFactory() {
+    public ConcurrentKafkaListenerContainerFactory<String, OrderDTO> orderDtoKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, OrderDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(jsonConsumerFactory());
+        factory.setConsumerFactory(orderDTOConsumerFactory());
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.RECORD);
         factory.getContainerProperties().setSyncCommits(true);
         factory.setErrorHandler(new SeekToCurrentErrorHandler());
         return factory;
     }
 
+    /**
+     *
+     * Consumer instance creation
+     *
+     */
+
     @Bean
-    public DefaultKafkaConsumerFactory jsonConsumerFactory() {
+    public DefaultKafkaConsumerFactory orderDTOConsumerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, autoOffsetReset);

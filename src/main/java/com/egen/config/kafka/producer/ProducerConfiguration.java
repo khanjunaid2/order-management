@@ -54,7 +54,8 @@ public class ProducerConfiguration {
 
     /**
      *
-     * kafkaTemplate for Json
+     * Setting Producer properties
+     * Create Producer Instance
      *
      * */
     @Bean

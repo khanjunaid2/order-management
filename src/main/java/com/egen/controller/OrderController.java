@@ -41,6 +41,12 @@ public class OrderController {
                 .build();
     }
 
+    /**
+     *
+     * Gets new order
+     * Passes to orderProducerService
+     *
+     */
     @ApiOperation(value = "Create Order ", nickname = "createOrders", notes = "Creates new order")
     @ApiResponses(value = {
             @ApiResponse(code = 500, message = "Server error"),

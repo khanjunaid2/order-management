@@ -5,24 +5,6 @@ server:
   servlet:
     context-path: /api
 
-
-# Actuator endpoint configurations
-info:
-  app:
-    version: 0.0.1
-    release: '0_20210610'
-    name: ${spring.application.name}
-    servlet:
-      context-path: /NotificationRelayApp
-    java:
-      version: 11
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info
-
 # Spring configurations
 spring:
   datasource:
@@ -32,7 +14,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-    show-sql: true
+    show-sql: false
   profiles:
     active: local
   application:
@@ -53,8 +35,8 @@ spring:
     consumer:
       bootstrap-servers: localhost:9092
       client-id: orderConsumer
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer #org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer #org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       auto-offset-reset: earliest
       isolationLevel: read_committed
       max-poll-records: 7
