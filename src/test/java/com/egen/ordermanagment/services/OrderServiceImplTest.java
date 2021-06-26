@@ -4,52 +4,46 @@ import com.egen.ordermanagment.dto.OrdersDTO;
 import com.egen.ordermanagment.exception.OrderServiceException;
 import com.egen.ordermanagment.model.*;
 import com.egen.ordermanagment.repository.OrderRepository;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class OrderServiceImplTest {
+class OrderServiceImplTest {
     @MockBean
     private OrderRepository repository;
 
     @Autowired
     OrderService service;
 
-//    @TestConfiguration
-//    static class OrderServiceImplTestConfiguration {
-        @Bean
-        public OrderService getService(){
-            return new OrderServiceImpl();
-        }
-//    }
+    @Bean
+    public OrderService getService(){
+        return new OrderServiceImpl();
+    }
 
 
     OrdersDTO orderDto = new OrdersDTO();
     Orders ord = new Orders();
 
-    @Before
-    public void setup(){
-        OrderItems orderItems = new OrderItems();
-        Payment payment = new Payment();
-        Address address = new Address();
+    @BeforeEach
+    public void mockData(){
         ord.setId("order1").setOrderStatus(OrderStatus.PLACED)
                 .setCustomerId("Customer1")
                 .setOrderCreated(Timestamp.valueOf("2021-06-22 12:00:09"))
@@ -58,22 +52,22 @@ public class OrderServiceImplTest {
                 .setOrderSubTotal(10.0)
                 .setOrderTax(5.0)
                 .setOrderTotal(10.50)
-                .setOrderItemsList(Collections.singletonList(orderItems
+                .setOrderItemsList(Collections.singletonList(new OrderItems()
                         .setOrderItemId("OrderItem1")
                         .setOrderItemName("Kellogs")
                         .setOrderItemQty(10)
                         .setOrderItemUnitPrice(15.0)))
-                .setPaymentDetail(payment.setPaymentId("paymentId1")
+                .setPaymentDetail(new Payment().setPaymentId("paymentId1")
                         .setPaymentAmount(100.0)
                         .setPaymentMethod(PaymentMethod.CREDIT)
-                        .setBillingAddress(address
+                        .setBillingAddress(new Address()
                                 .setAddressId("Address1")
                                 .setAddressLine1("4217 Grove Cir")
                                 .setAddressLine2("#5")
                                 .setCity("Las Vegas")
                                 .setState("NV")
                                 .setZip("89119")))
-                .setShippingAddress(address
+                .setShippingAddress(new Address()
                         .setAddressId("Address1")
                         .setAddressLine1("4217 Grove Cir")
                         .setAddressLine2("#5")
@@ -81,6 +75,7 @@ public class OrderServiceImplTest {
                         .setState("NV")
                         .setZip("89119"));
 
+//        orderDto = new OrderDTOMapper().entityToDTO(ord);
         BeanUtils.copyProperties(ord, orderDto);
 
         Mockito.when(repository.findAll()).thenReturn(Collections.singletonList(ord));
@@ -94,73 +89,58 @@ public class OrderServiceImplTest {
         Mockito.when(repository.findTop10OrdersWithHighestDollarAmountInZip(ord.getShippingAddress().getZip())).thenReturn(Collections.singletonList(ord));
 
         Mockito.when(repository.save(ord)).thenReturn(ord);
-
     }
-
-    @After
-    public void cleanup(){
-        System.out.println("cleanup done");
+    @AfterEach
+    public void cleanUp(){
+        System.out.println("Clean up done");
     }
 
     @Test
-    public void getAllOrders() throws Exception{
+    void getAllOrders() {
         List<Orders> result = service.getAllOrders();
-        Assert.assertEquals("orders should match", ord, result);
+        Assertions.assertEquals(Collections.singletonList(ord), result, "Orders should match");
     }
 
     @Test
-    public void findAllPaginationSorting() throws Exception {
+    void findAllPaginationSorting() {
         List<OrdersDTO> result = service.findAllPaginationSorting(0,2,"orderCreated");
-        Assert.assertEquals("Orders should match",Collections.singletonList(orderDto), result);
+        Assertions.assertEquals(Collections.singletonList(orderDto), result, "Orders should match");
     }
 
     @Test
-    public void findOne() throws Exception{
+    void findOne() {
+        System.out.println(orderDto.toString());
         OrdersDTO result = service.findOne(ord.getId());
-        Assert.assertEquals("order id should match", orderDto ,result);
-    }
-
-    @Test(expected = OrderServiceException.class)
-    public void findOneNotFound() throws Exception{
-        OrdersDTO result = service.findOne("test");
-        Assert.assertEquals("order id not matched", orderDto ,result);
+        Assertions.assertEquals(orderDto, result, "Order id should match");
     }
 
     @Test
-    public void findWithinInterval() throws Exception{
-        List<OrdersDTO> ordersWithinTime = service.findWithinInterval(ord.getOrderCreated(),
-                ord.getOrderCreated());
-        Assert.assertEquals("orders should match",Collections.singletonList(orderDto), ordersWithinTime);
-    }
-
-    @Test(expected = OrderServiceException.class)
-    public void findWithinIntervalNotFound() {
-        List<OrdersDTO> ordersWithinTime = service.findWithinInterval(ord.getOrderCreated(),
-                ord.getOrderCreated());
-        Assert.assertEquals("orders not matched",Collections.singletonList(orderDto), ordersWithinTime);
+    void findWithinInterval() {
+        List<OrdersDTO> ordersWithinTime = service.findWithinInterval(ord.getOrderCreated(),ord.getOrderCreated());
+        Assertions.assertEquals(Collections.singletonList(orderDto), ordersWithinTime, "Orders should match");
     }
 
     @Test
-    public void findTop10OrdersWithHighestDollarAmountInZip() throws Exception{
+    void findTop10OrdersWithHighestDollarAmountInZip(){
         List<OrdersDTO> top10orders = service.findTop10OrdersWithHighestDollarAmountInZip("89119");
-        Assert.assertEquals("Orders should matched", Collections.singletonList(orderDto), top10orders);
+        Assertions.assertEquals(Collections.singletonList(orderDto), top10orders, "Orders should not match");
     }
-
-    @Test(expected = OrderServiceException.class)
-    public void findTop10OrdersWithHighestDollarAmountInZipNotFound(){
-        List<OrdersDTO> top10orders = service.findTop10OrdersWithHighestDollarAmountInZip(ord.getShippingAddress().getZip());
-        Assert.assertEquals("Orders not matched", Collections.singletonList(orderDto), top10orders);
-    }
-
-//    @Test
-//    public void placeOrder() throws Exception{
-//        OrdersDTO order = service.placeOrder(orderDto);
-//        Assert.assertEquals("Error while creating order",orderDto,order);
-//    }
 
     @Test
-    public void cancelOrder() throws Exception{
-        OrdersDTO cancel = service.cancelOrder(ord.getId());
-        Assert.assertEquals("Error while updating order as cancelled","CANCELLED",cancel.getOrderStatus().toString());
+    void updateOrder() {
+        OrdersDTO modifiedOrder = service.updateOrder(ord.getId(), orderDto);
+        Assertions.assertEquals(orderDto, modifiedOrder, "orders should be updated");
+    }
+
+    @Test
+    void cancelOrder() {
+        OrdersDTO cancelledOrder = service.cancelOrder(ord.getId());
+        Assertions.assertEquals(orderDto, cancelledOrder, "Orders should be cancelled");
+    }
+
+    @Test
+    void placeOrder() {
+        boolean create = service.placeOrder(orderDto);
+        Assertions.assertEquals(orderDto, create, "Order should be created");
     }
 }

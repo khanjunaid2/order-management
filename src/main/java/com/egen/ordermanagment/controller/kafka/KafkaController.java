@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Slf4j
-@RequestMapping("/orders")
+@RequestMapping("/kafka")
 public class KafkaController {
 
     @Autowired
@@ -40,4 +40,5 @@ public class KafkaController {
                 .data("Error while saving orders")
                 .build();
     }
+
 }

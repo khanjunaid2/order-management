@@ -27,8 +27,13 @@ public class OrderController {
     private OrderService service;
 
     @GetMapping
-    public List<Orders> getAllOrders(){
-        return service.getAllOrders();
+    public Response<List<Orders>> getAllOrders(){
+        return Response.<List<Orders>>builder()
+                .meta(ResponseMetadata.builder()
+                        .statusCode(200)
+                        .statusMessage(StatusMessage.SUCCESS.name()).build())
+                .data(service.getAllOrders())
+                .build();
     }
 
     /**

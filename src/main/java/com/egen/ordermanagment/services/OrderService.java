@@ -8,7 +8,6 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public interface OrderService {
-//    Boolean createOrder(OrdersDTO order);
     List<Orders> getAllOrders();
     List<OrdersDTO> findAllPaginationSorting(int page, int size, String sortBy);
     OrdersDTO findOne(String id);

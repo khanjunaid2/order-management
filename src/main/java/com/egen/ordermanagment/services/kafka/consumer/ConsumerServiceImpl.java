@@ -1,6 +1,7 @@
 package com.egen.ordermanagment.services.kafka.consumer;
 
 import com.egen.ordermanagment.dto.OrdersDTO;
+import com.egen.ordermanagment.exception.KafkaOrderException;
 import com.egen.ordermanagment.services.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,10 @@ public class ConsumerServiceImpl {
                 ordersDTO.getCustomerId(),
                 partition,
                 offset);
-        orderService.placeOrder(ordersDTO);
+        try {
+            orderService.placeOrder(ordersDTO);
+        } catch (Exception e) {
+            throw new KafkaOrderException("Error while processing request");
+        }
     }
 }

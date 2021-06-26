@@ -27,7 +27,15 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public  List<Orders> getAllOrders(){
-        return (List<Orders>) orderRepository.findAll();
+        try {
+            List<Orders> result =  orderRepository.findAll();
+            if(result.isEmpty()){
+                throw new OrderServiceException("No orders found");
+            }
+            return result;
+        } catch (OrderServiceException e) {
+            throw new OrderServiceException("Error while retrieving all orders");
+        }
     }
 
 
@@ -144,19 +152,6 @@ public class OrderServiceImpl implements OrderService {
             throw new OrderServiceException("Error while creating orders");
         }
     }
-
-//    public Boolean createOrder(OrdersDTO ordersDTO) {
-//        Optional<Orders> ordersOptional = orderRepository.findById(ordersDTO.getId());
-//        if (ordersOptional.isPresent()) {
-//            throw new OrderServiceException("Order already exist");
-//        }
-//        Orders orders = new OrderDTOMapper().DTOToEntity(ordersDTO);
-//        new OrderDTOMapper().entityToDTO(orderRepository.save(orders));
-////        Orders order = orderMapper.ToOrder(orderDTO);
-////        order.setOrderStatus(OrderStatus.PLACED);
-////        orderRepository.save(order);
-//        return Boolean.TRUE;
-//    }
 
 }
 
