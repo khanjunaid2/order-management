@@ -2,7 +2,6 @@ package com.egen.ordermanagement.service;
 
 import com.egen.ordermanagement.dto.OrderDto;
 import com.egen.ordermanagement.enums.OrderStatus;
-import com.egen.ordermanagement.enums.ShipmentMethod;
 import com.egen.ordermanagement.exceptions.OrderServiceException;
 import com.egen.ordermanagement.model.Address;
 import com.egen.ordermanagement.model.Item;
@@ -11,7 +10,6 @@ import com.egen.ordermanagement.model.Payment;
 import com.egen.ordermanagement.repository.OrdersRepo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -39,6 +37,22 @@ public class OrdersServiceImpl implements OrdersService {
     @Autowired
     PaymentService paymentService;
 
+
+    public OrdersServiceImpl(OrdersRepo ordersRepo) {
+        this.ordersRepo=ordersRepo;
+    }
+
+    public OrdersServiceImpl() {
+
+    }
+    public OrdersServiceImpl(OrdersRepo ordersRepo,ItemService itemService,CustomerService customerService,
+                             PaymentService paymentService,AddressService addressService) {
+        this.ordersRepo=ordersRepo;
+        this.paymentService=paymentService;
+        this.addressService=addressService;
+        this.itemService=itemService;
+        this.customerService=customerService;
+    }
     @Transactional(readOnly = true)
     public List<Orders> findAll() {
 
@@ -68,7 +82,7 @@ public class OrdersServiceImpl implements OrdersService {
     }
 
     @Transactional
-    public Orders createOrder(OrderDto orderDto) {
+    public Boolean createOrder(OrderDto orderDto) {
     try {
 
         Orders new_order = null;
@@ -82,9 +96,9 @@ public class OrdersServiceImpl implements OrdersService {
         Timestamp delivery_date = new Timestamp(expectedDelivery.getTime());
 
         ///Update item's quantity left in stock and get subtotal for the quantity ordered
-        Iterator<Integer> it = Arrays.stream(orderDto.getItems()).iterator();
+        Iterator<Long> it = Arrays.stream(orderDto.getItems()).iterator();
         while (it.hasNext()) {
-            Long item_id = Long.valueOf(it.next());
+            Long item_id = it.next();
             itemService.updateItem(item_id, orderDto.getItemQuantity());
             Item item2 = itemService.getItem(item_id);
             sub_total += item2.getItemPrice() * orderDto.getItemQuantity();
@@ -137,12 +151,12 @@ public class OrdersServiceImpl implements OrdersService {
             }
         }
         //Updates Order_id in item table
-        Iterator<Integer> it2 = Arrays.stream(orderDto.getItems()).iterator();
+        Iterator<Long> it2 = Arrays.stream(orderDto.getItems()).iterator();
         while (it2.hasNext()) {
             Long itemId = Long.valueOf(it2.next());
             itemService.updateOrderIdInItem(itemId, new_order);
         }
-        return new_order;
+        return true;
     }catch (Exception ex){
         throw new OrderServiceException("Failed to create order. Please try again",ex);
     }

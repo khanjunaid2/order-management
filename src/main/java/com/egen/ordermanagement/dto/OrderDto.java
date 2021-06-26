@@ -7,6 +7,7 @@ import com.egen.ordermanagement.model.Payment;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,13 +17,14 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OrderDto implements Serializable {
 
     private long id;
     @JsonProperty(value = "customerId")
     private Long customerId;
-    private int[] items;
+    private long[] items;
     @JsonProperty(value = "shippingAddress")
     private Address shippingAddress;
     @JsonProperty(value = "billingAddress")
@@ -47,7 +49,7 @@ public class OrderDto implements Serializable {
         return this;
     }
 
-    public OrderDto setItems(int[] items) {
+    public OrderDto setItems(long[] items) {
         this.items = items;
         return this;
     }

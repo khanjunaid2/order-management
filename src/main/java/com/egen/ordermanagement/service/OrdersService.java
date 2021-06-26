@@ -11,7 +11,7 @@ public interface OrdersService {
     Orders findOne(Long id);
     List<Orders> findWithinInterval(Timestamp startTime, Timestamp endTime);
     List<Orders> findAllByShippingAddressZipcodeAndSubTotal(String zip);
-    Orders createOrder(OrderDto orderDto);
+    Boolean createOrder(OrderDto orderDto);
     Orders cancelOrder(Long id);
     Orders updateOrder(Orders order,Long id);
     List<Orders> findAllByPageLimit(Integer pageNo, Integer pageSize);

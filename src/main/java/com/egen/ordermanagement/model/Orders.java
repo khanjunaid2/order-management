@@ -3,6 +3,7 @@ package com.egen.ordermanagement.model;
 import com.egen.ordermanagement.enums.OrderStatus;
 import com.egen.ordermanagement.enums.ShipmentMethod;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import java.util.Set;
 
 @Entity
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Orders {

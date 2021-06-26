@@ -9,7 +9,9 @@ import com.egen.ordermanagement.response.StatusMessage;
 import com.egen.ordermanagement.service.CustomerService;
 import com.egen.ordermanagement.service.ItemService;
 import com.egen.ordermanagement.service.OrdersService;
+import com.egen.ordermanagement.service.kafka.producer.ProducerServiceImpl;
 import io.swagger.annotations.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/orders")
 @Api(description = "Order related endpoints")
+@Slf4j
 public class OrdersController {
 
     @Autowired
@@ -29,6 +32,27 @@ public class OrdersController {
     @Autowired
     ItemService itemService;
 
+    @Autowired
+    ProducerServiceImpl producerService;
+
+    /**
+     * Creates a new order
+     * @param orderDto
+     * @return
+     */
+    @PostMapping(value = "/publish/order")
+    @ApiOperation(value = "Creates a new order",
+            notes = "Refer the Order DTO class to know the Json format")
+    @ApiResponses(value={
+            @ApiResponse(code=201,message = "CREATED"),
+            @ApiResponse(code=500,message = "INTERNAL SERVER ERROR"),
+            @ApiResponse(code=200,message = "OK")
+    })
+    public String publishOrder(@RequestBody OrderDto orderDto){
+        log.info("Order Received in Order Controller:{}",orderDto);
+         producerService.sendOrderData(orderDto);
+         return "Order Received";
+    }
     /**
      * Fetches all the orders present in the table
      * @return list of orders
@@ -149,12 +173,19 @@ public class OrdersController {
             @ApiResponse(code=500,message = "INTERNAL SERVER ERROR"),
             @ApiResponse(code=200,message = "OK")
     })
-    public Response<Orders> placeOrder(@RequestBody OrderDto orderDto){
-        return Response.<Orders>builder()
+    public Response<String> placeOrder(@RequestBody OrderDto orderDto){
+        return ordersService.createOrder(orderDto) == Boolean.TRUE ? Response.<String>builder()
                 .meta(ResponseMetadata.builder().statusCode(201)
                         .statusMessage(StatusMessage.CREATED.name())
                         .build())
-                        .data((ordersService.createOrder(orderDto)))
+                        .data("Order placed successfully")
+                        .build()
+                :
+                Response.<String>builder()
+                        .meta(ResponseMetadata.builder().statusCode(500)
+                                .statusMessage(StatusMessage.UNKNOWN_INTERNAL_ERROR.name())
+                                .build())
+                        .data("Failed to place order")
                         .build();
     }
 
