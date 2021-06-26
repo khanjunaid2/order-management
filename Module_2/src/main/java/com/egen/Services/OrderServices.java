@@ -1,6 +1,6 @@
 package com.egen.Services;
 
-import com.egen.Model.Order;
+import com.egen.DTO.OrderDTO;
 import com.egen.Model.OrderStatus;
 import com.egen.Repository.OrderRepo;
 import com.egen.exception.OrderServicesException;
@@ -20,7 +20,7 @@ public class OrderServices implements OrderServiceInterface{
 
 
     @Override
-    public List<Order> getAllOrders() {
+    public List<OrderDTO> getAllOrders() {
         try{
             return orderrepo.getAllOrders();
         }
@@ -31,7 +31,7 @@ public class OrderServices implements OrderServiceInterface{
     }
 
     @Override
-    public Order getOrderById(String id) {
+    public OrderDTO getOrderById(String id) {
         try{
             return orderrepo.getOrderById(id);
         }
@@ -42,7 +42,7 @@ public class OrderServices implements OrderServiceInterface{
     }
 
     @Override
-    public List<Order> getOrdersWithTimeInterval(ZonedDateTime startTime, ZonedDateTime endTime) {
+    public List<OrderDTO> getOrdersWithTimeInterval(ZonedDateTime startTime, ZonedDateTime endTime) {
         try {
             return orderrepo.getOrdersWithTimeInterval(startTime, endTime);
         }
@@ -53,7 +53,7 @@ public class OrderServices implements OrderServiceInterface{
     }
 
     @Override
-    public List<Order> top10OrdersWithHighestDollarAmountInZip(String zip) {
+    public List<OrderDTO> top10OrdersWithHighestDollarAmountInZip(String zip) {
         try {
             return orderrepo.top10OrdersWithHighestDollarAmountInZip(zip);
         }
@@ -64,7 +64,7 @@ public class OrderServices implements OrderServiceInterface{
     }
 
     @Override
-    public Order addOrder(Order order) {
+    public OrderDTO addOrder(OrderDTO order) {
         try{
             orderrepo.save(order);
             return order;
@@ -78,8 +78,8 @@ public class OrderServices implements OrderServiceInterface{
     @Override
     public OrderStatus cancelOrder(String id) {
         try{
-            Order order = orderrepo.getOrderById(id);
-            order.setOrderStatus(OrderStatus.CANCELLED);
+            OrderDTO order = orderrepo.getOrderById(id);
+            order.setStatus(OrderStatus.CANCELLED);
             orderrepo.save(order);
             return OrderStatus.CANCELLED;
         }
@@ -90,10 +90,10 @@ public class OrderServices implements OrderServiceInterface{
     }
 
     @Override
-    public OrderStatus updateOrder(String id, Order order) {
+    public OrderStatus updateOrder(String id, OrderDTO order) {
         try{
-            Order existingOrder = orderrepo.getOrderById(id);
-            existingOrder.setOrderStatus(OrderStatus.MODIFIED);
+            OrderDTO existingOrder = orderrepo.getOrderById(id);
+            existingOrder.setStatus(OrderStatus.MODIFIED);
             orderrepo.save(order);
             return OrderStatus.MODIFIED;
             }

@@ -1,24 +1,24 @@
 package com.egen.Services;
 
-import com.egen.Model.Order;
+import com.egen.DTO.OrderDTO;
 import com.egen.Model.OrderStatus;
 
 import java.time.ZonedDateTime;
 import java.util.List;
 
 interface OrderServiceInterface {
-    List<Order> getAllOrders();
+    List<OrderDTO> getAllOrders();
 
-    Order getOrderById(String id);
+    OrderDTO getOrderById(String id);
 
-    List<Order> getOrdersWithTimeInterval(ZonedDateTime startTime, ZonedDateTime endTime);
+    List<OrderDTO> getOrdersWithTimeInterval(ZonedDateTime startTime, ZonedDateTime endTime);
 
-    List<Order> top10OrdersWithHighestDollarAmountInZip(String zip);
+    List<OrderDTO> top10OrdersWithHighestDollarAmountInZip(String zip);
 
-    Order addOrder(Order order);
+    OrderDTO addOrder(OrderDTO orderDTO);
 
     OrderStatus cancelOrder(String id);
 
-    OrderStatus updateOrder(String id, Order order);
+    OrderStatus updateOrder(String id, OrderDTO orderDTO);
 
 }

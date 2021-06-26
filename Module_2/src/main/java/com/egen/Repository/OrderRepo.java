@@ -1,6 +1,6 @@
 package com.egen.Repository;
 
-import com.egen.Model.Order;
+import com.egen.DTO.OrderDTO;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -10,21 +10,21 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 @Repository
-public interface OrderRepo extends CrudRepository<Order, Long> {
+public interface OrderRepo extends CrudRepository<OrderDTO, Long> {
 
     @Query(nativeQuery = true, value = "SELECT ord FROM Order ord JOIN fetch ord.paymentDetails JOIN FETCH ord.items")
-    List<Order> getAllOrders();
+    List<OrderDTO> getAllOrders();
 
     @Query ("SELECT ord FROM Order ord" + "JOIN fetch ord.paymentDetails JOIN FETCH ord.items" +
             "WHERE ord.orderId = :orderId ")
-    Order getOrderById(@Param("orderId") String orderId);
+    OrderDTO getOrderById(@Param("orderId") String orderId);
 
     @Query("SELECT ord FROM Order ord" + "JOIN fetch ord.paymentDetails JOIN FETCH ord.items" +
             "WHERE ord.createdAt > :startTime AND ord.createdAt < :endTime")
-    List<Order> getOrdersWithTimeInterval(@Param("startTime") ZonedDateTime startTime, @Param("endTime") ZonedDateTime endTime);
+    List<OrderDTO> getOrdersWithTimeInterval(@Param("startTime") ZonedDateTime startTime, @Param("endTime") ZonedDateTime endTime);
 
     @Query("SELECT ord FROM Order ord, Address adr WHERE ord.shipping.shippingId = adr.addressId AND adr.zipCode = :zip_code ORDER BY ord.order_total desc")
-    List<Order> top10OrdersWithHighestDollarAmountInZip(@Param("zip") String zip);
+    List<OrderDTO> top10OrdersWithHighestDollarAmountInZip(@Param("zip") String zip);
 
 //    public Order addOrder(Order orders) {
 //        em.persist(orders);
