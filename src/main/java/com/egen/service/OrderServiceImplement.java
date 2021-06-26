@@ -10,9 +10,6 @@ import com.egen.model.Item;
 import com.egen.model.OrderItem;
 import com.egen.model.Payment;
 import com.egen.repository.OrderRepository;
-import com.fasterxml.jackson.databind.util.BeanUtil;
-import org.aspectj.weaver.ast.Or;
-import org.hibernate.criterion.Order;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -22,8 +19,6 @@ import uk.co.jemos.podam.api.PodamFactoryImpl;
 import uk.co.jemos.podam.api.PodamUtils;
 import uk.co.jemos.podam.typeManufacturers.IntTypeManufacturerImpl;
 import uk.co.jemos.podam.typeManufacturers.TypeManufacturer;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 //import java.time.ZonedDateTime;
@@ -43,6 +38,7 @@ public class OrderServiceImplement implements OrderService{
 
         OrderItemDTO responseDto;
         try{
+            System.out.println("Inside the Place Order function");
             OrderItem orderItem =  convertDTOtoEntity(orderItemDTO);
             OrderItem responseEntity = repository.save(orderItem);
             responseDto = convertEntitytoDTO(responseEntity);
