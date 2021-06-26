@@ -39,8 +39,8 @@ spring:
     consumer:
       bootstrap-servers: localhost:9092
       client-id: orderManagementConsumer
-      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      key-deserializer: org.apache.kafka.common.serialization.StringSerializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       auto-offset-reset: earliest
       isolationLevel: read_committed
       max-poll-records: 10

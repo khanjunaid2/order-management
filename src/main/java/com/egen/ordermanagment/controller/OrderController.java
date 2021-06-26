@@ -6,6 +6,7 @@ import com.egen.ordermanagment.response.Response;
 import com.egen.ordermanagment.response.ResponseMetadata;
 import com.egen.ordermanagment.response.StatusMessage;
 import com.egen.ordermanagment.services.OrderService;
+import com.egen.ordermanagment.services.kafka.producer.ProducerServiceImpl;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class OrderController {
      */
     @Autowired
     private OrderService service;
+
+    @Autowired
+    private ProducerServiceImpl producerService;
 
     @GetMapping
     public Response<List<Orders>> getAllOrders(){
@@ -145,11 +149,11 @@ public class OrderController {
             @ApiResponse(code = 200, message = "created"),
             @ApiResponse(code = 500, message = "Error while retrieving orders") })
     public Response<String> placeOrder(@RequestBody OrdersDTO order) {
-        return service.placeOrder(order) ? Response.<String>builder()
+        return producerService.sendOrdersData(order) ? Response.<String>builder()
                 .meta(ResponseMetadata.builder()
                         .statusCode(200)
                         .statusMessage(StatusMessage.SUCCESS.name()).build())
-                .data("Orders created")
+                .data("Orders received from kafka")
                 .build()
                 :Response.<String>builder()
                 .meta(ResponseMetadata.builder()
