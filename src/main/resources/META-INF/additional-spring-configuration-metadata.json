@@ -1,0 +1,13 @@
+{
+  "properties": [
+    {
+      "name": "spring.kafka.producer.linger-ms",
+      "type": "java.lang.String",
+      "description": "Description for spring.kafka.producer.linger-ms."
+    },
+    {
+      "name": "spring.kafka.consumer.key-serializer",
+      "type": "java.lang.String",
+      "description": "Description for spring.kafka.consumer.key-serializer."
+    }
+  ] }

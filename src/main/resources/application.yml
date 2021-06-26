@@ -1,0 +1,52 @@
+server:
+    port: 9090
+    servlet:
+        context-path: /passport
+spring:
+    datasource:
+        password: saran
+        url: jdbc:postgresql://localhost:5432/postgres
+        username: postgres
+    jpa:
+        database: POSTGRESQL
+        generate-ddl: true
+        hibernate:
+            ddl-auto: create-drop
+        properties:
+            hibernate:
+                jdbc:
+                    batch_size: 5
+                    lob:
+                        non_contextual_creation: true
+        show-sql: true
+    kafka:
+      producer:
+        bootstrap-servers: localhost:9092
+        client-id: OrderClient
+        key-serializer: org.apache.kafka.common.serialization.StringSerializer
+        value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+        acks: all
+        retries: 3
+        batch-size: 16384
+        buffer-memory: 33554432
+        linger-ms: 1
+        enable-Idempotence: true
+        transactionalId: OrderTransId
+      consumer:
+          bootstrap-servers: localhost:9092
+          client-id: OrderClient
+          key-deserializer: org.apache.kafka.common.serialization.StringSerializer
+          value-deserializer: org.springframework.kafka.support.serializer.JsonSerializer
+          auto-offset-reset: latest
+          isolation-level: read_committed
+          max-poll-records: 10
+          heartbeat-interval: 6000
+kafka:
+    topic:
+        name: order-management-topic
+        groupId: OrderManagementGroup
+
+
+
+
+
