@@ -45,15 +45,15 @@ public class CustomerOrder implements Serializable {
     private Address billingAddress;
 
     @Column(name = "is_billing_address_same")
-    private boolean isBillingAddressSame ;
+    private boolean isBillingAddressSame;
 
     @Column(name = "delivery_type")
     private DeliveryType deliveryType;
 
-    @OneToMany(mappedBy = "order" , cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.ALL})
     private List<Item> items;
 
-    @OneToOne( mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
     private Payment paymentDetails;
 
     public CustomerOrder() {
@@ -84,10 +84,10 @@ public class CustomerOrder implements Serializable {
     }
 
     public Address getShippingAddress() {
-        if(shippingAddress == null){
+        if (shippingAddress == null) {
             this.shippingAddress = new Address();
         }
-        return  this.shippingAddress;
+        return this.shippingAddress;
     }
 
     public boolean isBillingAddressSame() {

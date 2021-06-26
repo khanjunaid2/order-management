@@ -7,7 +7,10 @@ import java.util.List;
 
 public interface OrderService {
     Boolean createOrder(OrderDTO orderDto);
+
     CustomerOrder getOrderById(Long id);
+
     public Boolean createOrders(List<OrderDTO> orderDto);
+
     public List<CustomerOrder> getAllOrders();
 }

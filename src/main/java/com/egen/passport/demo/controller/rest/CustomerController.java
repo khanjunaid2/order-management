@@ -28,9 +28,9 @@ public class CustomerController {
     OrderService orderService;
 
     @GetMapping("/bulkcreate")
-    public String bulkcreate(){
+    public String bulkcreate() {
 // save a single Customer
-      //  repository.save(new Customer("Rajesh", "Bhojwani"));
+        //  repository.save(new Customer("Rajesh", "Bhojwani"));
 
 // save a list of Customers
        /* repository.saveAll(Arrays.asList(new Customer("Salim", "Khan")
@@ -48,30 +48,30 @@ public class CustomerController {
     }*/
 
     @GetMapping("/test")
-    public String test(){
+    public String test() {
         return "test";
     }
 
-    @PostMapping( value = "/create" , consumes = "application/json", produces = "application/json")
-    public Response<String> create(@RequestBody OrderDTO order){
+    @PostMapping(value = "/create", consumes = "application/json", produces = "application/json")
+    public Response<String> create(@RequestBody OrderDTO order) {
         return orderService.createOrder(order) == Boolean.TRUE ?
-         Response.<String>builder()
-                .meta(ResponseMetadata.builder()
-                        .statusCode(200)
-                        .statusMessage(StatusMessage.SUCCESS.name()).build())
-                .data("Order Created")
-                .build()
+                Response.<String>builder()
+                        .meta(ResponseMetadata.builder()
+                                .statusCode(200)
+                                .statusMessage(StatusMessage.SUCCESS.name()).build())
+                        .data("Order Created")
+                        .build()
                 :
                 Response.<String>builder()
-                .meta(ResponseMetadata.builder()
-                        .statusCode(200)
-                        .statusMessage(StatusMessage.UNKNOWN_INTERNAL_ERROR.name()).build())
-                .data("Order Not Created")
-                .build();
+                        .meta(ResponseMetadata.builder()
+                                .statusCode(200)
+                                .statusMessage(StatusMessage.UNKNOWN_INTERNAL_ERROR.name()).build())
+                        .data("Order Not Created")
+                        .build();
     }
 
-    @PostMapping( value = "/createOrders" , consumes = "application/json", produces = "application/json")
-    public Response<String> createOrders(@RequestBody List<OrderDTO> order){
+    @PostMapping(value = "/createOrders", consumes = "application/json", produces = "application/json")
+    public Response<String> createOrders(@RequestBody List<OrderDTO> order) {
         return orderService.createOrders(order) == Boolean.TRUE ?
                 Response.<String>builder()
                         .meta(ResponseMetadata.builder()
@@ -88,14 +88,14 @@ public class CustomerController {
                         .build();
     }
 
-    @GetMapping( value = "/getOrderById" , consumes = "application/json", produces = "application/json")
-    public Response<CustomerOrder> getOrderById(@RequestBody Long id){
+    @GetMapping(value = "/getOrderById", consumes = "application/json", produces = "application/json")
+    public Response<CustomerOrder> getOrderById(@RequestBody Long id) {
         return Response.<CustomerOrder>builder()
-                        .meta(ResponseMetadata.builder()
-                                .statusCode(200)
-                                .statusMessage(StatusMessage.SUCCESS.name()).build())
-                        .data((orderService.getOrderById(id)))
-                        .build();
+                .meta(ResponseMetadata.builder()
+                        .statusCode(200)
+                        .statusMessage(StatusMessage.SUCCESS.name()).build())
+                .data((orderService.getOrderById(id)))
+                .build();
     }
 
   /*  public CustomerOrder copyProperties(OrderDTO srcOrderDto , CustomerOrder des){
@@ -126,17 +126,17 @@ public class CustomerController {
     }*/
 
     @RequestMapping("/search/{id}")
-    public CustomerDTO search(@PathVariable long id){
+    public CustomerDTO search(@PathVariable long id) {
         Optional<Customer> customer = repository.findById(id);
         repository.saveAndFlush(new Customer());
 
 
         CustomerDTO dto = new CustomerDTO();
-        if(customer.isPresent()){
-            BeanUtils.copyProperties(customer.get() , dto);
+        if (customer.isPresent()) {
+            BeanUtils.copyProperties(customer.get(), dto);
             return dto;
         }
-       return null;
+        return null;
     }
 
    /* @RequestMapping("/searchbyfirstname/{firstname}")

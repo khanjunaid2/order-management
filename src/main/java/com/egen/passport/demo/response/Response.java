@@ -13,14 +13,15 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @RequiredArgsConstructor(staticName = "from")
 public class Response<T> {
 
-        @JsonProperty("meta")
-        @NonNull ResponseMetadata meta;
+    @JsonProperty("meta")
+    @NonNull
+    ResponseMetadata meta;
 
-        @JsonProperty("data")
-        @JsonInclude(NON_NULL)
-        T data;
+    @JsonProperty("data")
+    @JsonInclude(NON_NULL)
+    T data;
 
-    public Response(ResponseMetadata meta , T data){
+    public Response(ResponseMetadata meta, T data) {
         this.meta = meta;
         this.data = data;
     }

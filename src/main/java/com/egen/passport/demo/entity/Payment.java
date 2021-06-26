@@ -20,8 +20,8 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     private PaymentType paymentMode;
 
-   @OneToOne(fetch = FetchType.LAZY)
-   @JoinColumn(columnDefinition = "order_id")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(columnDefinition = "order_id")
     public CustomerOrder order;
 
     public Payment() {
