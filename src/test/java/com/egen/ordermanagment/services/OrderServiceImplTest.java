@@ -152,11 +152,11 @@ public class OrderServiceImplTest {
         Assert.assertEquals("Orders not matched", Collections.singletonList(orderDto), top10orders);
     }
 
-    @Test
-    public void placeOrder() throws Exception{
-        OrdersDTO order = service.placeOrder(orderDto);
-        Assert.assertEquals("Error while creating order",orderDto,order);
-    }
+//    @Test
+//    public void placeOrder() throws Exception{
+//        OrdersDTO order = service.placeOrder(orderDto);
+//        Assert.assertEquals("Error while creating order",orderDto,order);
+//    }
 
     @Test
     public void cancelOrder() throws Exception{

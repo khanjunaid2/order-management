@@ -7,6 +7,7 @@ import com.egen.ordermanagment.response.ResponseMetadata;
 import com.egen.ordermanagment.response.StatusMessage;
 import com.egen.ordermanagment.services.OrderService;
 import io.swagger.annotations.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @RestController
+@Slf4j
 @RequestMapping(value = "orders")
 @Api(value = "orders management endpoints")
 public class OrderController {
@@ -47,7 +49,6 @@ public class OrderController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(defaultValue = "orderCreated") String sortBy) {
-//        return new ResponseEntity<>(service.findAll(page, size, sortBy), HttpStatus.OK);
         return Response.<List<OrdersDTO>>builder()
                 .meta(ResponseMetadata.builder()
                         .statusCode(200)
@@ -138,13 +139,18 @@ public class OrderController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "created"),
             @ApiResponse(code = 500, message = "Error while retrieving orders") })
-    public Response<OrdersDTO> placeOrder(@RequestBody OrdersDTO order) {
-//        return new ResponseEntity<>(service.placeOrder(order), HttpStatus.CREATED);
-        return Response.<OrdersDTO>builder()
+    public Response<String> placeOrder(@RequestBody OrdersDTO order) {
+        return service.placeOrder(order) ? Response.<String>builder()
                 .meta(ResponseMetadata.builder()
                         .statusCode(200)
                         .statusMessage(StatusMessage.SUCCESS.name()).build())
-                .data(service.placeOrder(order))
+                .data("Orders created")
+                .build()
+                :Response.<String>builder()
+                .meta(ResponseMetadata.builder()
+                        .statusCode(400)
+                        .statusMessage(StatusMessage.UNKNOWN_INTERNAL_ERROR.name()).build())
+                .data("Error while saving orders")
                 .build();
     }
 
@@ -183,7 +189,6 @@ public class OrderController {
             @ApiResponse(code = 200, message = "Order updated"),
             @ApiResponse(code = 500, message = "Error while updating order") })
     public Response<OrdersDTO> updateOrder(@PathVariable("id") String id, @RequestBody OrdersDTO order){
-//        return new ResponseEntity<>(service.updateOrder(id, order), HttpStatus.OK);
         return Response.<OrdersDTO>builder()
                 .meta(ResponseMetadata.builder()
                         .statusCode(200)
