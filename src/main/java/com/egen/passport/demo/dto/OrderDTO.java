@@ -28,10 +28,8 @@ public class OrderDTO implements Serializable {
     private double tax;
     @JsonProperty(value = "totalAmount")
     private double totalAmount;
-    @JsonProperty(value = "shippingAddress")
-    private AddressDTO shippingAddress;
-    @JsonProperty(value = "billingAddress")
-    private AddressDTO billingAddress;
+    @JsonProperty(value = "addresses")
+    private List<AddressDTO> addresses;
     @JsonProperty(value = "isBillingAddressSame")
     private boolean isBillingAddressSame;
 
@@ -64,10 +62,6 @@ public class OrderDTO implements Serializable {
 
     public double getTotalAmount() {
         return totalAmount;
-    }
-
-    public AddressDTO getShippingAddress() {
-        return shippingAddress;
     }
 
     public boolean isBillingAddressSame() {
@@ -106,9 +100,6 @@ public class OrderDTO implements Serializable {
         this.totalAmount = totalAmount;
     }
 
-    public void setShippingAddress(AddressDTO shippingAddress) {
-        this.shippingAddress = shippingAddress;
-    }
 
     public void setBillingAddressSame(boolean billingAddressSame) {
         isBillingAddressSame = billingAddressSame;
@@ -130,11 +121,11 @@ public class OrderDTO implements Serializable {
         this.paymentDetails = paymentDetails;
     }
 
-    public AddressDTO getBillingAddress() {
-        return billingAddress;
+    public List<AddressDTO> getAddresses() {
+        return addresses;
     }
 
-    public void setBillingAddress(AddressDTO billingAddress) {
-        this.billingAddress = billingAddress;
+    public void setAddresses(List<AddressDTO> addresses) {
+        this.addresses = addresses;
     }
 }

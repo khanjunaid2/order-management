@@ -1,6 +1,7 @@
 package com.egen.passport.demo.entity;
 
 import com.egen.passport.demo.enums.PaymentType;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -20,8 +21,14 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     private PaymentType paymentMode;
 
+<<<<<<< HEAD
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(columnDefinition = "order_id")
+=======
+   @OneToOne(fetch = FetchType.LAZY)
+   @JoinColumn(columnDefinition = "order_id")
+   @JsonBackReference
+>>>>>>> 4ba23e98b30b3a87a80922c4dc33c47163ccffcd
     public CustomerOrder order;
 
     public Payment() {

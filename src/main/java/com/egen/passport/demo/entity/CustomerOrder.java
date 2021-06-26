@@ -2,6 +2,7 @@ package com.egen.passport.demo.entity;
 
 import com.egen.passport.demo.enums.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ import java.util.List;
 @Table(name = "customer_order")
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CustomerOrder implements Serializable {
@@ -38,11 +40,12 @@ public class CustomerOrder implements Serializable {
     @Column(name = "total_amount")
     private double totalAmount;
 
-    @OneToOne(mappedBy = "order", cascade = {CascadeType.ALL})
-    private Address shippingAddress;
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.ALL} , fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<Address> addresses;
 
-    @OneToOne(mappedBy = "order", cascade = {CascadeType.ALL})
-    private Address billingAddress;
+   /* @OneToOne(mappedBy = "order", cascade = {CascadeType.ALL})
+    private Address billingAddress;*/
 
     @Column(name = "is_billing_address_same")
     private boolean isBillingAddressSame;
@@ -50,10 +53,19 @@ public class CustomerOrder implements Serializable {
     @Column(name = "delivery_type")
     private DeliveryType deliveryType;
 
+<<<<<<< HEAD
     @OneToMany(mappedBy = "order", cascade = {CascadeType.ALL})
     private List<Item> items;
 
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+=======
+    @OneToMany(mappedBy = "order" , cascade = {CascadeType.ALL} , fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<Item> items;
+
+    @OneToOne( mappedBy = "order", cascade = CascadeType.ALL , fetch = FetchType.LAZY)
+    @JsonManagedReference
+>>>>>>> 4ba23e98b30b3a87a80922c4dc33c47163ccffcd
     private Payment paymentDetails;
 
     public CustomerOrder() {
@@ -83,6 +95,7 @@ public class CustomerOrder implements Serializable {
         return totalAmount;
     }
 
+<<<<<<< HEAD
     public Address getShippingAddress() {
         if (shippingAddress == null) {
             this.shippingAddress = new Address();
@@ -90,6 +103,8 @@ public class CustomerOrder implements Serializable {
         return this.shippingAddress;
     }
 
+=======
+>>>>>>> 4ba23e98b30b3a87a80922c4dc33c47163ccffcd
     public boolean isBillingAddressSame() {
         return isBillingAddressSame;
     }
@@ -126,10 +141,6 @@ public class CustomerOrder implements Serializable {
         this.totalAmount = totalAmount;
     }
 
-    public void setShippingAddress(Address shippingAddress) {
-        this.shippingAddress = shippingAddress;
-    }
-
     public void setBillingAddressSame(boolean billingAddressSame) {
         isBillingAddressSame = billingAddressSame;
     }
@@ -143,10 +154,21 @@ public class CustomerOrder implements Serializable {
     }
 
     public Payment getPaymentDetails() {
-        return paymentDetails;
+        if(this.paymentDetails == null){
+            this.paymentDetails = new Payment();
+        }
+        return this.paymentDetails;
     }
 
     public void setPaymentDetails(Payment paymentDetails) {
         this.paymentDetails = paymentDetails;
+    }
+
+    public List<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
     }
 }
