@@ -9,5 +9,3 @@ target/
 *.iws
 .idea
 out
-
-application.properties
