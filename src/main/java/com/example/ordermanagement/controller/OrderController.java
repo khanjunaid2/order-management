@@ -2,7 +2,8 @@ package com.example.ordermanagement.controller;
 
 import com.example.ordermanagement.DTO.OrdersDto;
 import com.example.ordermanagement.models.Orders;
-import com.example.ordermanagement.service.OrderService;
+import com.example.ordermanagement.service.orders.OrderService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @RestController
+@Slf4j
 @RequestMapping(value = "orders")
 public class OrderController {
 

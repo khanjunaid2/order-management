@@ -1,4 +1,4 @@
-package com.example.ordermanagement.service;
+package com.example.ordermanagement.service.orders;
 
 import com.example.ordermanagement.DTO.OrdersDto;
 import com.example.ordermanagement.enums.DeliveryMethod;

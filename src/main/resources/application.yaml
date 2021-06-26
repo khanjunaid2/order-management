@@ -1,0 +1,40 @@
+# Server details
+server:
+  port: 9000
+  shutdown: graceful
+
+
+# Spring Configuration
+spring:
+  profiles:
+    active: local
+  application:
+    name: order-management-application
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092
+      client-id: OrderClient
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
+      retries: 5
+      batch-size: 16384
+      buffer-memory: 33554432
+      linger-ms: 300
+      enable-Idempotence: true
+      transactionalId: OrderTransId
+    consumer:
+      bootstrap-servers: localhost:9092
+      client-id: OrderClient
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      auto-offset-reset: earliest
+      isolationLevel: read_committed
+      max-poll-records: 15
+      heartbeat-interval: 5000
+
+
+kafka:
+  topic:
+    name: order-management-app
+    groupId: order-group
