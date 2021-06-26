@@ -11,6 +11,10 @@ import com.egen.passport.demo.response.Response;
 import com.egen.passport.demo.response.ResponseMetadata;
 import com.egen.passport.demo.response.StatusMessage;
 import com.egen.passport.demo.service.OrderService;
+import com.egen.passport.demo.service.kafka.producer.ProducerServiceImpl;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.SwaggerDefinition;
+import io.swagger.annotations.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -23,23 +27,29 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @RestController
+@Api(tags={"Order Controller"})
+@SwaggerDefinition(tags={
+        @Tag(name="Order Controller", description="API Description for Online Orders")
+})
 public class CustomerController {
 
     OrderService orderService;
+    private final ProducerServiceImpl producerService;
 
     @Autowired
-    public CustomerController(OrderService orderService) {
+    public CustomerController(OrderService orderService, ProducerServiceImpl producerService) {
         this.orderService = orderService;
+        this.producerService = producerService;
     }
+
 
     @PostMapping( value = "/create" , consumes = "application/json", produces = "application/json")
     public Response<String> createOrder(@RequestBody OrderDTO order){
-        return orderService.createOrder(order) == Boolean.TRUE ?
-         Response.<String>builder()
+        return producerService.sendOrderData(order)? Response.<String>builder()
                 .meta(ResponseMetadata.builder()
                         .statusCode(200)
                         .statusMessage(StatusMessage.SUCCESS.name()).build())
-                .data("Order Created")
+                .data("Order sent to Kafka")
                 .build()
                 :
                 Response.<String>builder()

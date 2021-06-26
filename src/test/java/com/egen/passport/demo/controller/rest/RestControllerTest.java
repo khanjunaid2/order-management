@@ -9,6 +9,7 @@ import com.egen.passport.demo.repository.OrderRepository;
 import com.egen.passport.demo.response.Response;
 import com.egen.passport.demo.service.OrderService;
 import com.egen.passport.demo.service.OrderServiceImpl;
+import com.egen.passport.demo.service.kafka.producer.ProducerServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,12 +26,14 @@ public class RestControllerTest {
 
     @Mock
     private OrderService orderService;
+    @Mock
+    private ProducerServiceImpl producerService;
 
     private CustomerController controller;
 
     @BeforeEach
     void setUp() {
-        controller = new CustomerController(orderService);
+        controller = new CustomerController(orderService, producerService);
     }
 
 
