@@ -30,7 +30,7 @@ public class ConsumeServiceImpl {
      */
     @KafkaListener(containerFactory = "jsonKafkaListenerContainerFactory",
             topics = "${kafka.topic.order.name}",
-            groupId = "{kafka.topic.order.groupId}")
+            groupId = "${kafka.topic.order.groupId}")
     public void consumeOrderDetails(@Header(KafkaHeaders.OFFSET)Long offset,
                                     @Header(KafkaHeaders.RECEIVED_PARTITION_ID)Integer partition,
                                     @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY)String key,
