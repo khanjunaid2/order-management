@@ -1,10 +1,12 @@
 package org.example.controller;
 
 import org.example.entity.CustomerOrder;
+import org.example.response.Response;
+import org.example.response.ResponseMetadata;
+import org.example.response.StatusMessage;
 import org.example.service.OrderService;
+import org.example.service.kafka.producer.ProducerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
@@ -15,49 +17,97 @@ import java.util.List;
 public class OrderController {
 
     private OrderService service;
+    private ProducerServiceImpl producerService;
 
     @Autowired
-    public OrderController(OrderService service){
+    public OrderController(OrderService service, ProducerServiceImpl producerService){
         this.service = service;
+        this.producerService = producerService;
     }
 
     @GetMapping
-    public ResponseEntity<List<CustomerOrder>> getAllOrders(){
-        return new ResponseEntity<>(service.getAllOrders(), HttpStatus.OK);
+    public Response<List<CustomerOrder>> getAllOrders(){
+        return Response.<List<CustomerOrder>>builder()
+                .meta(ResponseMetadata.builder()
+                        .statusCode(200)
+                        .statusMessage(StatusMessage.SUCCESS.name()).build())
+                .data(service.getAllOrders())
+                .build();
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<CustomerOrder> getOrderById(@PathVariable("id") String id){
-        return new ResponseEntity<>(service.getOrderById(id), HttpStatus.OK);
+    public Response<CustomerOrder> getOrderById(@PathVariable("id") String id){
+        return Response.<CustomerOrder>builder()
+                .meta(ResponseMetadata.builder()
+                        .statusCode(200)
+                        .statusMessage(StatusMessage.SUCCESS.name()).build())
+                .data(service.getOrderById(id))
+                .build();
     }
 
     @GetMapping(value = "/ordersInInterval/{startTime}/{endTime}")
-    public ResponseEntity<List<CustomerOrder>> getAllOrdersWithInInterval(@PathVariable("startTime") Timestamp startTime, @PathVariable("endTime") Timestamp endTime){
-        return new ResponseEntity<>(service.getAllOrdersWithInInterval(startTime, endTime), HttpStatus.OK);
+    public Response<List<CustomerOrder>> getAllOrdersWithInInterval(@PathVariable("startTime") Timestamp startTime, @PathVariable("endTime") Timestamp endTime){
+        return Response.<List<CustomerOrder>>builder()
+                .meta(ResponseMetadata.builder()
+                        .statusCode(200)
+                        .statusMessage(StatusMessage.SUCCESS.name()).build())
+                .data(service.getAllOrdersWithInInterval(startTime, endTime))
+                .build();
     }
 
     @GetMapping(value = "/topOrdersInZip/{zip}")
-    public ResponseEntity<List<CustomerOrder>> top10OrdersWithHighestDollarAmountInZip(@PathVariable("zip") String zip){
-        return new ResponseEntity<>(service.getTop10OrdersWithHighestDollarAmountInZip(zip), HttpStatus.OK);
+    public Response<List<CustomerOrder>> top10OrdersWithHighestDollarAmountInZip(@PathVariable("zip") String zip){
+        return Response.<List<CustomerOrder>>builder()
+                .meta(ResponseMetadata.builder()
+                        .statusCode(200)
+                        .statusMessage(StatusMessage.SUCCESS.name()).build())
+                .data(service.getTop10OrdersWithHighestDollarAmountInZip(zip))
+                .build();
     }
 
     @PostMapping(value = "/createOrder")
-    public ResponseEntity<CustomerOrder> placeOrder(@RequestBody CustomerOrder order){
-        return new ResponseEntity<>(service.placeOrder(order), HttpStatus.CREATED);
+    public Response<CustomerOrder> placeOrder(@RequestBody CustomerOrder order){
+        return Response.<CustomerOrder>builder()
+                .meta(ResponseMetadata.builder()
+                        .statusCode(200)
+                        .statusMessage(StatusMessage.SUCCESS.name()).build())
+                .data(service.placeOrder(order))
+                .build();
+    }
+
+    @PostMapping(value = "/publishOrder")
+    public String publishOrder(@RequestBody CustomerOrder order){
+        producerService.sendOrder(order);
+        return "Order Received";
     }
 
     @PostMapping(value = "/cancelOrder/{id}")
-    public ResponseEntity<CustomerOrder> cancelOrder(@PathVariable("id") String id){
-        return new ResponseEntity<>(service.cancelOrder(id), HttpStatus.OK);
+    public Response<CustomerOrder> cancelOrder(@PathVariable("id") String id){
+        return Response.<CustomerOrder>builder()
+                .meta(ResponseMetadata.builder()
+                        .statusCode(200)
+                        .statusMessage(StatusMessage.SUCCESS.name()).build())
+                .data(service.cancelOrder(id))
+                .build();
     }
 
     @PutMapping(value = "/update")
-    public ResponseEntity<CustomerOrder> updateOrder(@RequestBody CustomerOrder order){
-        return new ResponseEntity<>(service.updateOrder(order), HttpStatus.OK);
+    public Response<CustomerOrder> updateOrder(@RequestBody CustomerOrder order){
+        return Response.<CustomerOrder>builder()
+                .meta(ResponseMetadata.builder()
+                        .statusCode(200)
+                        .statusMessage(StatusMessage.SUCCESS.name()).build())
+                .data(service.updateOrder(order))
+                .build();
     }
 
     @GetMapping(value = "/pagination", params = {"pageNumber", "pageSize", "sortBy"})
-    public ResponseEntity<List<CustomerOrder>> getAllOrdersWithPaginationAndSorted(@RequestParam(defaultValue = "0") int pageNumber, @RequestParam(defaultValue = "5") int pageSize, @RequestParam(defaultValue = "orderCreated") String sortBy){
-        return new ResponseEntity<>(service.getAllOrdersWithPaginationAndSorted(pageNumber, pageSize, sortBy), HttpStatus.OK);
+    public Response<List<CustomerOrder>> getAllOrdersWithPaginationAndSorted(@RequestParam(defaultValue = "0") int pageNumber, @RequestParam(defaultValue = "5") int pageSize, @RequestParam(defaultValue = "orderCreated") String sortBy){
+        return Response.<List<CustomerOrder>>builder()
+                .meta(ResponseMetadata.builder()
+                        .statusCode(200)
+                        .statusMessage(StatusMessage.SUCCESS.name()).build())
+                .data(service.getAllOrdersWithPaginationAndSorted(pageNumber, pageSize, sortBy))
+                .build();
     }
 }
