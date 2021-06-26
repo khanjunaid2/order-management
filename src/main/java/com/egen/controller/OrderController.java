@@ -1,6 +1,7 @@
 package com.egen.controller;
 
-import com.egen.model.Customer;
+import com.egen.dto.OrderDTO;
+import com.egen.kafka.service.producer.ProducerService;
 import com.egen.model.Order;
 import com.egen.response.Response;
 import com.egen.response.ResponseMetadata;
@@ -8,21 +9,27 @@ import com.egen.response.StatusMessage;
 import com.egen.service.OrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
-import java.time.ZonedDateTime;
-import java.util.Collections;
+import java.time.Instant;
 import java.util.List;
 
 @RestController
 @Api(value = "/order",description = "Performing operations on Order ")
+@Slf4j
 public class OrderController {
 
     @Autowired
     OrderService orderService;
+
+    private final ProducerService producerService;
+
+    public OrderController(ProducerService producerService) {
+        this.producerService = producerService;
+    }
 
     @GetMapping("order")
     @ApiOperation(value = "Find all orders",notes = "Returns list of all orders")
@@ -119,13 +126,28 @@ public class OrderController {
 
     @PostMapping("order")
     @ApiOperation(value = "Create order",notes = "Place new order")
-    public Response<Order> placeOrder(@RequestBody  Order order){
-        Order obj = orderService.placeOrder(order);
-        return Response.<Order>builder()
+    public Response<OrderDTO> placeOrder(@RequestBody  Order order){
+        OrderDTO obj = orderService.placeOrder(order);
+        return Response.<OrderDTO>builder()
                 .meta(ResponseMetadata.builder()
                         .statusCode(200)
                         .statusMessage(StatusMessage.SUCCESS.name()).build())
                 .data(obj)
+                .build();
+    }
+
+    @PostMapping("order/publish")
+    @ApiOperation(value = "Create order using kafka",notes = "Place new order")
+    public Response<String> kafkaPlaceOrder(@RequestBody  Order order){
+        log.info("Message Received in KafkaController: {}",order);
+        String orderId = String.valueOf(order.getId());
+        order.setId(Long.parseLong(orderId.concat(Long.toString(Instant.now().getEpochSecond()))));
+        producerService.sendOrderDataMessage(order);
+        return Response.<String>builder()
+                .meta(ResponseMetadata.builder()
+                        .statusCode(200)
+                        .statusMessage(StatusMessage.SUCCESS.name()).build())
+                .data("Message Received")
                 .build();
     }
 
