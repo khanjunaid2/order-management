@@ -4,6 +4,7 @@ import com.egen.ordermanagement.dto.OrderDTO;
 import com.egen.ordermanagement.model.Order;
 import com.egen.ordermanagement.repository.OrderRepository;
 import com.egen.ordermanagement.service.OrderService;
+import com.egen.ordermanagement.service.kafka.producer.ProducerServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.jaxb.SpringDataJaxb;
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 @Slf4j
 @RestController
-@RequestMapping(method = RequestMethod.GET, value = "api/order")
+@RequestMapping(method = RequestMethod.GET, value = "order")
 public class OrderController {
 
     @Autowired
@@ -57,4 +58,15 @@ public class OrderController {
         return new ResponseEntity<>(orderService.getAllOrdersWithInInterval(startTime, endTime), HttpStatus.OK);
     }
 
+    ProducerServiceImpl producerService;
+    public OrderController(ProducerServiceImpl producerService){
+        this.producerService = producerService;
+    }
+
+    @PostMapping(value = "/publish/order")
+    public String publishOrder(@RequestBody OrderDTO orderDTO){
+        log.info("Order Received in Controller:{}",orderDTO);
+        producerService.sendOrderData(orderDTO);
+        return "Order Received";
+    }
 }
