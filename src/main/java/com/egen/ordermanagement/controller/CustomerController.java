@@ -5,20 +5,15 @@ import com.egen.ordermanagement.response.Response;
 import com.egen.ordermanagement.response.ResponseMetadata;
 import com.egen.ordermanagement.response.StatusMessage;
 import com.egen.ordermanagement.service.CustomerService;
-import com.egen.ordermanagement.service.kafka.producer.ProducerServiceImpl;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/customer")
-@Slf4j
 public class CustomerController {
     @Autowired
     CustomerService customerService;
 
-    @Autowired
-    ProducerServiceImpl producerService;
     /**
      * This function is used to create a new user
      * @return - returns HTTP status as created and details of the new customer

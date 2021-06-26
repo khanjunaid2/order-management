@@ -23,14 +23,14 @@ public class ConsumeServiceImpl {
 
     /**
      * Collects the data from producer to place the order
-     * @param offset
-     * @param partition
+     * @param offset - Provides Offset ID
+     * @param partition - Provides Partition ID
      * @param key
      * @param orderDto
      */
     @KafkaListener(containerFactory = "jsonKafkaListenerContainerFactory",
             topics = "${kafka.topic.order.name}",
-            groupId = "{kafka.topic.order.groupId}")
+            groupId = "${kafka.topic.order.groupId}")
     public void consumeOrderDetails(@Header(KafkaHeaders.OFFSET)Long offset,
                                     @Header(KafkaHeaders.RECEIVED_PARTITION_ID)Integer partition,
                                     @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY)String key,

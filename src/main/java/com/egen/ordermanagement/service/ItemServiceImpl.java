@@ -17,13 +17,6 @@ public class ItemServiceImpl implements ItemService{
     @Autowired
     ItemRepo itemRepo;
 
-    public ItemServiceImpl(ItemRepo itemRepo) {
-        this.itemRepo=itemRepo;
-    }
-
-    public ItemServiceImpl() {
-    }
-
     @Transactional
     public boolean createItem(ItemDto itemDto) {
         try {

@@ -16,14 +16,20 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import springfox.documentation.swagger2.mappers.ModelMapper;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -65,7 +71,7 @@ public class OrdersServiceImplTest {
         Set<Item> itemsList = new HashSet<Item>();
 
         //Create address
-        Address addresses = new Address();
+       Address addresses = new Address();
         addresses.setId(9L).setAddressLine1("912 Carrington oak").setAddressLine2("#203")
                 .setCity("Memphis").setState("TN").setZipcode("38125");
 
@@ -84,7 +90,7 @@ public class OrdersServiceImplTest {
                 .setTax(1.5).setTotal(23.0).setShippingCharges(1.0).setOrderStatus(OrderStatus.DELIVERED);
 
         //Create item
-        Item items = new Item();
+       Item items = new Item();
         items.setId(3L).setOrders(new_order).setQuantityInStock(3).setItemName("Energy Drink").setItemPrice(74.5);
         paymentsList.add(payments);
         paymentsList.add(payments2);
@@ -102,7 +108,7 @@ public class OrdersServiceImplTest {
 
         new_dto.setId(8L).setCustomerId(2L)
                 .setItemQuantity(2).setShipmentMethod(ShipmentMethod.HOME_DELIVERY).setOrderStatus(OrderStatus.DELIVERED)
-                .setBillingSameAsShippingAddress(true).setShippingAddress(addresses).setBillingAddress(addresses).
+        .setBillingSameAsShippingAddress(true).setShippingAddress(addresses).setBillingAddress(addresses).
                 setPayments((payment)).setItems(new long[]{items.getId()});
 
         //Mockito functions
@@ -177,7 +183,7 @@ public class OrdersServiceImplTest {
     @Test
     @Transactional
     public void createOrder() {
-        Boolean create_order = ordersService.createOrder(new_dto);
+        boolean create_order = ordersService.createOrder(new_dto);
         Assert.assertEquals("Failed to create order",true,create_order);
     }
 

@@ -1,7 +1,6 @@
 package com.egen.ordermanagement.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -35,7 +34,7 @@ public class Item {
         this.quantityInStock = quantityInStock;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 

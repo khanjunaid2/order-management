@@ -14,9 +14,9 @@ import java.util.Set;
 
 @Entity
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Orders {
 
     @Id

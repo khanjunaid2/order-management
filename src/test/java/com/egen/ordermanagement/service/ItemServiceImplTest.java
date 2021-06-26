@@ -44,7 +44,7 @@ public class ItemServiceImplTest {
     public void setUp(){
         item  = new Item();
         itemDto = new ItemDto();
-        itemDto.setId(8L).setItemPrice(20.5).setItemName("Monster Energy").setQuantityInStock(20);
+        itemDto.setId(10l).setItemPrice(20.5).setItemName("Monster Energy").setQuantityInStock(20);
         //Setting DTO values to entity to
         item.setId(itemDto.getId()).setItemPrice(itemDto.getItemPrice())
                 .setItemName(itemDto.getItemName()).setQuantityInStock(itemDto.getQuantityInStock());

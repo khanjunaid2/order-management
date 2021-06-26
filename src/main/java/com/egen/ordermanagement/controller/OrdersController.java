@@ -36,24 +36,6 @@ public class OrdersController {
     ProducerServiceImpl producerService;
 
     /**
-     * Creates a new order
-     * @param orderDto
-     * @return
-     */
-    @PostMapping(value = "/publish/order")
-    @ApiOperation(value = "Creates a new order",
-            notes = "Refer the Order DTO class to know the Json format")
-    @ApiResponses(value={
-            @ApiResponse(code=201,message = "CREATED"),
-            @ApiResponse(code=500,message = "INTERNAL SERVER ERROR"),
-            @ApiResponse(code=200,message = "OK")
-    })
-    public String publishOrder(@RequestBody OrderDto orderDto){
-        log.info("Order Received in Order Controller:{}",orderDto);
-         producerService.sendOrderData(orderDto);
-         return "Order Received";
-    }
-    /**
      * Fetches all the orders present in the table
      * @return list of orders
      */
@@ -71,6 +53,24 @@ public class OrdersController {
                         .statusMessage(StatusMessage.FOUND.name())
                         .build()).data((ordersService.findAll()))
                 .build();
+    }
+    /**
+     * Creates a new order
+     * @param orderDto
+     * @return
+     */
+    @PostMapping(value = "/publish/order")
+    @ApiOperation(value = "Creates a new order",
+            notes = "Refer the Order DTO class to know the Json format")
+    @ApiResponses(value={
+            @ApiResponse(code=201,message = "CREATED"),
+            @ApiResponse(code=500,message = "INTERNAL SERVER ERROR"),
+            @ApiResponse(code=200,message = "OK")
+    })
+    public String publishOrder(@RequestBody OrderDto orderDto){
+        log.info("Order Received in Order Controller:{}",orderDto);
+        producerService.sendOrderData(orderDto);
+        return "Order Received";
     }
 
     /**
@@ -178,8 +178,8 @@ public class OrdersController {
                 .meta(ResponseMetadata.builder().statusCode(201)
                         .statusMessage(StatusMessage.CREATED.name())
                         .build())
-                        .data("Order placed successfully")
-                        .build()
+                .data("Order placed successfully")
+                .build()
                 :
                 Response.<String>builder()
                         .meta(ResponseMetadata.builder().statusCode(500)

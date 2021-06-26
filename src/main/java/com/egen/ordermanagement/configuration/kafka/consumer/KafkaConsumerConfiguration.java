@@ -1,6 +1,5 @@
 package com.egen.ordermanagement.configuration.kafka.consumer;
 
-import com.egen.ordermanagement.dto.CustomerDto;
 import com.egen.ordermanagement.dto.OrderDto;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;

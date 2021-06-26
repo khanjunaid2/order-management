@@ -2,6 +2,7 @@ package com.egen.ordermanagement.service;
 
 import com.egen.ordermanagement.dto.OrderDto;
 import com.egen.ordermanagement.enums.OrderStatus;
+import com.egen.ordermanagement.enums.ShipmentMethod;
 import com.egen.ordermanagement.exceptions.OrderServiceException;
 import com.egen.ordermanagement.model.Address;
 import com.egen.ordermanagement.model.Item;
@@ -10,6 +11,7 @@ import com.egen.ordermanagement.model.Payment;
 import com.egen.ordermanagement.repository.OrdersRepo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -37,14 +39,6 @@ public class OrdersServiceImpl implements OrdersService {
     @Autowired
     PaymentService paymentService;
 
-
-    public OrdersServiceImpl(OrdersRepo ordersRepo) {
-        this.ordersRepo=ordersRepo;
-    }
-
-    public OrdersServiceImpl() {
-
-    }
     public OrdersServiceImpl(OrdersRepo ordersRepo,ItemService itemService,CustomerService customerService,
                              PaymentService paymentService,AddressService addressService) {
         this.ordersRepo=ordersRepo;
@@ -53,6 +47,11 @@ public class OrdersServiceImpl implements OrdersService {
         this.itemService=itemService;
         this.customerService=customerService;
     }
+
+    public OrdersServiceImpl() {
+
+    }
+
     @Transactional(readOnly = true)
     public List<Orders> findAll() {
 
@@ -98,7 +97,7 @@ public class OrdersServiceImpl implements OrdersService {
         ///Update item's quantity left in stock and get subtotal for the quantity ordered
         Iterator<Long> it = Arrays.stream(orderDto.getItems()).iterator();
         while (it.hasNext()) {
-            Long item_id = it.next();
+            Long item_id = Long.valueOf(it.next());
             itemService.updateItem(item_id, orderDto.getItemQuantity());
             Item item2 = itemService.getItem(item_id);
             sub_total += item2.getItemPrice() * orderDto.getItemQuantity();
