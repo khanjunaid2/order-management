@@ -1,6 +1,7 @@
-package com.egen.ordermanagement.service;
+package com.egen.ordermanagement.service.order;
 
 import com.egen.ordermanagement.dto.OrderDTO;
+import com.egen.ordermanagement.dto.OrderStatusDTO;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -15,4 +16,5 @@ public interface OrderService {
     OrderDTO placeOrder(OrderDTO order);
     OrderDTO cancelOrder(String orderId);
     OrderDTO updateOrder(OrderDTO order);
+    void updateOrderStatus(OrderStatusDTO orderStatusDTO);
 }

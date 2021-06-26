@@ -1,13 +1,15 @@
-package com.egen.ordermanagement.service.impl;
+package com.egen.ordermanagement.service.order;
 
 import com.egen.ordermanagement.dto.OrderDTO;
+import com.egen.ordermanagement.dto.OrderStatusDTO;
+import com.egen.ordermanagement.exception.BatchOrderServiceException;
 import com.egen.ordermanagement.exception.OrderRequestProcessException;
 import com.egen.ordermanagement.exception.OrderServiceException;
 import com.egen.ordermanagement.mapper.OrderMapper;
 import com.egen.ordermanagement.model.entity.CustomerOrder;
 import com.egen.ordermanagement.model.enums.OrderStatus;
 import com.egen.ordermanagement.repository.OrderRepository;
-import com.egen.ordermanagement.service.OrderService;
+import com.egen.ordermanagement.service.order.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -170,6 +172,22 @@ public class OrderServiceImpl implements OrderService {
             log.error("Error while order modification");
             throw new OrderServiceException("Failed order modification", e);
         }
+    }
+
+    /**
+     * Order status update
+     */
+    @Override
+    public void updateOrderStatus(OrderStatusDTO orderStatusDTO) {
+
+         Optional<CustomerOrder> order = orderRepository.findById(orderStatusDTO.getOrderId());
+
+         if(order.isPresent())
+             orderRepository.save(order.get().setStatus(OrderStatus.valueOf(orderStatusDTO.getOrderStatus())));
+         else {
+             log.error("Error while order status update");
+             throw new OrderServiceException("order not found");
+         }
     }
 
     private List<OrderDTO> convertToDTOList(List<CustomerOrder> orders) {

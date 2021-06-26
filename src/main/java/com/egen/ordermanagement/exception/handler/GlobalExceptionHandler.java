@@ -1,6 +1,7 @@
 package com.egen.ordermanagement.exception.handler;
 
 
+import com.egen.ordermanagement.exception.BatchOrderServiceException;
 import com.egen.ordermanagement.exception.OrderRequestProcessException;
 import com.egen.ordermanagement.exception.OrderServiceException;
 import com.egen.ordermanagement.response.ErrorResponse;
@@ -43,6 +44,13 @@ public class GlobalExceptionHandler {
         String errorResponseMessage = e.getParameterName() + " request parameter is missing";
         log.error(e.getClass().getSimpleName(), errorResponseMessage);
         return buildResponse(StatusMessage.MISSING_REQUEST_PARAMETER, BAD_REQUEST, new ErrorResponse(errorResponseMessage));
+    }
+
+    @ExceptionHandler(BatchOrderServiceException.class)
+    public ResponseEntity<Void> handleMissingParams(BatchOrderServiceException e) {
+
+        log.error(e.getClass().getSimpleName(), e.getMessage());
+        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
     }
 
     private ResponseEntity<Response<?>> buildResponse(StatusMessage statusMessage, HttpStatus status, ErrorResponse errorResponse) {

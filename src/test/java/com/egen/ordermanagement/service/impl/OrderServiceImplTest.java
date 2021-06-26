@@ -1,21 +1,17 @@
 package com.egen.ordermanagement.service.impl;
 
 import com.egen.ordermanagement.dto.OrderDTO;
-import com.egen.ordermanagement.exception.OrderRequestProcessException;
-import com.egen.ordermanagement.exception.OrderServiceException;
 import com.egen.ordermanagement.model.entity.*;
 import com.egen.ordermanagement.model.enums.OrderStatus;
 import com.egen.ordermanagement.model.enums.PaymentType;
 import com.egen.ordermanagement.repository.OrderRepository;
-import com.egen.ordermanagement.service.OrderService;
-import org.junit.After;
-import org.junit.Before;
+import com.egen.ordermanagement.service.order.OrderService;
+import com.egen.ordermanagement.service.order.OrderServiceImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +19,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.Collections;
@@ -41,7 +36,7 @@ class OrderServiceImplTest {
     OrderService orderService;
 
      @Bean
-     public OrderService getService(){
+     public OrderService getService() {
          return new OrderServiceImpl(orderRepository);
      }
 
@@ -122,21 +117,18 @@ class OrderServiceImplTest {
     }
 
     @Test
-    @Transactional
     void placeOrder() {
         OrderDTO newOrder = orderService.placeOrder(orderDTO);
         Assertions.assertEquals(orderDTO, newOrder, "Order should create");
     }
 
     @Test
-    @Transactional
     void cancelOrder() {
         OrderDTO cancelledOrder = orderService.cancelOrder(customerOrder.getOrderId());
         Assertions.assertEquals(orderDTO, cancelledOrder, "Order should cancelled");
     }
 
     @Test
-    @Transactional
     void updateOrder() {
         OrderDTO modifiedOrder = orderService.updateOrder(orderDTO);
         Assertions.assertEquals(orderDTO, modifiedOrder, "Modified order");

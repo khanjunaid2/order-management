@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,4 +31,21 @@ public class OrderDTO {
     private List<ItemDTO> items = new ArrayList<>();
     private List<PaymentDTO> payments = new ArrayList<>();
     private ShippingDTO shipping;
+
+    @Override
+    public String toString() {
+        return "OrderDTO{" +
+                "orderId='" + orderId + '\'' +
+                ", creationDate=" + creationDate +
+                ", modificationDate=" + modificationDate +
+                ", customerId='" + customerId + '\'' +
+                ", total=" + total +
+                ", subtotal=" + subtotal +
+                ", tax=" + tax +
+                ", status=" + status +
+                ", items=" + items +
+                ", payments=" + payments +
+                ", shipping=" + shipping +
+                '}';
+    }
 }
