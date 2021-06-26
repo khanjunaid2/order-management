@@ -1,0 +1,57 @@
+# Server details
+server:
+  port: 8080
+  shutdown: graceful
+  servlet:
+    context-path: /api
+
+# Actuator endpoint configurations
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+# Spring configurations
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/order_db
+    username: root
+    password: Kunj@3498
+    jpa:
+      hibernate:
+        ddl-auto: validate
+      show-sql: true
+    profiles:
+      active: local
+    application:
+      name: order-management
+    kafka:
+      producer:
+        bootstrap-servers: localhost:9092
+        client-id: orderProducer
+        key-serializer: org.apache.kafka.common.serialization.StringSerializer
+        value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+        acks: all
+        retries: 5
+        batch-size: 16384
+        buffer-memory: 33554432
+        linger-ms: 1
+        enable-Idempotence: true
+        transactionalId: orderTransaction
+      consumer:
+        bootstrap-servers: localhost:9092
+        client-id: orderConsumer
+        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer #org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+        value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer #org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+        auto-offset-reset: earliest
+        isolationLevel: read_committed
+        max-poll-records: 7
+        heartbeat-interval: 6000
+
+  kafka:
+    topic:
+      order:
+        name: order-topic
+        groupId: order-group

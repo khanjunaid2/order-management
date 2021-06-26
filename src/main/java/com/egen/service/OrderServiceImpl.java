@@ -1,5 +1,6 @@
 package com.egen.service;
 
+import com.egen.dto.OrderDTO;
 import com.egen.enums.OrderStatus;
 import com.egen.exception.ResourceNotFoundException;
 import com.egen.model.*;
@@ -13,15 +14,19 @@ import java.util.stream.Collectors;
 @Service
 public class OrderServiceImpl implements OrderService{
 
-    private final OrderRepository orderRepository;
+    private OrderRepository orderRepository;
 
     public OrderServiceImpl(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
     }
 
+    public OrderServiceImpl() {
+
+    }
+
     @Override
-    public List<Order> getAllOrders() {
-        return (List<Order>) orderRepository.findAll();
+    public List<OrderDTO> getAllOrders() {
+        return (List<OrderDTO>) orderRepository.findAll();
     }
 
     @Override
@@ -56,32 +61,32 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public Order placeOrder(Order order) {
+    public OrderDTO placeOrder(Order order) {
         Optional<Order> existing = orderRepository.findById(order.getId());
         if(!existing.isPresent()){
             throw new ResourceNotFoundException("Order with this" + order.getId() + "doesn't exist.");
         }
-        return (Order) orderRepository.save(order);
+        return (OrderDTO) orderRepository.save(order);
     }
 
     @Override
-    public Order cancelOrder(String orderId) {
+    public OrderDTO cancelOrder(String orderId) {
         Optional<Order> existing = orderRepository.findById(orderId);
         if(!existing.isPresent()){
             throw new ResourceNotFoundException("Order with this" + orderId + "doesn't exist.");
         }
 
         existing.get().setOrderStatus(OrderStatus.CANCEL);
-        return (Order) orderRepository.save(existing.get());
+        return (OrderDTO) orderRepository.save(existing.get());
     }
 
     @Override
-    public Order updateOrder(Order order) {
+    public OrderDTO updateOrder(String id, Order order) {
         Optional<Order> existing = orderRepository.findById(order.getId());
         if(!existing.isPresent()){
             throw new ResourceNotFoundException("Order with this" + order.getId() + "doesn't exist.");
         }
-        return (Order) orderRepository.save(order);
+        return (OrderDTO) orderRepository.save(order);
     }
 
 }

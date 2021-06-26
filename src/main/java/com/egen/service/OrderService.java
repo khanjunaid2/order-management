@@ -1,12 +1,13 @@
 package com.egen.service;
 
+import com.egen.dto.OrderDTO;
 import com.egen.model.Order;
 
 import java.sql.Timestamp;
 import java.util.List;
 
 public interface OrderService {
-        List<Order> getAllOrders();
+        List<OrderDTO> getAllOrders();
 
         Order getOrderById(String orderId);
 
@@ -14,11 +15,11 @@ public interface OrderService {
 
         List<Order> top10OrdersWithHighestDollarAmountInZip(String zip);
 
-        Order placeOrder(Order order);
+        OrderDTO placeOrder(Order order);
 
-        Order cancelOrder(String orderId);
+        OrderDTO cancelOrder(String orderId);
 
-        Order updateOrder(Order order);
+        OrderDTO updateOrder(String id, Order order);
 
 
 

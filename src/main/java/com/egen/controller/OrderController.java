@@ -1,8 +1,8 @@
 package com.egen.controller;
 
+import com.egen.dto.OrderDTO;
 import com.egen.model.Order;
 import com.egen.service.OrderService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.websocket.server.PathParam;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -27,13 +26,13 @@ public class OrderController {
     }
 
     @GetMapping("order")
-    public ResponseEntity<List<Order>> getAllOrders(){
+    public ResponseEntity<List<OrderDTO>> getAllOrders(){
         return ResponseEntity.ok(orderService.getAllOrders());
     }
 
     @GetMapping("order/{id}")
-    public ResponseEntity<Order> getOrderById(@PathVariable("id") String orderId){
-        return ResponseEntity.ok(orderService.getOrderById(orderId));
+    public ResponseEntity<OrderDTO> getOrderById(@PathVariable("id") String orderId){
+        return (ResponseEntity<OrderDTO>) ResponseEntity.ok(orderService.getOrderById(orderId));
     }
 
     @GetMapping("interval/{startTime}/{endTime}")
@@ -42,23 +41,23 @@ public class OrderController {
     }
 
     @GetMapping("orderwithzip/{zipcode}")
-    public ResponseEntity<List<Order>> top10OrdersWithHighestDollarAmountInZip(@PathVariable("zipcode") String zip){
-        return ResponseEntity.ok(orderService.top10OrdersWithHighestDollarAmountInZip(zip));
+    public ResponseEntity<List<OrderDTO>> top10OrdersWithHighestDollarAmountInZip(@PathVariable("zipcode") String zip){
+        return (ResponseEntity<List<OrderDTO>>) ResponseEntity.ok(orderService.top10OrdersWithHighestDollarAmountInZip(zip));
     }
 
     @PostMapping("/place")
-    public ResponseEntity<Order> placeOrder(@RequestBody Order order){
+    public ResponseEntity<OrderDTO> placeOrder(@RequestBody Order order){
         return new ResponseEntity(orderService.placeOrder(order), HttpStatus.CREATED);
     }
 
     @PutMapping("/cancel/{id}")
-    public ResponseEntity<Order> cancelOrder(@PathVariable("id") String orderId){
+    public ResponseEntity<OrderDTO> cancelOrder(@PathVariable("id") String orderId){
         return ResponseEntity.ok(orderService.cancelOrder(orderId));
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Order> updateOrder(@RequestBody Order order){
-        return ResponseEntity.ok(orderService.updateOrder(order));
+    public ResponseEntity<OrderDTO> updateOrder(@RequestBody Order order){
+        return ResponseEntity.ok(orderService.updateOrder(orderDTO.getId(), order));
     }
 
 }
