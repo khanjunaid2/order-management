@@ -86,6 +86,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
+<<<<<<< HEAD
 					<mainClass>com.egen.Application</mainClass>
 				</configuration>
 				<executions>
@@ -95,6 +96,10 @@
 						</goals>
 					</execution>
 				</executions>
+=======
+					<excludeDevtools>false</excludeDevtools>
+				</configuration>
+>>>>>>> 93ad4acf8296cc5b82a27163bc489df41f853f12
 			</plugin>
 		</plugins>
 	</build>
