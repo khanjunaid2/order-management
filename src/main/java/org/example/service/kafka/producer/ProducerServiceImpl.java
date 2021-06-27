@@ -17,7 +17,7 @@ public class ProducerServiceImpl {
     @Value("${kafka.topic.order.name}")
     private String ORDER_TOPIC;
 
-    public ProducerServiceImpl(KafkaTemplate<String, CustomerOrder> kafkaTemplate, KafkaTemplate<String, CustomerOrder> customerKafkaTemplate) {
+    public ProducerServiceImpl(KafkaTemplate<String, CustomerOrder> customerKafkaTemplate) {
         this.orderKafkaTemplate = customerKafkaTemplate;
     }
 
