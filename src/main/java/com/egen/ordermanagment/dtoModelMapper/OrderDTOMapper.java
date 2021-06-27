@@ -8,15 +8,21 @@ import com.egen.ordermanagment.model.OrderItems;
 import com.egen.ordermanagment.model.Orders;
 import com.egen.ordermanagment.model.Payment;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+//@Component
 public class OrderDTOMapper {
+//    @Autowired
+//    OrderDTOMapper orderDTOMapper;
+
     public OrdersDTO entityToDTO(Orders orders){
         OrdersDTO ordersDTO = new OrdersDTO();
-//        BeanUtils.copyProperties(ordersDTO , orders);
         PaymentDTO paymentDTO = new PaymentDTO();
         List<OrderItemsDTO> orderItemsDTOList = new ArrayList<>();
         AddressDTO shippingAddressDTO = new AddressDTO();
@@ -25,47 +31,43 @@ public class OrderDTOMapper {
         for(int i=0; i< orders.getOrderItemsList().size(); i++){
             OrderItemsDTO orderItemsDTO = new OrderItemsDTO();
             BeanUtils.copyProperties(orders.getOrderItemsList().get(i) , orderItemsDTO);
-//            orderItemsDTO.setOrders(ordersDTO);
             orderItemsDTOList.add(orderItemsDTO);
         }
         BeanUtils.copyProperties(orders.getPaymentDetail() , paymentDTO);
         BeanUtils.copyProperties(orders.getPaymentDetail().getBillingAddress(), billingAddressDTO);
-//        paymentDTO.setOrders(ordersDTO);
         paymentDTO.setBillingAddress(billingAddressDTO);
 
-//        shippingAddressDTO.setOrders(ordersDTO);
         BeanUtils.copyProperties(orders.getShippingAddress(), shippingAddressDTO);
 
-        ordersDTO.setId(orders.getId());
-        ordersDTO.setCustomerId((orders.getCustomerId()));
-        ordersDTO.setOrderSubTotal(orders.getOrderSubTotal());
-        ordersDTO.setOrderTotal(orders.getOrderTotal());
-        ordersDTO.setOrderTax(orders.getOrderTax());
-        ordersDTO.setOrderCreated(orders.getOrderCreated());
-        ordersDTO.setOrderModified(orders.getOrderModified());
-        ordersDTO.setOrderStatus(orders.getOrderStatus());
-        ordersDTO.setShipmentType(orders.getShipmentType());
-        ordersDTO.setOrderItemsList(orderItemsDTOList);
-        ordersDTO.setPaymentDetail(paymentDTO);
-        ordersDTO.setShippingAddress(shippingAddressDTO);
+        ordersDTO.setId(orders.getId())
+                .setCustomerId((orders.getCustomerId()))
+                .setOrderSubTotal(orders.getOrderSubTotal())
+                .setOrderTotal(orders.getOrderTotal())
+                .setOrderTax(orders.getOrderTax())
+                .setOrderCreated(orders.getOrderCreated())
+                .setOrderModified(orders.getOrderModified())
+                .setOrderStatus(orders.getOrderStatus())
+                .setShipmentType(orders.getShipmentType())
+                .setOrderItemsList(orderItemsDTOList)
+                .setPaymentDetail(paymentDTO)
+                .setShippingAddress(shippingAddressDTO);
         return ordersDTO;
-
     }
 
-    public List<OrdersDTO> entityToDTO(List<Orders> orders){
-        return	orders.stream().map(ord -> entityToDTO(ord)).collect(Collectors.toList());
-    }
+//    public List<OrdersDTO> entityToDTO(List<Orders> orders){
+//        return	orders.stream().map(ord -> entityToDTO(ord)).collect(Collectors.toList());
+//    }
 
     public Orders DTOToEntity(OrdersDTO ordersDTO){
+        System.out.println(ordersDTO);
         Orders orders = new Orders();
-//        BeanUtils.copyProperties(ordersDTO , orders);
         Payment payment = new Payment();
         List<OrderItems> orderItemsList = new ArrayList<>();
         Address shippingAddress = new Address();
         Address billingAddress = new Address();
-        OrderItems orderItems = new OrderItems();
 
         for(int i=0; i< ordersDTO.getOrderItemsList().size(); i++){
+            OrderItems orderItems = new OrderItems();
             BeanUtils.copyProperties(ordersDTO.getOrderItemsList().get(i) , orderItems);
             orderItems.setOrders(orders);
             orderItemsList.add(orderItems);
@@ -90,10 +92,7 @@ public class OrderDTOMapper {
                 .setOrderItemsList(orderItemsList)
                 .setPaymentDetail(payment)
                 .setShippingAddress(shippingAddress);
+        System.out.println(orders);
         return orders;
-    }
-
-    public List<Orders> DTOToEntity(List<OrdersDTO> ordersDto){
-        return ordersDto.stream().map(ord -> DTOToEntity(ord)).collect(Collectors.toList());
     }
 }

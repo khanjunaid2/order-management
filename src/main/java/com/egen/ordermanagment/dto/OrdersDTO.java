@@ -28,8 +28,25 @@ public class OrdersDTO{
     private Timestamp orderModified;
     private OrderStatus orderStatus;
     private ShippingType shipmentType;
-    private List<OrderItemsDTO> orderItemsList;
+    private List<OrderItemsDTO> orderItemsList = new ArrayList<>();
     private PaymentDTO paymentDetail;
-    private AddressDTO shippingAddress ;
+    private AddressDTO shippingAddress;
 
+    @Override
+    public String toString() {
+        return "OrdersDTO{" +
+                "Id='" + Id + '\'' +
+                ", customerId='" + customerId + '\'' +
+                ", orderSubTotal=" + orderSubTotal +
+                ", orderTotal=" + orderTotal +
+                ", orderTax=" + orderTax +
+                ", orderCreated=" + orderCreated +
+                ", orderModified=" + orderModified +
+                ", orderStatus=" + orderStatus +
+                ", shipmentType=" + shipmentType +
+                ", orderItemsList=" + orderItemsList +
+                ", paymentDetail=" + paymentDetail +
+                ", shippingAddress=" + shippingAddress +
+                '}';
+    }
 }

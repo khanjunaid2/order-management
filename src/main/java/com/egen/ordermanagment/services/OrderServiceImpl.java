@@ -5,7 +5,7 @@ import com.egen.ordermanagment.dtoModelMapper.OrderDTOMapper;
 import com.egen.ordermanagment.exception.OrderServiceException;
 import com.egen.ordermanagment.model.*;
 import com.egen.ordermanagment.repository.OrderRepository;
-import org.springframework.beans.BeanUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,16 +14,21 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class OrderServiceImpl implements OrderService {
 
+    OrderRepository orderRepository;
+
+
     @Autowired
-    private OrderRepository orderRepository;
+    public OrderServiceImpl(OrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
+    }
 
     @Override
     public  List<Orders> getAllOrders(){
@@ -48,7 +53,7 @@ public class OrderServiceImpl implements OrderService {
                 throw new OrderServiceException("No orders found");
             }
             else {
-                return new OrderDTOMapper().entityToDTO(pageResult.toList());
+                return entityToDTOList(pageResult.toList());
             }
         } catch (OrderServiceException e) {
             throw new OrderServiceException("Error while retrieving all orders");
@@ -58,6 +63,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrdersDTO findOne(String id) {
         try {
+            System.out.println(id);
             Optional<Orders> existing = orderRepository.findById(id);
             if(!existing.isPresent()){
                 throw new OrderServiceException("No order found");
@@ -76,7 +82,7 @@ public class OrderServiceImpl implements OrderService {
             if(orders.isEmpty()){
                 throw new OrderServiceException("No order found");
             }
-            return new OrderDTOMapper().entityToDTO(orders);
+            return entityToDTOList(orders);
 
         } catch (OrderServiceException e) {
             throw new OrderServiceException("Error while retrieving orders");
@@ -90,33 +96,25 @@ public class OrderServiceImpl implements OrderService {
             if(ordersWithMaxAmount.isEmpty()){
                 throw new OrderServiceException("No order found");
             }
-            return new OrderDTOMapper().entityToDTO(ordersWithMaxAmount);
+            return entityToDTOList(ordersWithMaxAmount);
         }
         catch(OrderServiceException e){
             throw new OrderServiceException("Error while retrieving orders");
         }
     }
 
-//    @Override
-//    public OrdersDTO placeOrder(OrdersDTO ordersDTO) {
-//        try {
-//            Orders orders = new OrderDTOMapper().DTOToEntity(ordersDTO);
-//            return new OrderDTOMapper().entityToDTO(orderRepository.save(orders));
-//        }
-//        catch (OrderServiceException e){
-//            throw new OrderServiceException("Error while creating orders");
-//        }
-//    }
 
     @Override
-    public OrdersDTO updateOrder(String id, OrdersDTO ordersDTO) {
+    public Boolean updateOrder(String id, OrdersDTO ordersDTO) {
         try {
             Orders orders = new OrderDTOMapper().DTOToEntity(ordersDTO);
             Optional<Orders> existing = orderRepository.findById(id);
             if(!existing.isPresent()){
                 throw new OrderServiceException("No order found");
             }
-            return new OrderDTOMapper().entityToDTO(orderRepository.save(orders));
+            orderRepository.save(orders);
+//            return new OrderDTOMapper().entityToDTO(orders);
+            return Boolean.TRUE;
 
         } catch (OrderServiceException ose) {
             throw new OrderServiceException("Error while updating order");
@@ -125,16 +123,16 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrdersDTO cancelOrder(String id) {
+    public Boolean cancelOrder(String id) {
         try {
             Optional<Orders> existing = orderRepository.findById(id);
+            log.info("existing"+ existing.get());
             if(!existing.isPresent()){
-                // ResourceNotFoundException
                 throw new OrderServiceException("No order found");
             }
             existing.get().setOrderStatus(OrderStatus.CANCELLED);
             orderRepository.save(existing.get());
-            return new OrderDTOMapper().entityToDTO(existing.get());
+            return Boolean.TRUE;
 
         } catch (OrderServiceException e) {
             throw new OrderServiceException("Error while updating order status as cancelled");
@@ -145,12 +143,18 @@ public class OrderServiceImpl implements OrderService {
     public Boolean placeOrder(OrdersDTO ordersDTO) {
         try {
             Orders orders = new OrderDTOMapper().DTOToEntity(ordersDTO);
-            new OrderDTOMapper().entityToDTO(orderRepository.save(orders));
+            orderRepository.save(orders);
+//            new OrderDTOMapper().entityToDTO(orders);
             return Boolean.TRUE;
         }
         catch (OrderServiceException e){
             throw new OrderServiceException("Error while creating orders");
         }
+    }
+
+
+    private List<OrdersDTO> entityToDTOList(List<Orders> orders) {
+        return orders.stream().map(ord -> new OrderDTOMapper().entityToDTO(ord)).collect(Collectors.toList());
     }
 
 }

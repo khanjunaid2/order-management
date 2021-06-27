@@ -34,11 +34,10 @@ public class Address{
     @Column(name = "order_billing_zip")
     private String zip;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(columnDefinition = "orders_id")
     public Orders orders;
 
     public Address(){
-
     }
 }

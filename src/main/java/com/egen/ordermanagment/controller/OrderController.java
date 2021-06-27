@@ -24,8 +24,12 @@ public class OrderController {
     /**
      * implement the following endpoints
      */
+    OrderService service;
+
     @Autowired
-    private OrderService service;
+    public OrderController(OrderService service) {
+        this.service = service;
+    }
 
     @Autowired
     private ProducerServiceImpl producerService;
@@ -80,7 +84,6 @@ public class OrderController {
             @ApiResponse(code = 500, message = "Error while retrieving order with provided Id") })
     public Response<OrdersDTO> getOrderById(
             @ApiParam(value = "Order Id", required = true) @PathVariable("id") String id){
-//        return new ResponseEntity<>(service.findOne(id), HttpStatus.OK);
         return Response.<OrdersDTO>builder()
                 .meta(ResponseMetadata.builder()
                         .statusCode(200)
@@ -105,7 +108,6 @@ public class OrderController {
     public Response<List<OrdersDTO>> getAllOrdersWithInInterval(
             @ApiParam(value = "Order created date from", required = true) @RequestParam(name = "startTime") Timestamp startTime,
             @ApiParam(value = "order created date to", required = true) @RequestParam(name = "endTime") Timestamp endTime){
-//        return new ResponseEntity<>(service.findWithinInterval(startTime,endTime), HttpStatus.OK);
         return Response.<List<OrdersDTO>>builder()
                 .meta(ResponseMetadata.builder()
                         .statusCode(200)
@@ -128,8 +130,7 @@ public class OrderController {
             @ApiResponse(code = 500, message = "Error while retrieving orders") })
     public Response<List<OrdersDTO>> top10OrdersWithHighestDollarAmountInZip(
             @ApiParam(value = "zipcode of customer who created order", required = true) @PathVariable("zip") String zip){
-//        return new ResponseEntity<>(service.findTop10OrdersWithHighestDollarAmountInZip(zip), HttpStatus.OK);
-        return Response.<List<OrdersDTO>>builder()
+            return Response.<List<OrdersDTO>>builder()
                 .meta(ResponseMetadata.builder()
                         .statusCode(200)
                         .statusMessage(StatusMessage.SUCCESS.name()).build())
@@ -175,13 +176,18 @@ public class OrderController {
             @ApiResponse(code = 200, message = "Ok"),
             @ApiResponse(code = 404, message = "No order found"),
             @ApiResponse(code = 500, message = "Error while retrieving order") })
-    public Response<OrdersDTO> cancelOrder(@PathVariable("id") String id){
-        //        return new ResponseEntity<>(service.cancelOrder(id), HttpStatus.OK);
-        return Response.<OrdersDTO>builder()
+    public Response<String> cancelOrder(@PathVariable("id") String id){
+        return service.cancelOrder(id) ? Response.<String>builder()
                 .meta(ResponseMetadata.builder()
                         .statusCode(200)
                         .statusMessage(StatusMessage.SUCCESS.name()).build())
-                .data(service.cancelOrder(id))
+                .data("Orders status updated from kafka")
+                .build()
+                :Response.<String>builder()
+                .meta(ResponseMetadata.builder()
+                        .statusCode(400)
+                        .statusMessage(StatusMessage.UNKNOWN_INTERNAL_ERROR.name()).build())
+                .data("Error while saving orders")
                 .build();
     }
 
@@ -197,13 +203,20 @@ public class OrderController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Order updated"),
             @ApiResponse(code = 500, message = "Error while updating order") })
-    public Response<OrdersDTO> updateOrder(@PathVariable("id") String id, @RequestBody OrdersDTO order){
-        return Response.<OrdersDTO>builder()
+    public Response<String> updateOrder(@PathVariable("id") String id, @RequestBody OrdersDTO order){
+        return service.updateOrder(id, order) ? Response.<String>builder()
                 .meta(ResponseMetadata.builder()
                         .statusCode(200)
                         .statusMessage(StatusMessage.SUCCESS.name()).build())
-                .data(service.updateOrder(id, order))
+                .data("Orders status updated as cancelled from kafka")
+                .build()
+                :Response.<String>builder()
+                .meta(ResponseMetadata.builder()
+                        .statusCode(400)
+                        .statusMessage(StatusMessage.UNKNOWN_INTERNAL_ERROR.name()).build())
+                .data("Error while saving orders")
                 .build();
+
     }
 
 

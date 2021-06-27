@@ -14,6 +14,6 @@ public interface OrderService {
     List<OrdersDTO> findWithinInterval(Timestamp startTime,Timestamp endTime);
     List<OrdersDTO> findTop10OrdersWithHighestDollarAmountInZip(String zip);
     Boolean placeOrder(OrdersDTO order);
-    OrdersDTO updateOrder(String id, OrdersDTO order);
-    OrdersDTO cancelOrder(String id);
+    Boolean updateOrder(String id, OrdersDTO order);
+    Boolean cancelOrder(String id);
 }

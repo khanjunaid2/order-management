@@ -37,7 +37,7 @@ public class Payment {
     @OneToOne(cascade = {CascadeType.ALL})
     private Address billingAddress;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(columnDefinition = "orders_id")
     public Orders orders;
 

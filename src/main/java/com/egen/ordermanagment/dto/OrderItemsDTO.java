@@ -6,8 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import javax.persistence.*;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,5 +17,4 @@ public class OrderItemsDTO {
     private String orderItemName;
     private int orderItemQty;
     private Double orderItemUnitPrice;
-//    public OrdersDTO orders;
 }

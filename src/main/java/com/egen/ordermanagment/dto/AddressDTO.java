@@ -1,8 +1,6 @@
 package com.egen.ordermanagment.dto;
 
-import com.egen.ordermanagment.model.Orders;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +11,7 @@ import lombok.experimental.Accessors;
 @Setter
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Accessors(chain = true)
 public class AddressDTO {
 
     private String addressId;
@@ -20,7 +19,5 @@ public class AddressDTO {
     private String addressLine2;
     private String city;
     private String state;
-    private int zip;
-//    public OrdersDTO orders;
-
+    private String zip;
 }

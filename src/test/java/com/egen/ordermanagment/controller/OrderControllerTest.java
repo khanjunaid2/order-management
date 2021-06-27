@@ -57,7 +57,6 @@
 ////        ord.setOrderSubTotal(10.0);
 ////        ord.setOrderTotal(20.0);
 ////        ord.setOrderTax(5.0);
-////        ord.setShippingAddress(shippingAdr);
 //
 ////        OrdersDTO ordersDTO = new OrdersDTO();
 ////        ordersDTO.setCustomerId(ord.getCustomerId());
@@ -94,7 +93,6 @@
 //        address.setCity("Las Vegas");
 //        address.setState("NV");
 //        address.setZip(89119);
-//        ord.setShippingAddress(address);
 //
 //        //PaymentDetail
 //        Payment payment = new Payment();

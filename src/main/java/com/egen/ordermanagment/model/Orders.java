@@ -7,6 +7,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -49,7 +50,7 @@ public class Orders {
     private ShippingType shipmentType;
 
     @OneToMany(mappedBy = "orders", cascade = {CascadeType.ALL})
-    private List<OrderItems> orderItemsList;
+    private List<OrderItems> orderItemsList = new ArrayList<>();
 
     @OneToOne(mappedBy = "orders", cascade = {CascadeType.ALL})
     private Payment paymentDetail;

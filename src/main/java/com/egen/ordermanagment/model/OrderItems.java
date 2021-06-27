@@ -29,7 +29,7 @@ public class OrderItems {
     @Column(name="order_item_unit_price")
     private Double orderItemUnitPrice;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(columnDefinition = "orders_id")
     public Orders orders;
 
