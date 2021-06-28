@@ -2,6 +2,7 @@ package com.example.ordermanagement.controller;
 
 import com.example.ordermanagement.DTO.OrdersDto;
 import com.example.ordermanagement.models.Orders;
+import com.example.ordermanagement.service.kakfa.ProducerService;
 import com.example.ordermanagement.service.orders.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,9 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    ProducerService producerService;
 
 
     @GetMapping
@@ -51,6 +55,14 @@ public class OrderController {
     @PostMapping(value = "/placeorder")
     public ResponseEntity<OrdersDto> placeOrder(@RequestBody OrdersDto ordersDto){
         return ResponseEntity.ok(orderService.placeOrder(ordersDto));
+    }
+
+    //Kafka send notification when order is placed!!
+    @PostMapping(value = "/publish/order")
+    public String publishOrderCreated(@RequestBody OrdersDto orders){
+        log.info("Order Message received in KafkaController: {}", orders);
+        producerService.sendOrderCreatedMessage(orders);
+        return "Order Placed";
     }
 
     @PutMapping(value = "/cancelorder/{id}")
