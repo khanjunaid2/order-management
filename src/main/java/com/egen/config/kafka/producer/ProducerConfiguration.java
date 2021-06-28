@@ -1,8 +1,7 @@
 package com.egen.config.kafka.producer;
 
-import com.egen.dto.OrderDTO;
+import com.egen.dto.OrderDto;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -59,7 +58,7 @@ public class ProducerConfiguration {
      *
      * */
     @Bean
-    public ProducerFactory<String, OrderDTO> producerFactoryJson() throws UnknownHostException {
+    public ProducerFactory<String, OrderDto> producerFactoryJson() throws UnknownHostException {
         Map<String, Object> configProps = new HashMap<>();
 
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
@@ -74,7 +73,7 @@ public class ProducerConfiguration {
         configProps.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, enableIdempotence);
         configProps.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, transactionalId);
 
-        DefaultKafkaProducerFactory<String, OrderDTO> factory = new DefaultKafkaProducerFactory<>(configProps);
+        DefaultKafkaProducerFactory<String, OrderDto> factory = new DefaultKafkaProducerFactory<>(configProps);
         if (transactionalId != null) {
             factory.setTransactionIdPrefix(transactionalId + "_" + InetAddress.getLocalHost().getHostName());
             factory.setProducerPerConsumerPartition(false);
@@ -84,7 +83,7 @@ public class ProducerConfiguration {
     }
 
     @Bean
-    public KafkaTemplate<String, OrderDTO> kafkaTemplateJson() throws UnknownHostException {
+    public KafkaTemplate<String, OrderDto> kafkaTemplateJson() throws UnknownHostException {
         return new KafkaTemplate<>(producerFactoryJson());
     }
 }

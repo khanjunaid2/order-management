@@ -1,7 +1,5 @@
 package com.egen.dto;
 
-import com.egen.model.entity.Item;
-import com.egen.model.entity.Payment;
 import com.egen.model.entity.Shipping;
 import com.egen.model.enums.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -15,7 +13,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class OrderDTO {
+public class OrderDto {
     private String orderId;
     private Timestamp creationTime;
     private Timestamp modificationTime;
@@ -24,7 +22,7 @@ public class OrderDTO {
     private Double subtotal;
     private Double tax;
     private OrderStatus orderStatus;
-    private List<Item> items = new ArrayList<>();
-    private List<Payment> payments = new ArrayList<>();
+    private List<ItemDto> items = new ArrayList<>();
+    private List<PaymentDto> payments = new ArrayList<>();
     private Shipping shipping;
 }

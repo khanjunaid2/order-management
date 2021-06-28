@@ -1,6 +1,6 @@
 package com.egen.service.kafka;
 
-import com.egen.dto.OrderDTO;
+import com.egen.dto.OrderDto;
 import com.egen.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class OrderConsumerServiceImpl {
     public void consumeOrdersData(@Header(KafkaHeaders.OFFSET) long offset,
                                 @Header(KafkaHeaders.RECEIVED_PARTITION_ID) Integer partition,
                                 @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
-                                OrderDTO orderDTO) {
+                                OrderDto orderDTO) {
         log.info("Order {} consumed from partition {} at offset {}", key, partition, offset);
         orderService.placeOrder(orderDTO);
     }
