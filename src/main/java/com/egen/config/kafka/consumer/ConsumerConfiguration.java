@@ -1,6 +1,6 @@
 package com.egen.config.kafka.consumer;
 
-import com.egen.dto.OrderDTO;
+import com.egen.dto.OrderDto;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,8 +47,8 @@ public class ConsumerConfiguration {
      *
      * */
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, OrderDTO> orderDtoKafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, OrderDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, OrderDto> orderDtoKafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, OrderDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(orderDTOConsumerFactory());
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.RECORD);
         factory.getContainerProperties().setSyncCommits(true);
@@ -77,6 +77,6 @@ public class ConsumerConfiguration {
         return new DefaultKafkaConsumerFactory<>(
                 props,
                 new StringDeserializer(),
-                new JsonDeserializer<>(OrderDTO.class));
+                new JsonDeserializer<>(OrderDto.class));
     }
 }

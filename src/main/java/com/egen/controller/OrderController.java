@@ -1,6 +1,6 @@
 package com.egen.controller;
 
-import com.egen.dto.OrderDTO;
+import com.egen.dto.OrderDto;
 import com.egen.response.Response;
 import com.egen.response.ResponseMetadata;
 import com.egen.response.StatusMessage;
@@ -32,8 +32,8 @@ public class OrderController {
             @ApiResponse(code = 404, message = "Service not found"),
             @ApiResponse(code = 200, message = "Successful retrieval")})
     @GetMapping
-    public Response<List<OrderDTO>> getAllOrders() {
-        return Response.<List<OrderDTO>>builder()
+    public Response<List<OrderDto>> getAllOrders() {
+        return Response.<List<OrderDto>>builder()
                 .meta(ResponseMetadata.builder()
                         .statusCode(200)
                         .statusMessage(StatusMessage.SUCCESS.name()).build())
@@ -53,7 +53,7 @@ public class OrderController {
             @ApiResponse(code = 404, message = "Service not found"),
             @ApiResponse(code = 200, message = "Successful retrieval")})
     @PostMapping
-    public Response<String> placeOrder(@RequestBody OrderDTO orderDTO) {
+    public Response<String> placeOrder(@RequestBody OrderDto orderDTO) {
         return orderProducerService.sendOrder(orderDTO) ? Response.<String>builder()
                 .meta(ResponseMetadata.builder()
                         .statusCode(200)
@@ -74,8 +74,8 @@ public class OrderController {
             @ApiResponse(code = 404, message = "Service not found"),
             @ApiResponse(code = 200, message = "Successful retrieval")})
     @GetMapping(value = "/page/{pageNumber}")
-    public Response<List<OrderDTO>> getAllOrdersPagination(@PathVariable("pageNumber") int pagenumber) {
-        return Response.<List<OrderDTO>>builder()
+    public Response<List<OrderDto>> getAllOrdersPagination(@PathVariable("pageNumber") int pagenumber) {
+        return Response.<List<OrderDto>>builder()
                 .meta(ResponseMetadata.builder()
                         .statusCode(200)
                         .statusMessage(StatusMessage.SUCCESS.name()).build())
@@ -89,8 +89,8 @@ public class OrderController {
             @ApiResponse(code = 404, message = "Service not found"),
             @ApiResponse(code = 200, message = "Successful retrieval")})
     @GetMapping(value = "{id}")
-    public Response<OrderDTO> getOrderById(@PathVariable("id") String id) {
-        return Response.<OrderDTO>builder()
+    public Response<OrderDto> getOrderById(@PathVariable("id") String id) {
+        return Response.<OrderDto>builder()
                 .meta(ResponseMetadata.builder()
                         .statusCode(200)
                         .statusMessage(StatusMessage.SUCCESS.name()).build())
@@ -104,8 +104,8 @@ public class OrderController {
             @ApiResponse(code = 404, message = "Service not found"),
             @ApiResponse(code = 200, message = "Successful retrieval")})
     @GetMapping(value = "interval")
-    public Response<List<OrderDTO>> getAllOrdersWithInInterval(@RequestParam(name = "startTime") Timestamp startTime, @RequestParam(name = "endTime") Timestamp endTime) {
-        return Response.<List<OrderDTO>>builder()
+    public Response<List<OrderDto>> getAllOrdersWithInInterval(@RequestParam(name = "startTime") Timestamp startTime, @RequestParam(name = "endTime") Timestamp endTime) {
+        return Response.<List<OrderDto>>builder()
                 .meta(ResponseMetadata.builder()
                         .statusCode(200)
                         .statusMessage(StatusMessage.SUCCESS.name()).build())
@@ -119,8 +119,8 @@ public class OrderController {
             @ApiResponse(code = 404, message = "Service not found"),
             @ApiResponse(code = 200, message = "Successful retrieval")})
     @GetMapping(value = "zipcode/{zip}")
-    public Response<List<OrderDTO>> top10OrdersWithHighestDollarAmountInZip(@PathVariable("zip") String zip) {
-        return Response.<List<OrderDTO>>builder()
+    public Response<List<OrderDto>> top10OrdersWithHighestDollarAmountInZip(@PathVariable("zip") String zip) {
+        return Response.<List<OrderDto>>builder()
                 .meta(ResponseMetadata.builder()
                         .statusCode(200)
                         .statusMessage(StatusMessage.SUCCESS.name()).build())
@@ -135,8 +135,8 @@ public class OrderController {
             @ApiResponse(code = 404, message = "Service not found"),
             @ApiResponse(code = 200, message = "Successful retrieval")})
     @PutMapping(value = "/cancel/{id}")
-    public Response<OrderDTO> cancelOrder(@PathVariable("id") String id) {
-        return Response.<OrderDTO>builder()
+    public Response<OrderDto> cancelOrder(@PathVariable("id") String id) {
+        return Response.<OrderDto>builder()
                 .meta(ResponseMetadata.builder()
                         .statusCode(200)
                         .statusMessage(StatusMessage.SUCCESS.name()).build())
@@ -150,8 +150,8 @@ public class OrderController {
             @ApiResponse(code = 404, message = "Service not found"),
             @ApiResponse(code = 200, message = "Successful retrieval")})
     @PutMapping(value = "{id}")
-    public Response<OrderDTO> updateOrder(@PathVariable("id") String oid, @RequestBody OrderDTO orderDTO) {
-        return Response.<OrderDTO>builder()
+    public Response<OrderDto> updateOrder(@PathVariable("id") String oid, @RequestBody OrderDto orderDTO) {
+        return Response.<OrderDto>builder()
                 .meta(ResponseMetadata.builder()
                         .statusCode(200)
                         .statusMessage(StatusMessage.SUCCESS.name()).build())

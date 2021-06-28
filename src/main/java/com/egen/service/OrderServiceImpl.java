@@ -1,6 +1,6 @@
 package com.egen.service;
 
-import com.egen.dto.OrderDTO;
+import com.egen.dto.OrderDto;
 import com.egen.exception.OrderServiceException;
 import com.egen.mapper.OrderMapper;
 import com.egen.model.entity.Orders;
@@ -25,23 +25,23 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     public OrderRepository orderRepository;
 
-    public List<OrderDTO> getAllOrders() {
-        List<OrderDTO> orders = orderMapper.toOrderDTOs((List<Orders>) orderRepository.findAll());
+    public List<OrderDto> getAllOrders() {
+        List<OrderDto> orders = orderMapper.toOrderDTOs((List<Orders>) orderRepository.findAll());
         if (orders.size() > 0) {
             return orders;
         }
         throw new OrderServiceException("No orders placed");
     }
 
-    public List<OrderDTO> getOrderPage(int pagenumber) {
-        List<OrderDTO> orders = orderMapper.toOrderDTOs(orderRepository.findAll(PageRequest.of(pagenumber, 2)).getContent());
+    public List<OrderDto> getOrderPage(int pagenumber) {
+        List<OrderDto> orders = orderMapper.toOrderDTOs(orderRepository.findAll(PageRequest.of(pagenumber, 2)).getContent());
         if (orders.size() > 0) {
             return orders;
         }
         throw new OrderServiceException("No orders");
     }
 
-    public OrderDTO getOrderById(String eid) {
+    public OrderDto getOrderById(String eid) {
         Optional<Orders> order = orderRepository.findById(eid);
         if (!order.isPresent()) {
             throw new OrderServiceException("Order with id" + eid + "does not exist");
@@ -49,7 +49,7 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.toOderDTO(order.get());
     }
 
-    public Boolean placeOrder(OrderDTO orderDTO) {
+    public Boolean placeOrder(OrderDto orderDTO) {
         Optional<Orders> ordersOptional = orderRepository.findById(orderDTO.getOrderId());
         if (ordersOptional.isPresent()) {
             throw new OrderServiceException("Order already exist");
@@ -60,23 +60,23 @@ public class OrderServiceImpl implements OrderService {
         return Boolean.TRUE;
     }
 
-    public List<OrderDTO> getAllOrdersWithInInterval(Timestamp startTime, Timestamp endTime) {
-        List<OrderDTO> orders = orderMapper.toOrderDTOs(orderRepository.getAllOrdersWithInInterval(startTime, endTime));
+    public List<OrderDto> getAllOrdersWithInInterval(Timestamp startTime, Timestamp endTime) {
+        List<OrderDto> orders = orderMapper.toOrderDTOs(orderRepository.getAllOrdersWithInInterval(startTime, endTime));
         if (orders.size() > 0) {
             return orders;
         }
         throw new OrderServiceException("No orders found within this period");
     }
 
-    public List<OrderDTO> top10OrdersWithHighestDollarAmountInZip(String zip) {
-        List<OrderDTO> orders = orderMapper.toOrderDTOs(orderRepository.findTop10OrdersWithHighestDollarAmountInZip(zip));
+    public List<OrderDto> top10OrdersWithHighestDollarAmountInZip(String zip) {
+        List<OrderDto> orders = orderMapper.toOrderDTOs(orderRepository.findTop10OrdersWithHighestDollarAmountInZip(zip));
         if (orders.size() > 0) {
             return orders;
         }
         throw new OrderServiceException("No orders found of " + zip + " zipcode");
     }
 
-    public OrderDTO cancelOrder(String id) {
+    public OrderDto cancelOrder(String id) {
         Optional<Orders> ordersOptional = orderRepository.findById(id);
         if (!ordersOptional.isPresent()) {
             throw new OrderServiceException("Order with id" + id + "does not exist");
@@ -88,7 +88,7 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    public OrderDTO updateOrder(String id, OrderDTO orderDTO) {
+    public OrderDto updateOrder(String id, OrderDto orderDTO) {
         Optional<Orders> ordersOptional = orderRepository.findById(id);
         if (!ordersOptional.isPresent()) {
             throw new OrderServiceException("Order with id" + id + "does not exist");

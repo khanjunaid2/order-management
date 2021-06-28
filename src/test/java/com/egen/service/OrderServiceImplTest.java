@@ -1,6 +1,6 @@
 package com.egen.service;
 
-import com.egen.dto.OrderDTO;
+import com.egen.dto.OrderDto;
 import com.egen.mapper.OrderMapper;
 import com.egen.mapper.OrderMapperImpl;
 import com.egen.model.entity.Orders;
@@ -97,13 +97,13 @@ public class OrderServiceImplTest {
 
     @Test
     public void cancelOrder() {
-        OrderDTO result = service.cancelOrder(order.getOrderId());
+        OrderDto result = service.cancelOrder(order.getOrderId());
         Assert.assertEquals("Orders list should match", order, result);
     }
 
     @Test
     public void updateOrder() {
-        OrderDTO orderDTO = orderMapper.toOderDTO(order);
+        OrderDto orderDTO = orderMapper.toOderDTO(order);
         Orders result = orderMapper.ToOrder(service.updateOrder(orderDTO.getOrderId(), orderDTO));
         Assert.assertEquals("Orders list should match", orders, result);
     }
