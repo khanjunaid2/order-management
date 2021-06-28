@@ -17,19 +17,18 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * This class provides end points to the clients such as POS Terminals, fulfilment systems, warehouse picking systems etc
+ * This controller class provides end points to the clients such as POS Terminals, fulfilment systems, warehouse picking systems etc
  * to work with bulk orders.
  */
 @RestController
-@RequestMapping(value = "/bulk/orders")
-@Api(tags = {"bulkOrders"})
-@SwaggerDefinition(tags = {@Tag(name = "bulkOrders", description = "bulk Orders Service Endpoints")})
+@RequestMapping(value = "/batch/orders")
+@Api(tags = {"batchOrders"})
+@SwaggerDefinition(tags = {@Tag(name = "batchOrders", description = "batch Orders Service Endpoints")})
 public class BatchOrderController {
 
     private final ProducerService producerService;
 
     public BatchOrderController(ProducerService producerService) {
-
         this.producerService = producerService;
     }
 
@@ -48,7 +47,7 @@ public class BatchOrderController {
     /**
      * end point to update order status in batch
      */
-    @PostMapping(value = "/bulk/update/status")
+    @PostMapping(value = "/update/status")
     @ApiOperation(value = "update order status",
                   notes = "Returns success status.")
     public ResponseEntity<Void> updateOrderStatusInBatch(@RequestBody List<OrderStatusDTO> orderStatusDTOS) {

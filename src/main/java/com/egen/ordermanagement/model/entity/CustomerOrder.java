@@ -1,22 +1,20 @@
 package com.egen.ordermanagement.model.entity;
 
 import com.egen.ordermanagement.model.enums.OrderStatus;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "CUSTOMER_ORDER")
+@Table(name = "ORDERS")
 @Accessors(chain = true)
-@Getter
-@Setter
-public class CustomerOrder {
+@Data
+public class CustomerOrder implements Serializable {
 
     @Id
     @GeneratedValue(generator = "uuid2")
@@ -46,15 +44,38 @@ public class CustomerOrder {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Item> items = new ArrayList<>();
+    @OneToMany(mappedBy = "orders", targetEntity=Item.class,
+               cascade = CascadeType.ALL , fetch = FetchType.LAZY) //orphanRemoval = true
+    private List<Item> items;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Payment> payments = new ArrayList<>();
+    @OneToMany(mappedBy = "orders", targetEntity=Payment.class,
+               cascade = CascadeType.ALL , fetch = FetchType.LAZY)
+    private List<Payment> payments;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "shipping_id", referencedColumnName = "shipping_id")
     private Shipping shipping;
 
     public CustomerOrder() {}
+
+    // synchronize both order table and child table whenever a child element(Item ot Payment) is added or removed.
+//    public void addItem(Item item){
+//        items.add(item);
+//        item.setOrders(this);
+//    }
+//
+//    public void removeItem(Item item){
+//        items.remove(item);
+//        item.setOrders(null);
+//    }
+//
+//    public void addPayment(Payment payment){
+//        payments.add(payment);
+//        payment.setOrders(this);
+//    }
+//
+//    public void removePayment(Payment payment){
+//        payments.remove(payment);
+//        payment.setOrders(null);
+//    }
 }

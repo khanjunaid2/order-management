@@ -2,16 +2,16 @@ package com.egen.ordermanagement.service.order;
 
 import com.egen.ordermanagement.dto.OrderDTO;
 import com.egen.ordermanagement.dto.OrderStatusDTO;
-import com.egen.ordermanagement.exception.BatchOrderServiceException;
 import com.egen.ordermanagement.exception.OrderRequestProcessException;
 import com.egen.ordermanagement.exception.OrderServiceException;
+import com.egen.ordermanagement.mapper.CircularMappingResolver;
 import com.egen.ordermanagement.mapper.OrderMapper;
 import com.egen.ordermanagement.model.entity.CustomerOrder;
 import com.egen.ordermanagement.model.enums.OrderStatus;
+import com.egen.ordermanagement.repository.ItemRepository;
 import com.egen.ordermanagement.repository.OrderRepository;
-import com.egen.ordermanagement.service.order.OrderService;
+import com.egen.ordermanagement.repository.PaymentRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -28,21 +28,28 @@ import java.util.stream.Collectors;
 @Slf4j
 public class OrderServiceImpl implements OrderService {
 
-    private final OrderRepository orderRepository;
+    private OrderRepository orderRepository;
+    private ItemRepository itemRepository;
+    private PaymentRepository paymentRepository;
 
-    @Autowired
-   public OrderServiceImpl(OrderRepository orderRepository) {
-        this.orderRepository = orderRepository;
+    public OrderServiceImpl(OrderRepository orderRepository, ItemRepository itemRepository, PaymentRepository paymentRepository) {
+
+       this.orderRepository = orderRepository;
+       this.itemRepository = itemRepository;
+       this.paymentRepository = paymentRepository;
     }
 
     @Override
     public List<OrderDTO> getAllOrders() {
 
         try {
-            return convertToDTOList(orderRepository.findAll());
+            List<OrderDTO> orderDTOList = convertToDTOList(orderRepository.findAll());
+            System.out.println("dto:"+orderDTOList.get(0).toString());
+             return orderDTOList;
 
            } catch (Exception e) {
 
+            e.printStackTrace();
             log.error("Error while fetching all orders");
             throw new OrderServiceException("Failed to fetch all orders", e);
         }
@@ -75,7 +82,7 @@ public class OrderServiceImpl implements OrderService {
             if(order.isEmpty())
                 throw new OrderRequestProcessException("Order" + id + " you're looking for couldn't be found");
 
-            return new OrderMapper().convertToOrderDTO(order.get());
+            return OrderMapper.MAPPER.orderToOrderDTO(order.get(), new CircularMappingResolver());
 
         } catch (Exception e) {
            log.error("Error while fetching specific order");
@@ -119,11 +126,22 @@ public class OrderServiceImpl implements OrderService {
     public OrderDTO placeOrder(OrderDTO orderDTO) {
 
         try {
-            CustomerOrder order = new OrderMapper().convertToOrderEntity(orderDTO);
-            return new OrderMapper().convertToOrderDTO(orderRepository.save(order));
+            CustomerOrder placedOrder = orderRepository.save(OrderMapper.MAPPER
+                                                                        .orderDTOToOrder(orderDTO, new CircularMappingResolver()));
+
+            // takes care of order to items one to many bi directional mapping
+            placedOrder.getItems().stream().map(item -> item.setOrders(placedOrder))
+                                           .forEach(updateItem -> itemRepository.save(updateItem));
+
+            // takes care of order to payments one to many bi directional mapping
+            placedOrder.getPayments().stream().map(payment -> payment.setOrders(placedOrder))
+                                              .forEach(item -> paymentRepository.save(item));
+
+            return OrderMapper.MAPPER.orderToOrderDTO(placedOrder, new CircularMappingResolver());
 
         } catch (Exception e) {
             log.error("Error while order creation");
+            e.printStackTrace();
             throw new OrderServiceException("Failed order creation", e);
         }
     }
@@ -143,7 +161,7 @@ public class OrderServiceImpl implements OrderService {
              else {
                  order.get().setStatus(OrderStatus.CANCELLED);
                  orderRepository.save(order.get());
-                 return new OrderMapper().convertToOrderDTO(order.get());
+                 return OrderMapper.MAPPER.orderToOrderDTO(order.get(), new CircularMappingResolver());
              }
 
         } catch (Exception e) {
@@ -156,7 +174,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderDTO updateOrder(OrderDTO orderDTO) {
 
         try {
-            CustomerOrder order = new OrderMapper().convertToOrderEntity(orderDTO);
+            CustomerOrder order = OrderMapper.MAPPER.orderDTOToOrder(orderDTO, new CircularMappingResolver());
             Optional<CustomerOrder> existingOrder = orderRepository.findById(order.getOrderId());
 
             if(existingOrder.isEmpty())
@@ -166,7 +184,7 @@ public class OrderServiceImpl implements OrderService {
                 throw new OrderServiceException("Shipped orders can't be modified");
 
             else
-                return new OrderMapper().convertToOrderDTO(orderRepository.save(order));
+                return OrderMapper.MAPPER.orderToOrderDTO(orderRepository.save(order), new CircularMappingResolver());
 
         } catch (Exception e) {
             log.error("Error while order modification");
@@ -193,7 +211,7 @@ public class OrderServiceImpl implements OrderService {
     private List<OrderDTO> convertToDTOList(List<CustomerOrder> orders) {
 
         return orders.stream()
-                     .map(order -> new OrderMapper().convertToOrderDTO(order))
+                     .map(order -> OrderMapper.MAPPER.orderToOrderDTO(order, new CircularMappingResolver()))
                      .collect(Collectors.toList());
     }
 }

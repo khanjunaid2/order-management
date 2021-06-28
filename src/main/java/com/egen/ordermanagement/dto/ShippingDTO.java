@@ -2,19 +2,15 @@ package com.egen.ordermanagement.dto;
 
 import com.egen.ordermanagement.model.enums.ShipmentType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Column;
+import java.io.Serializable;
 
 @Accessors(chain = true)
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ShippingDTO {
+public class ShippingDTO implements Serializable {
 
     private String shippingId;
     private ShipmentType shipmentType;

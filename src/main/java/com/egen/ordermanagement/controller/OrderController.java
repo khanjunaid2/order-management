@@ -23,7 +23,6 @@ public class OrderController {
     private final OrderService orderService;
 
     public OrderController(OrderService orderService) {
-
         this.orderService = orderService;
     }
 
@@ -100,7 +99,7 @@ public class OrderController {
                   notes = "Returns created order data.")
     public Response<OrderDTO> placeOrder(@RequestBody OrderDTO order) {
 
-        return Response.<OrderDTO>builder()
+        return  Response.<OrderDTO>builder()
                 .meta(ResponseMetadata.builder()
                         .statusCode(201)
                         .statusMessage(StatusMessage.SUCCESS.name()).build())

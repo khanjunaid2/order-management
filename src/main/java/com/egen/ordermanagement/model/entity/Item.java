@@ -1,18 +1,17 @@
 package com.egen.ordermanagement.model.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
-@Table(name = "ITEMS")
+@Table(name = "ITEM")
 @Accessors(chain = true)
-@Getter
-@Setter
-public class Item {
+@Data
+public class Item implements Serializable {
 
     @Id
     @GeneratedValue(generator = "uuid2")
@@ -29,5 +28,22 @@ public class Item {
     @Column(name = "order_item_unit_price")
     private Double itemUnitPrice;
 
+    @ManyToOne(targetEntity=CustomerOrder.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    private CustomerOrder orders;
+
     public Item() {}
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (this == o) return true;
+        if (!(o instanceof Item )) return false;
+        return itemId != null && itemId.equals(((Item) o).getItemId());
+    }
+
+    @Override
+    public int hashCode() {
+        return 31;
+    }
 }

@@ -7,13 +7,14 @@ import lombok.experimental.Accessors;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "SHIPPING")
 @Accessors(chain = true)
 @Getter
 @Setter
-public class Shipping {
+public class Shipping implements Serializable {
 
     @Id
     @GeneratedValue(generator = "uuid2")

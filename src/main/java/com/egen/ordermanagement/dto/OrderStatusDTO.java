@@ -1,17 +1,15 @@
 package com.egen.ordermanagement.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
+
 @Accessors(chain = true)
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class OrderStatusDTO {
+public class OrderStatusDTO implements Serializable {
 
     private String orderId;
     private String orderStatus;

@@ -1,19 +1,18 @@
 package com.egen.ordermanagement.model.entity;
 
 import com.egen.ordermanagement.model.enums.PaymentType;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
-@Table(name = "PAYMENTS")
+@Table(name = "PAYMENT")
 @Accessors(chain = true)
-@Getter
-@Setter
-public class Payment {
+@Data
+public class Payment implements Serializable {
 
     @Id
     @GeneratedValue(generator = "uuid2")
@@ -34,6 +33,10 @@ public class Payment {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "billing_id", referencedColumnName = "billing_id")
     private Billing billing;
+
+    @ManyToOne(targetEntity=CustomerOrder.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    private CustomerOrder orders;
 
     public Payment() {}
 }
