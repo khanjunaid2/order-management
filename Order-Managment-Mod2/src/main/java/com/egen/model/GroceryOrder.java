@@ -21,6 +21,7 @@ public class GroceryOrder {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
+
     private String customerId;
 
     private double subTotal;

@@ -3,8 +3,10 @@ package com.egen.controller;
 import com.egen.model.GroceryOrder;
 import com.egen.service.IOrderManagementService;
 import com.egen.service.impl.OrderManagementService;
+import com.egen.service.impl.ProducerService;
 import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,7 @@ public class OrderController {
      */
     private IOrderManagementService orderManagementService;
 
+    @Autowired
     public OrderController(IOrderManagementService orderManagementService){
         this.orderManagementService = orderManagementService;
     }
@@ -61,5 +64,15 @@ public class OrderController {
         return ResponseEntity.ok(orderManagementService.updateOrder(order));
     }
 
+    ProducerService producerService;
+    public OrderController(ProducerService producerService){
+        this.producerService = producerService;
+    }
+
+    @PostMapping(value = "/publish/order")
+    public String publishOrder(@RequestBody GroceryOrder groceryOrder){
+        producerService.sendOrderData(groceryOrder);
+        return "Order Received";
+    }
 
 }
