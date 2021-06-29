@@ -20,7 +20,7 @@ import java.util.Set;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class OrderDTO implements Serializable {
+public class OrderDTO {
 
 
     private String id;

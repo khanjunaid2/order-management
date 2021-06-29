@@ -1,5 +1,7 @@
 package com.egen.service;
 
+import com.egen.dto.OrderDTO;
+import com.egen.exception.OrderNotFoundException;
 import com.egen.exception.OrderServiceException;
 import com.egen.model.Address;
 import com.egen.model.Customer;
@@ -8,6 +10,7 @@ import com.egen.model.Order;
 import com.egen.enums.OrderStatus;
 import com.egen.model.Payment;
 import com.egen.repository.OrderRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +36,19 @@ public class OrderServiceImpl implements OrderService{
     @Autowired
     private OrderRepository orderRepo;
 
+    private Order convertDTOtoEntity(OrderDTO itemDTO){
+       Order order = new Order();
+        BeanUtils.copyProperties(itemDTO,order);
+
+
+        return order;
+
+    }
+    private OrderDTO convertEntitytoDTO(Order order) {
+        OrderDTO orderDTO = new OrderDTO();
+        BeanUtils.copyProperties(order, orderDTO);
+        return orderDTO;
+    }
     @Override
     @Transactional(readOnly = true)
     public List<Order> getAllOrders() {
@@ -75,6 +91,21 @@ public class OrderServiceImpl implements OrderService{
             newList.add(groceryOrdersInZip.get(i));
         }
         return newList;
+    }
+
+    @Override
+    public OrderDTO placeOrder(OrderDTO orderDTO) {
+        OrderDTO responseDto;
+        try{
+            System.out.println("Inside the Place Order function");
+            Order orderItem =  convertDTOtoEntity(orderDTO);
+            Order responseEntity = orderRepo.save(orderItem);
+            responseDto = convertEntitytoDTO(responseEntity);
+        }catch (Exception ex){
+            throw new OrderNotFoundException("");
+        }
+
+        return responseDto;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.egen.service;
 
+import com.egen.dto.OrderDTO;
 import com.egen.model.Order;
 
 import java.sql.Timestamp;
@@ -13,6 +14,8 @@ public interface OrderService {
     List<Order> getAllOrdersWithInInterval(Timestamp startTime, Timestamp endTime);
 
     List<Order> top10OrdersWithHighestDollarAmountInZip(String zip);
+
+    OrderDTO placeOrder(OrderDTO orderItem);
 
     Order saveOrder(Order order);
 

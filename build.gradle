@@ -35,6 +35,14 @@ dependencies {
 	testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.5.1'
 	// https://mvnrepository.com/artifact/org.junit.vintage/junit-vintage-engine
 	testImplementation group: 'org.junit.vintage', name: 'junit-vintage-engine', version: '5.8.0-M1'
+// https://mvnrepository.com/artifact/io.springfox/springfox-swagger2
+	implementation group: 'io.springfox', name: 'springfox-swagger2', version: '3.0.0'
+// https://mvnrepository.com/artifact/org.springframework.kafka/spring-kafka
+	implementation group: 'org.springframework.kafka', name: 'spring-kafka', version: '2.7.3'
+// https://mvnrepository.com/artifact/org.springframework/spring-core
+	implementation group: 'org.springframework', name: 'spring-core', version: '5.3.8'
+
+
 
 
 }
